@@ -1,0 +1,40 @@
+.app-shell {
+  min-height: 100vh;
+}
+
+.app-header {
+  padding: 20px 16px 0;
+  max-width: 860px;
+  margin: 0 auto;
+}
+
+.app-header h1 {
+  font-size: 1.3rem;
+  margin: 0 0 16px;
+}
+
+.app-tabs {
+  display: flex;
+  gap: 8px;
+  border-bottom: 1px solid #d9dce1;
+}
+
+.app-tabs button {
+  padding: 8px 16px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 0.95rem;
+  border-bottom: 2px solid transparent;
+}
+
+.app-tabs button.active {
+  border-bottom-color: #2f6fed;
+  color: #2f6fed;
+  font-weight: 600;
+}
+
+.app-tabs button:disabled {
+  color: #aaa;
+  cursor: not-allowed;
+}

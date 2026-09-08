@@ -1,0 +1,142 @@
+.exam-creation-page {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 24px 16px 64px;
+}
+
+.exam-creation-page h2 {
+  margin-top: 32px;
+  font-size: 1.15rem;
+}
+
+.upload-section,
+.generate-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px;
+  border: 1px solid #d9dce1;
+  border-radius: 8px;
+  background: #fafbfc;
+}
+
+.file-input-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+}
+
+.file-name {
+  color: #555;
+  font-size: 0.9rem;
+}
+
+.error-text {
+  color: #b3261e;
+}
+
+.success-text {
+  color: #1e7a34;
+}
+
+.parse-summary {
+  padding: 10px 14px;
+  background: #eef4ff;
+  border-radius: 8px;
+  font-size: 0.95rem;
+}
+
+.question-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.question-card {
+  border: 1px solid #d9dce1;
+  border-radius: 8px;
+  padding: 12px 16px;
+  background: #fff;
+}
+
+.question-card.has-issue {
+  border-color: #e0a500;
+  background: #fffaf0;
+}
+
+.question-card-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+
+.question-index {
+  font-weight: 600;
+}
+
+.issue-badge {
+  font-size: 0.75rem;
+  background: #e0a500;
+  color: #fff;
+  padding: 2px 8px;
+  border-radius: 999px;
+}
+
+.question-text {
+  margin: 4px 0 8px;
+}
+
+.option-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 4px 16px;
+}
+
+.option-list li.correct label {
+  color: #1e7a34;
+  font-weight: 600;
+}
+
+.issue-list {
+  margin: 10px 0 0;
+  padding-left: 18px;
+  color: #a06000;
+  font-size: 0.85rem;
+}
+
+.generate-section label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.9rem;
+  max-width: 320px;
+}
+
+.generate-section input[type='text'],
+.generate-section input[type='number'] {
+  padding: 6px 8px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+.generate-section button {
+  align-self: flex-start;
+  margin-top: 6px;
+  padding: 8px 18px;
+  border: none;
+  border-radius: 6px;
+  background: #2f6fed;
+  color: #fff;
+  cursor: pointer;
+  font-size: 0.95rem;
+}
+
+.generate-section button:disabled {
+  background: #a9bce0;
+  cursor: not-allowed;
+}

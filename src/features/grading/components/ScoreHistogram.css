@@ -1,0 +1,97 @@
+.score-histogram {
+  --chart-surface: #fcfcfb;
+  --text-primary: #0b0b0b;
+  --text-secondary: #52514e;
+  --text-muted: #898781;
+  --gridline: #e1e0d9;
+  --bar: #2a78d6;
+  --bar-hover: #3987e5;
+
+  margin: 16px 0 24px;
+  padding: 16px;
+  background: var(--chart-surface);
+  border: 1px solid #e0e2e6;
+  border-radius: 8px;
+}
+
+.score-histogram h3 {
+  margin: 0 0 12px;
+  font-size: 1rem;
+  color: var(--text-primary);
+}
+
+.score-histogram-plot-wrap {
+  position: relative;
+  overflow-x: auto;
+}
+
+.score-histogram-plot {
+  display: block;
+  width: 100%;
+  max-width: 480px;
+  height: auto;
+}
+
+.score-histogram-gridline {
+  stroke: var(--gridline);
+  stroke-width: 1;
+}
+
+.score-histogram-bar {
+  fill: var(--bar);
+  cursor: pointer;
+  outline: none;
+  transition: fill 0.1s ease;
+}
+
+.score-histogram-bar.is-hover,
+.score-histogram-bar:focus-visible {
+  fill: var(--bar-hover);
+}
+
+.score-histogram-peak-label {
+  font-size: 9px;
+  font-weight: 600;
+  fill: var(--text-primary);
+  text-anchor: middle;
+}
+
+.score-histogram-axis-label {
+  font-size: 7px;
+  fill: var(--text-muted);
+  text-anchor: middle;
+}
+
+.score-histogram-tooltip-g rect {
+  fill: var(--text-primary);
+}
+
+.score-histogram-tooltip-g text {
+  fill: #fff;
+  font-size: 9px;
+  font-weight: 600;
+}
+
+.score-histogram-table-details {
+  margin-top: 10px;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.score-histogram-table {
+  margin-top: 8px;
+  border-collapse: collapse;
+}
+
+.score-histogram-table th,
+.score-histogram-table td {
+  border: 1px solid var(--gridline);
+  padding: 4px 10px;
+  text-align: left;
+  font-variant-numeric: tabular-nums;
+}
+
+.score-histogram-table th {
+  background: #f2f3f5;
+  color: var(--text-primary);
+}
