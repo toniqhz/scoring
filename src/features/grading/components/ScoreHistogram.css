@@ -1,16 +1,11 @@
 .score-histogram {
-  --chart-surface: #fcfcfb;
-  --text-primary: #0b0b0b;
-  --text-secondary: #52514e;
-  --text-muted: #898781;
-  --gridline: #e1e0d9;
-  --bar: #2a78d6;
-  --bar-hover: #3987e5;
+  --bar: var(--accent);
+  --bar-hover: var(--accent-hover);
 
   margin: 16px 0 24px;
   padding: 16px;
-  background: var(--chart-surface);
-  border: 1px solid #e0e2e6;
+  background: var(--surface);
+  border: 1px solid var(--border);
   border-radius: 8px;
 }
 
@@ -33,7 +28,7 @@
 }
 
 .score-histogram-gridline {
-  stroke: var(--gridline);
+  stroke: var(--border-hairline);
   stroke-width: 1;
 }
 
@@ -63,11 +58,11 @@
 }
 
 .score-histogram-tooltip-g rect {
-  fill: var(--text-primary);
+  fill: var(--tooltip-bg);
 }
 
 .score-histogram-tooltip-g text {
-  fill: #fff;
+  fill: var(--tooltip-text);
   font-size: 9px;
   font-weight: 600;
 }
@@ -85,13 +80,13 @@
 
 .score-histogram-table th,
 .score-histogram-table td {
-  border: 1px solid var(--gridline);
+  border: 1px solid var(--border-hairline);
   padding: 4px 10px;
   text-align: left;
   font-variant-numeric: tabular-nums;
+  color: var(--text-primary);
 }
 
 .score-histogram-table th {
-  background: #f2f3f5;
-  color: var(--text-primary);
+  background: var(--surface-raised);
 }
