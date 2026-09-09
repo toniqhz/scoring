@@ -11,7 +11,7 @@ function describeIssues(r: GradingResult): string[] {
   if (r.flags.examCodeNotFound) issues.push('Không xác định được mã đề');
   if (r.flags.examCodeAmbiguous) issues.push('Ô mã đề tô mờ/không rõ');
   if (r.flags.mssvNotFound) issues.push('Không khớp MSSV với danh sách lớp');
-  if (r.flags.mssvAmbiguous) issues.push('Ô số báo danh tô mờ/không rõ/bỏ trống');
+  if (r.flags.mssvAmbiguous) issues.push('Ô mã số sinh viên tô mờ/không rõ/bỏ trống');
   if (r.flags.lowConfidenceCount > 0) issues.push(`${r.flags.lowConfidenceCount} câu tô mờ/nhiều đáp án`);
   return issues;
 }

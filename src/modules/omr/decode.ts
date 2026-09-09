@@ -1,6 +1,6 @@
 import { alignAndThreshold } from './alignSheet';
 import { decodeMssv, decodeExamCode, decodeAnswers } from './bubbleSample';
-import { PAGE_WIDTH_MM, PAGE_HEIGHT_MM, mmToPx } from '../pdf-export/bubbleSheetTemplate';
+import { PAGE_WIDTH_MM, PAGE_HEIGHT_MM, mmToPx, buildQuestionGridLayout } from '../pdf-export/bubbleSheetTemplate';
 import type { OmrAnswerReading } from './types';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -21,7 +21,12 @@ export interface DecodeSheetResult {
 }
 
 /** Giải mã 1 ảnh phiếu trả lời đã scan/chụp: căn chỉnh phối cảnh rồi đọc từng ô tròn. */
-export function decodeSheet(cv: CvNamespace, srcMat: CvMat, totalQuestions: number): DecodeSheetResult {
+export function decodeSheet(
+  cv: CvNamespace,
+  srcMat: CvMat,
+  totalQuestions: number,
+  maxOptions: number,
+): DecodeSheetResult {
   const canonicalWidthPx = Math.round(mmToPx(PAGE_WIDTH_MM, PROCESS_DPI));
   const canonicalHeightPx = Math.round(mmToPx(PAGE_HEIGHT_MM, PROCESS_DPI));
   const { warped, ok } = alignAndThreshold(cv, srcMat, canonicalWidthPx, canonicalHeightPx, PROCESS_DPI);
@@ -38,9 +43,10 @@ export function decodeSheet(cv: CvNamespace, srcMat: CvMat, totalQuestions: numb
   }
 
   try {
+    const layout = buildQuestionGridLayout(maxOptions, totalQuestions);
     const mssvDecoding = decodeMssv(cv, warped, PROCESS_DPI);
     const examCodeDecoding = decodeExamCode(cv, warped, PROCESS_DPI);
-    const answers = decodeAnswers(cv, warped, PROCESS_DPI, totalQuestions);
+    const answers = decodeAnswers(cv, warped, PROCESS_DPI, totalQuestions, layout);
     return {
       alignmentFailed: false,
       mssv: mssvDecoding.value,

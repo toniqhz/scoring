@@ -4,6 +4,8 @@ export interface OmrTaskMessage {
   taskId: string;
   bitmap: ImageBitmap;
   totalQuestions: number;
+  /** Số đáp án lớn nhất trong đề — quyết định số cột bubble/câu khi lấy mẫu. */
+  maxOptions: number;
 }
 
 export interface OmrAnswerReading {

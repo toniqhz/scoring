@@ -54,13 +54,13 @@ function imageBitmapToMat(cv: CvNamespace, bitmap: ImageBitmap) {
 }
 
 self.onmessage = async (event: MessageEvent<OmrTaskMessage>) => {
-  const { taskId, bitmap, totalQuestions } = event.data;
+  const { taskId, bitmap, totalQuestions, maxOptions } = event.data;
   try {
     const cv = await loadCv();
     const mat = imageBitmapToMat(cv, bitmap);
     let decoded;
     try {
-      decoded = decodeSheet(cv, mat, totalQuestions);
+      decoded = decodeSheet(cv, mat, totalQuestions, maxOptions);
     } finally {
       mat.delete();
       bitmap.close();

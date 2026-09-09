@@ -9,6 +9,7 @@ import './ExamCreationPage.css';
 
 export function ExamCreationPage() {
   const [fileName, setFileName] = useState<string | null>(null);
+  const [originalDocxBuffer, setOriginalDocxBuffer] = useState<ArrayBuffer | null>(null);
   const [questions, setQuestions] = useState<Question[]>([]);
   const [parseError, setParseError] = useState<string | null>(null);
   const [isParsing, setIsParsing] = useState(false);
@@ -33,6 +34,8 @@ export function ExamCreationPage() {
     setGenerateSuccess(false);
     setIsParsing(true);
     try {
+      const buffer = await file.arrayBuffer();
+      setOriginalDocxBuffer(buffer);
       const result = await parseDocxFile(file);
       setQuestions(result.questions);
       if (result.questions.length === 0) {
@@ -43,6 +46,7 @@ export function ExamCreationPage() {
     } catch (err) {
       setParseError(err instanceof Error ? err.message : 'Lỗi không xác định khi đọc file');
       setQuestions([]);
+      setOriginalDocxBuffer(null);
     } finally {
       setIsParsing(false);
     }
@@ -65,6 +69,10 @@ export function ExamCreationPage() {
       setGenerateError('Số đề cần trộn phải lớn hơn 0');
       return;
     }
+    if (!originalDocxBuffer) {
+      setGenerateError('Chưa có file đề gốc — hãy tải lại file .docx.');
+      return;
+    }
     setIsGenerating(true);
     try {
       const { variants, answerKeyBundle } = generateVariants(questions, {
@@ -72,7 +80,13 @@ export function ExamCreationPage() {
         startCode,
         examTitle,
       });
-      const zipBlob = await buildExportBundle({ examTitle, questions, variants, answerKeyBundle });
+      const zipBlob = await buildExportBundle({
+        examTitle,
+        questions,
+        variants,
+        answerKeyBundle,
+        originalDocxBuffer,
+      });
       downloadBlob(zipBlob, `${examTitle.replace(/\s+/g, '_')}_bo_de.zip`);
       setGenerateSuccess(true);
     } catch (err) {

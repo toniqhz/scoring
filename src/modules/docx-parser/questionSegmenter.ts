@@ -1,14 +1,11 @@
 import { v4 as uuidv4 } from 'uuid';
 import type { DocxParagraph } from './xmlExtract';
 import type { Question, QuestionOption } from '../../types/question';
-
-const QUESTION_RE = /^C[aâ]u\s*\d+\s*[.):]?\s*/iu;
-const OPTION_RE = /^([A-D])\s*[.):]\s*(.*)$/u;
-const OPTION_LETTERS = ['A', 'B', 'C', 'D'] as const;
-type OptionLetter = (typeof OPTION_LETTERS)[number];
+import { letterAt } from '../../lib/optionLetters';
+import { QUESTION_RE, OPTION_RE, MIN_OPTIONS } from './patterns';
 
 interface DraftOption {
-  letter: OptionLetter;
+  letter: string;
   text: string;
   bold: boolean;
 }
@@ -43,8 +40,7 @@ export function segmentQuestions(paragraphs: DocxParagraph[]): Question[] {
 
     const oMatch = OPTION_RE.exec(text);
     if (oMatch) {
-      const letter = oMatch[1] as OptionLetter;
-      current.options.push({ letter, text: oMatch[2].trim(), bold: para.boldRatio > 0.5 });
+      current.options.push({ letter: oMatch[1], text: oMatch[2].trim(), bold: para.boldRatio > 0.5 });
       continue;
     }
 
@@ -60,6 +56,11 @@ export function segmentQuestions(paragraphs: DocxParagraph[]): Question[] {
   return drafts.map(draftToQuestion);
 }
 
+/**
+ * Không ép cứng số đáp án = 4 — mỗi câu có thể có số đáp án khác nhau (2, 4, 5, 6...),
+ * miễn là các chữ cái liên tục bắt đầu từ A (A, A-B, A-B-C, ...). Phiếu trả lời sẽ được
+ * sinh theo số đáp án LỚN NHẤT trong toàn bộ ngân hàng câu hỏi (xem generateVariants.ts).
+ */
 function draftToQuestion(draft: DraftQuestion): Question {
   const issues: string[] = [];
   const options: QuestionOption[] = [];
@@ -68,7 +69,14 @@ function draftToQuestion(draft: DraftQuestion): Question {
   const byLetter = new Map(draft.options.map((o) => [o.letter, o]));
   const boldMatches = draft.options.filter((o) => o.bold);
 
-  for (const letter of OPTION_LETTERS) {
+  const highestLetterIndex = draft.options.reduce((max, o) => {
+    const idx = o.letter.charCodeAt(0) - 65;
+    return idx > max ? idx : max;
+  }, -1);
+  const expectedCount = Math.max(highestLetterIndex + 1, draft.options.length);
+
+  for (let i = 0; i < expectedCount; i++) {
+    const letter = letterAt(i);
     const found = byLetter.get(letter);
     const id = uuidv4();
     if (!found) {
@@ -80,8 +88,8 @@ function draftToQuestion(draft: DraftQuestion): Question {
     if (found.bold) correctOptionId = id;
   }
 
-  if (draft.options.length !== 4) {
-    issues.push(`Tìm thấy ${draft.options.length} đáp án, cần đúng 4 (A/B/C/D)`);
+  if (options.length < MIN_OPTIONS) {
+    issues.push(`Câu hỏi cần tối thiểu ${MIN_OPTIONS} đáp án (tìm thấy ${options.length})`);
   }
   if (boldMatches.length === 0) {
     issues.push('Không tìm thấy đáp án in đậm (đáp án đúng)');

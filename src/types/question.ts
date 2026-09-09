@@ -11,9 +11,3 @@ export interface Question {
   correctOptionId: string | null;
   parseIssues: string[];
 }
-
-/** Câu hỏi khi in ra đề thi — KHÔNG được chứa đáp án đúng. */
-export interface PrintableQuestion {
-  text: string;
-  options: { letter: 'A' | 'B' | 'C' | 'D'; text: string }[];
-}

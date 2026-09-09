@@ -8,8 +8,9 @@ import {
   getExamCodeBubbleCenter,
   QUESTION_BUBBLE_DIAMETER_MM,
   getQuestionBubbleCenter,
-  OPTION_LETTERS,
+  type QuestionGridLayout,
 } from '../pdf-export/bubbleSheetTemplate';
+import { letterAt } from '../../lib/optionLetters';
 import { decideFromScores } from './decision';
 import type { AnswerLetter } from '../../types/answerKey';
 
@@ -90,18 +91,25 @@ export interface AnswerReading {
   ambiguous: boolean;
 }
 
-export function decodeAnswers(cv: CvNamespace, mat: CvMat, dpi: number, totalQuestions: number): AnswerReading[] {
+export function decodeAnswers(
+  cv: CvNamespace,
+  mat: CvMat,
+  dpi: number,
+  totalQuestions: number,
+  layout: QuestionGridLayout,
+): AnswerReading[] {
   const diameterPx = mmToPx(QUESTION_BUBBLE_DIAMETER_MM, dpi);
   const readings: AnswerReading[] = [];
   for (let position = 1; position <= totalQuestions; position++) {
-    const scores = OPTION_LETTERS.map((_, optionIndex) => {
-      const c = getQuestionBubbleCenter(position, optionIndex);
-      return sampleBubbleDarkness(cv, mat, { x: mmToPx(c.xMm, dpi), y: mmToPx(c.yMm, dpi) }, diameterPx);
-    });
+    const scores: number[] = [];
+    for (let optionIndex = 0; optionIndex < layout.maxOptions; optionIndex++) {
+      const c = getQuestionBubbleCenter(layout, position, optionIndex);
+      scores.push(sampleBubbleDarkness(cv, mat, { x: mmToPx(c.xMm, dpi), y: mmToPx(c.yMm, dpi) }, diameterPx));
+    }
     const decision = decideFromScores(scores);
     readings.push({
       position,
-      letter: decision.index === null ? null : OPTION_LETTERS[decision.index],
+      letter: decision.index === null ? null : letterAt(decision.index),
       ambiguous: decision.ambiguous,
     });
   }

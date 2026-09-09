@@ -95,7 +95,11 @@ export function GradingPage() {
       const collected: GradingResult[] = [];
       for (let i = 0; i < images.length; i++) {
         const { fileName, bitmap } = images[i];
-        const omrResult = await client.processSheet(bitmap, answerKeyBundle.totalQuestions);
+        const omrResult = await client.processSheet(
+          bitmap,
+          answerKeyBundle.totalQuestions,
+          answerKeyBundle.maxOptionsPerQuestion,
+        );
         const graded = matchAndScore({
           sheetId: `${fileName}-${i}`,
           fileName,
@@ -114,8 +118,9 @@ export function GradingPage() {
     }
   }
 
-  function handleExportExcel() {
-    const bytes = exportResultsToXlsxBytes(results);
+  async function handleExportExcel() {
+    if (!answerKeyBundle) return;
+    const bytes = await exportResultsToXlsxBytes(results, answerKeyBundle);
     const blob = new Blob([bytes as BlobPart], {
       type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
     });

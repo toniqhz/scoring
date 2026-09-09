@@ -1,9 +1,8 @@
 import { fisherYatesShuffle, mulberry32 } from './prng';
+import { letterAt } from '../../lib/optionLetters';
 import type { Question } from '../../types/question';
 import type { ExamVariant } from '../../types/examVariant';
-import type { AnswerKeyBundle, AnswerKeyVariant, AnswerLetter } from '../../types/answerKey';
-
-const LETTERS: AnswerLetter[] = ['A', 'B', 'C', 'D'];
+import type { AnswerKeyBundle, AnswerKeyVariant } from '../../types/answerKey';
 
 export interface GenerateVariantsOptions {
   count: number;
@@ -25,7 +24,7 @@ function hashSeed(str: string): number {
   return h || 1;
 }
 
-/** Trộn ngẫu nhiên thứ tự câu hỏi và thứ tự 4 đáp án mỗi câu, sinh N bộ đề + đáp án tương ứng. */
+/** Trộn ngẫu nhiên thứ tự câu hỏi và thứ tự đáp án mỗi câu, sinh N bộ đề + đáp án tương ứng. */
 export function generateVariants(
   questions: Question[],
   options: GenerateVariantsOptions,
@@ -37,6 +36,7 @@ export function generateVariants(
     throw new Error('Không có câu hỏi hợp lệ nào để trộn đề');
   }
   const questionById = new Map(usedQuestions.map((q) => [q.id, q]));
+  const maxOptionsPerQuestion = Math.max(...usedQuestions.map((q) => q.options.length));
 
   const variants: ExamVariant[] = [];
   const answerKeyVariants: AnswerKeyVariant[] = [];
@@ -55,9 +55,11 @@ export function generateVariants(
       const correctIndex = shuffledOptions.findIndex((o) => o.id === question.correctOptionId);
       answers.push({
         position: index + 1,
-        correctLetter: LETTERS[correctIndex],
+        correctLetter: letterAt(correctIndex),
         originalQuestionId: question.id,
         originalQuestionIndex: question.originalIndex,
+        questionText: question.text,
+        correctOptionText: shuffledOptions[correctIndex]?.text ?? '',
       });
     });
 
@@ -79,6 +81,7 @@ export function generateVariants(
       examTitle: options.examTitle,
       createdAt: new Date().toISOString(),
       totalQuestions: usedQuestions.length,
+      maxOptionsPerQuestion,
       variants: answerKeyVariants,
     },
   };

@@ -76,7 +76,7 @@ export const CORNER_MARKERS: MarkerSpec[] = [
 
 export const MSSV_DIGIT_COUNT = 8;
 export const MSSV_BUBBLE_DIAMETER_MM = 4;
-export const MSSV_GRID_ORIGIN: PointMm = { xMm: 34, yMm: 62 };
+export const MSSV_GRID_ORIGIN: PointMm = { xMm: 34, yMm: 70 };
 export const MSSV_COL_PITCH_MM = 7;
 export const MSSV_ROW_PITCH_MM = 6;
 export const MSSV_LABEL_OFFSET_MM = 8;
@@ -92,7 +92,7 @@ export function getMssvBubbleCenter(colIndex: number, digit: number): PointMm {
 
 export const EXAM_CODE_DIGIT_COUNT = 3;
 export const EXAM_CODE_BUBBLE_DIAMETER_MM = 4;
-export const EXAM_CODE_GRID_ORIGIN: PointMm = { xMm: 120, yMm: 62 };
+export const EXAM_CODE_GRID_ORIGIN: PointMm = { xMm: 120, yMm: 70 };
 export const EXAM_CODE_COL_PITCH_MM = 7;
 export const EXAM_CODE_ROW_PITCH_MM = 6;
 export const EXAM_CODE_LABEL_OFFSET_MM = 8;
@@ -104,41 +104,88 @@ export function getExamCodeBubbleCenter(colIndex: number, digit: number): PointM
   };
 }
 
-// ---- Lưới câu hỏi PHẦN I (A/B/C/D), nhiều cột con 10 câu/cột ----
+// ---- Lưới câu hỏi PHẦN I — số cột đáp án (A, B, C...) KHÔNG cố định, phụ thuộc số đáp án
+// lớn nhất trong ngân hàng câu hỏi của đề đang tạo. Vì vậy layout được TÍNH ĐỘNG thay vì hằng
+// số cố định — cả PDF (bubbleSheetPdf.ts) và OMR (bubbleSample.ts) đều dùng chung layout này
+// để đảm bảo tọa độ khớp nhau tuyệt đối.
 
-export const QUESTION_GRID_ORIGIN: PointMm = { xMm: 15, yMm: 145 };
-export const SUBCOLUMN_COUNT = 5;
+export const QUESTION_GRID_ORIGIN: PointMm = { xMm: 15, yMm: 153 };
 export const QUESTIONS_PER_SUBCOLUMN = 10;
-export const MAX_QUESTIONS_PER_PAGE = SUBCOLUMN_COUNT * QUESTIONS_PER_SUBCOLUMN; // 50
-export const SUBCOLUMN_PITCH_MM = 38;
 export const QUESTION_ROW_PITCH_MM = 7;
 export const QUESTION_LABEL_WIDTH_MM = 10;
 export const QUESTION_OPTION_PITCH_MM = 8;
 export const QUESTION_BUBBLE_DIAMETER_MM = 4.5;
+/** Chiều rộng khả dụng cho lưới câu hỏi, tính từ QUESTION_GRID_ORIGIN.xMm, chừa lề phải an toàn. */
+const QUESTION_GRID_USABLE_WIDTH_MM = 190;
+/** Số đáp án tối thiểu phải chừa chỗ, kể cả khi ngân hàng câu hỏi chỉ có 2 đáp án/câu. */
+const MIN_LAYOUT_OPTIONS = 2;
 
-export const OPTION_LETTERS = ['A', 'B', 'C', 'D'] as const;
+export interface QuestionGridLayout {
+  maxOptions: number;
+  subcolumnCount: number;
+  questionsPerSubcolumn: number;
+  maxQuestionsPerPage: number;
+  subcolumnPitchMm: number;
+}
 
-/** position: số thứ tự câu hỏi trên phiếu, 1-based (1..50). optionIndex: 0=A,1=B,2=C,3=D. */
-export function getQuestionBubbleCenter(position: number, optionIndex: number): PointMm {
+/**
+ * Tính layout lưới câu hỏi theo số đáp án lớn nhất (maxOptions) của đề. Số đáp án càng nhiều
+ * thì mỗi cột con càng rộng, nên số cột con vừa trên 1 trang càng ít — đánh đổi vật lý khi in.
+ *
+ * Số cột con THỰC SỰ dùng phụ thuộc totalQuestions — nếu đề chỉ cần ít cột hơn số cột tối đa
+ * vừa trang, các cột đó được dàn đều ra hết chiều rộng khả dụng (thay vì dồn về bên trái, để
+ * lại 1 cột trống bên phải chỉ có tiêu đề A/B/C mà không có ô nào).
+ */
+const DEFAULT_MAX_OPTIONS = 4;
+
+export function buildQuestionGridLayout(maxOptions: number, totalQuestions?: number): QuestionGridLayout {
+  // Phòng trường hợp thiếu/hỏng giá trị (vd. file dap-an.json cũ từ trước khi có trường
+  // maxOptionsPerQuestion) — dùng mặc định 4 thay vì để lan truyền NaN ra toàn bộ layout.
+  const normalized = Number.isFinite(maxOptions) ? maxOptions : DEFAULT_MAX_OPTIONS;
+  const safeMax = Math.max(MIN_LAYOUT_OPTIONS, Math.round(normalized));
+  const minPitchMm = QUESTION_LABEL_WIDTH_MM + (safeMax - 1) * QUESTION_OPTION_PITCH_MM + 4;
+  const maxFittableColumns = Math.max(1, Math.floor(QUESTION_GRID_USABLE_WIDTH_MM / minPitchMm));
+
+  const safeTotalQuestions =
+    Number.isFinite(totalQuestions) && (totalQuestions as number) > 0
+      ? Math.round(totalQuestions as number)
+      : maxFittableColumns * QUESTIONS_PER_SUBCOLUMN;
+  const columnsUsed = Math.min(maxFittableColumns, Math.max(1, Math.ceil(safeTotalQuestions / QUESTIONS_PER_SUBCOLUMN)));
+
+  // Dàn đều các cột đang dùng ra hết chiều rộng khả dụng — pitch luôn >= minPitchMm vì
+  // columnsUsed <= maxFittableColumns (chứng minh: maxFittableColumns * minPitchMm <= USABLE_WIDTH).
+  const subcolumnPitchMm = QUESTION_GRID_USABLE_WIDTH_MM / columnsUsed;
+
+  return {
+    maxOptions: safeMax,
+    subcolumnCount: columnsUsed,
+    questionsPerSubcolumn: QUESTIONS_PER_SUBCOLUMN,
+    maxQuestionsPerPage: maxFittableColumns * QUESTIONS_PER_SUBCOLUMN,
+    subcolumnPitchMm,
+  };
+}
+
+/** position: số thứ tự câu hỏi trên phiếu, 1-based. optionIndex: 0=A,1=B,2=C,... */
+export function getQuestionBubbleCenter(layout: QuestionGridLayout, position: number, optionIndex: number): PointMm {
   const zeroBased = position - 1;
-  const subCol = Math.floor(zeroBased / QUESTIONS_PER_SUBCOLUMN);
-  const rowInSubCol = zeroBased % QUESTIONS_PER_SUBCOLUMN;
+  const subCol = Math.floor(zeroBased / layout.questionsPerSubcolumn);
+  const rowInSubCol = zeroBased % layout.questionsPerSubcolumn;
   return {
     xMm:
       QUESTION_GRID_ORIGIN.xMm +
-      subCol * SUBCOLUMN_PITCH_MM +
+      subCol * layout.subcolumnPitchMm +
       QUESTION_LABEL_WIDTH_MM +
       optionIndex * QUESTION_OPTION_PITCH_MM,
     yMm: QUESTION_GRID_ORIGIN.yMm + rowInSubCol * QUESTION_ROW_PITCH_MM,
   };
 }
 
-export function getQuestionLabelPosition(position: number): PointMm {
+export function getQuestionLabelPosition(layout: QuestionGridLayout, position: number): PointMm {
   const zeroBased = position - 1;
-  const subCol = Math.floor(zeroBased / QUESTIONS_PER_SUBCOLUMN);
-  const rowInSubCol = zeroBased % QUESTIONS_PER_SUBCOLUMN;
+  const subCol = Math.floor(zeroBased / layout.questionsPerSubcolumn);
+  const rowInSubCol = zeroBased % layout.questionsPerSubcolumn;
   return {
-    xMm: QUESTION_GRID_ORIGIN.xMm + subCol * SUBCOLUMN_PITCH_MM,
+    xMm: QUESTION_GRID_ORIGIN.xMm + subCol * layout.subcolumnPitchMm,
     yMm: QUESTION_GRID_ORIGIN.yMm + rowInSubCol * QUESTION_ROW_PITCH_MM,
   };
 }
