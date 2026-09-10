@@ -35,6 +35,12 @@
   font-size: 0.9rem;
 }
 
+.grading-page .field-hint {
+  margin: 2px 0 0;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+}
+
 .grading-page .error-text {
   color: var(--error-text);
 }

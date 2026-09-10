@@ -169,6 +169,10 @@ export function GradingPage() {
           <input type="file" accept="image/*,.pdf" multiple onChange={handleScanFilesChange} />
           Chọn ảnh/PDF bài scan (có thể chọn nhiều file)
         </label>
+        <p className="field-hint">
+          Có thể chọn nhiều ảnh cùng lúc, hoặc 1 file PDF nhiều trang (vd cả xấp bài scan chung 1 file) — mỗi trang
+          PDF sẽ được chấm như 1 bài thi riêng.
+        </p>
         {scanFiles.length > 0 && <span className="file-name">{scanFiles.length} file đã chọn</span>}
 
         <button onClick={handleGrade} disabled={isProcessing || !answerKeyBundle || scanFiles.length === 0}>
