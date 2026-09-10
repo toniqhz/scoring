@@ -1,5 +1,6 @@
 import { fisherYatesShuffle, mulberry32 } from './prng';
 import { letterAt } from '../../lib/optionLetters';
+import { CURRENT_TEMPLATE_VERSION } from '../pdf-export/bubbleSheetTemplate';
 import type { Question } from '../../types/question';
 import type { ExamVariant } from '../../types/examVariant';
 import type { AnswerKeyBundle, AnswerKeyVariant } from '../../types/answerKey';
@@ -82,6 +83,7 @@ export function generateVariants(
       createdAt: new Date().toISOString(),
       totalQuestions: usedQuestions.length,
       maxOptionsPerQuestion,
+      templateVersion: CURRENT_TEMPLATE_VERSION,
       variants: answerKeyVariants,
     },
   };

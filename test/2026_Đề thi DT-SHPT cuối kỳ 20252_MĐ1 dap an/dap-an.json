@@ -1,0 +1,926 @@
+{
+  "schemaVersion": 1,
+  "examTitle": "Đề kiểm tra",
+  "createdAt": "2026-09-10T04:21:42.209Z",
+  "totalQuestions": 28,
+  "maxOptionsPerQuestion": 5,
+  "templateVersion": 2,
+  "variants": [
+    {
+      "examCode": "101",
+      "answers": [
+        {
+          "position": 1,
+          "correctLetter": "C",
+          "originalQuestionId": "601b6132-dc41-494e-af3b-d2570678c1f7",
+          "originalQuestionIndex": 24,
+          "questionText": "Mô tả nào dưới đây về đột biến là không chính xác?",
+          "correctOptionText": "Đột biến có thể truyền từ các tế bào thế hệ này sang thế hệ mới, hoặc từ cha mẹ sang con cái"
+        },
+        {
+          "position": 2,
+          "correctLetter": "C",
+          "originalQuestionId": "4327676e-5ad5-4c62-ac07-b02f63a4d662",
+          "originalQuestionIndex": 9,
+          "questionText": "Quan hệ giữa các nucleotide trong một phân tử mRNA và trình tự aa trong một chuỗi polypeptide được quy định bởi:",
+          "correctOptionText": "Ribosome"
+        },
+        {
+          "position": 3,
+          "correctLetter": "A",
+          "originalQuestionId": "97870515-e3db-4552-aa1a-10b2dadae588",
+          "originalQuestionIndex": 5,
+          "questionText": "Mô tả nào dưới đây mô tả chính xác nhất về sự đọc sửa?",
+          "correctOptionText": "Các nucleotides bị loại đi khỏi đầu của một sợi DNA mới tổng hợp theo hướng 3' tới 5'"
+        },
+        {
+          "position": 4,
+          "correctLetter": "B",
+          "originalQuestionId": "b3442db3-807b-4bce-b665-d37303f804ee",
+          "originalQuestionIndex": 19,
+          "questionText": "Yếu tố phiên mã bám vào DNA và kích thích quá trình phiên mã là",
+          "correctOptionText": "Chất hoạt hóa"
+        },
+        {
+          "position": 5,
+          "correctLetter": "E",
+          "originalQuestionId": "750433ae-cc3f-4985-8b91-c476362027ff",
+          "originalQuestionIndex": 21,
+          "questionText": "Các quá trình nào dưới đây là quá trình điều hòa di truyền ở vi khuẩn? i. Chế biến RNA ii.   Khởi đầu phiên mã iii.   Biến đổi sau dịch mã          iv.   Khởi đầu dịch mã",
+          "correctOptionText": "i, ii, iii"
+        },
+        {
+          "position": 6,
+          "correctLetter": "E",
+          "originalQuestionId": "b1a5aaa0-3eba-4d3a-bd14-34901f51caf3",
+          "originalQuestionIndex": 1,
+          "questionText": "Sắp xếp các thuật ngữ di truyền dưới đây theo thứ tự phức tạp tăng dần: i. Nhiễm sắc thể ii.   Nucleotide iii.   Hệ gen iv.   Chuỗi xoắn kép",
+          "correctOptionText": "iii, ii, iv, i"
+        },
+        {
+          "position": 7,
+          "correctLetter": "B",
+          "originalQuestionId": "3a13cded-3614-4558-b003-4ccd2db7d8ae",
+          "originalQuestionIndex": 26,
+          "questionText": "Quá trình nào dưới đây là biện pháp thường được thực hiện để sửa chữa đột biến DNA?",
+          "correctOptionText": "(A), (B) và (C)"
+        },
+        {
+          "position": 8,
+          "correctLetter": "B",
+          "originalQuestionId": "60c22355-5d5e-4797-9781-21b1b937fc4e",
+          "originalQuestionIndex": 15,
+          "questionText": "Sự tổng hợp một chuỗi polypeptide xảy ra trong giai đoạn nào của quá trình dịch mã?",
+          "correctOptionText": "Kết thúc"
+        },
+        {
+          "position": 9,
+          "correctLetter": "E",
+          "originalQuestionId": "1bd9183b-9a5c-4716-8895-d63a636fb499",
+          "originalQuestionIndex": 25,
+          "questionText": "Kiểu đột biến làm thay đổi toàn bộ trình tự acid amin từ vị trí đột biến được gọi là đột biến…………………………?",
+          "correctOptionText": "Im lặng"
+        },
+        {
+          "position": 10,
+          "correctLetter": "E",
+          "originalQuestionId": "36c7767e-e268-43f2-8ad3-c623d140ed35",
+          "originalQuestionIndex": 11,
+          "questionText": "………………là một bào quan nơi quá trình dịch mã diễn ra",
+          "correctOptionText": "Lysosome"
+        },
+        {
+          "position": 11,
+          "correctLetter": "D",
+          "originalQuestionId": "81942f85-f7a5-4dc7-bf80-ec7fcc4963a2",
+          "originalQuestionIndex": 13,
+          "questionText": "Ở vi khuẩn, các protein được gọi là……………..nhận biết trình tự nucleotide trong một promoter; ở sinh vật nhân thực, các protein thực hiện chức năng này được gọi là…………………",
+          "correctOptionText": "Nhân tố sigma, snRNPs"
+        },
+        {
+          "position": 12,
+          "correctLetter": "E",
+          "originalQuestionId": "f5a07a6c-dce6-474a-982f-e1ca64fb107d",
+          "originalQuestionIndex": 14,
+          "questionText": "Trong bước khởi đầu của quá trình dịch mã, mã đầu tiên………sẽ đi vào vị trí……….và kết hợp với tRNA khởi đầu",
+          "correctOptionText": "AUG, vị trí E"
+        },
+        {
+          "position": 13,
+          "correctLetter": "A",
+          "originalQuestionId": "121a5e4f-0e52-4c9d-a8cf-cf5e7ff8bf7f",
+          "originalQuestionIndex": 7,
+          "questionText": "Câu hỏi ĐÚNG hoặc SAI: có một phần nhỏ DNA sợi đơn được tìm thấy ở đầu mút của một nhiễm sắc thể?",
+          "correctOptionText": "Đúng"
+        },
+        {
+          "position": 14,
+          "correctLetter": "B",
+          "originalQuestionId": "b43fc0e6-b979-4d3b-9f9c-ccfcfb4224a2",
+          "originalQuestionIndex": 18,
+          "questionText": "Quá trình nào dưới đây không liên quan đến mức độ điều hòa gen ở prokaryote?",
+          "correctOptionText": "Quá trình biến đổi sau dịch mã"
+        },
+        {
+          "position": 15,
+          "correctLetter": "D",
+          "originalQuestionId": "e803edb7-13ab-488a-a0a2-214edeef6713",
+          "originalQuestionIndex": 0,
+          "questionText": "Thành phần nào dưới đây xác định nucletide đó sẽ được kết hợp vào DNA hoặc RNA",
+          "correctOptionText": "Đường pentose"
+        },
+        {
+          "position": 16,
+          "correctLetter": "C",
+          "originalQuestionId": "ed659d93-a2ae-4a0c-9f05-5b4b34b3a7df",
+          "originalQuestionIndex": 3,
+          "questionText": "Khi nói về các protein khác nhau và chức năng của chúng đối với quá tình sao chép DNA, mô tả nào dưới đây là không chính xác?",
+          "correctOptionText": "DNA helicase dãn xoắn phân tử DNA mạch kép"
+        },
+        {
+          "position": 17,
+          "correctLetter": "A",
+          "originalQuestionId": "ebaee37e-7ebd-40fd-9eee-3cd208adde89",
+          "originalQuestionIndex": 4,
+          "questionText": "Câu hỏi ĐÚNG hoặc SAI: Sao chép DNA bắt đầu với sự tổng hợp RNA primer, một chuỗi xoắn kép hoàn chỉnh chính là một phân tử lai của hầu hết DNA với một số RNA",
+          "correctOptionText": "Sai"
+        },
+        {
+          "position": 18,
+          "correctLetter": "B",
+          "originalQuestionId": "fa04aa4b-3abe-44a8-8dcb-94899727380a",
+          "originalQuestionIndex": 17,
+          "questionText": "Câu hỏi ĐÚNG hoặc SAI: tRNA bắt cặp bổ sung với mã mở đầu có nằm ở vị trí A của ribosome",
+          "correctOptionText": "Sai"
+        },
+        {
+          "position": 19,
+          "correctLetter": "E",
+          "originalQuestionId": "e89fe9ee-b3a0-4040-bef0-b550b91142b2",
+          "originalQuestionIndex": 16,
+          "questionText": "Một phân tử RNA mà có hoạt tính xúc tác được gọi là:",
+          "correctOptionText": "RNase"
+        },
+        {
+          "position": 20,
+          "correctLetter": "A",
+          "originalQuestionId": "f2e287f8-7d9d-4330-ab40-0bb80de8c8b4",
+          "originalQuestionIndex": 23,
+          "questionText": "Operon ức chế chủ yếu liên quan đến………………..và operon cảm ứng chủ yếu liên quan đến………………..",
+          "correctOptionText": "Prokaryote; eukaryote"
+        },
+        {
+          "position": 21,
+          "correctLetter": "A",
+          "originalQuestionId": "7c74c3e0-f023-4002-a569-2226c82dec10",
+          "originalQuestionIndex": 10,
+          "questionText": "Sản phẩm phiên mã của một gen cấu trúc là",
+          "correctOptionText": "mRNA"
+        },
+        {
+          "position": 22,
+          "correctLetter": "B",
+          "originalQuestionId": "4d5b0602-4e4c-45a2-90a5-e4cb7ce6a159",
+          "originalQuestionIndex": 20,
+          "questionText": "Câu hỏi ĐÚNG hoặc SAI: Số lượng gen của mỗi sinh vật không phụ thuộc hoàn toàn vào kích thước hệ gen",
+          "correctOptionText": "Sai"
+        },
+        {
+          "position": 23,
+          "correctLetter": "A",
+          "originalQuestionId": "210b421c-c04b-460d-8f81-9f9fa47c062b",
+          "originalQuestionIndex": 8,
+          "questionText": "Mô tả nào dưới đây mô tả chính xác nhất về thuyết trung tâm của biểu hiện gen?",
+          "correctOptionText": "Không có mô tả nào ở trên"
+        },
+        {
+          "position": 24,
+          "correctLetter": "A",
+          "originalQuestionId": "3af5223a-5f38-4987-ad45-b5d238dcce1e",
+          "originalQuestionIndex": 2,
+          "questionText": "Mô tả nào sau đây là không đúng?",
+          "correctOptionText": "Số lượng Adenine bằng Guanine trong DNA sợi đôi"
+        },
+        {
+          "position": 25,
+          "correctLetter": "B",
+          "originalQuestionId": "e3c5fdad-abc4-4296-a5c9-fea507865210",
+          "originalQuestionIndex": 6,
+          "questionText": "Enzyme DNA polymerase nào sau đây được tìm thấy chủ yếu trong eukaryote?",
+          "correctOptionText": "(A), (B) và (C)"
+        },
+        {
+          "position": 26,
+          "correctLetter": "D",
+          "originalQuestionId": "db60d159-8ec9-47e7-ba21-8b9dd9419b4c",
+          "originalQuestionIndex": 27,
+          "questionText": "Mô tả nào dưới đây không phải là một ví dụ về đột biến điểm?",
+          "correctOptionText": "Thay đổi trong một codon tryptophan thành codon stop – Hết –"
+        },
+        {
+          "position": 27,
+          "correctLetter": "C",
+          "originalQuestionId": "dfc58509-b0b2-49f3-8a03-70529b491ec4",
+          "originalQuestionIndex": 22,
+          "questionText": "Mô tả nào dưới đây về điều hòa lactose ở E. coli là sai?",
+          "correctOptionText": "Sản phẩm protein của gen lacZ chuyển hóa lactose thành glucose và galactose"
+        },
+        {
+          "position": 28,
+          "correctLetter": "A",
+          "originalQuestionId": "f5bf4c67-204f-4fdb-ba2a-79057568afce",
+          "originalQuestionIndex": 12,
+          "questionText": "Một trình tự DNA nhất định đảm bảo một mảnh DNA được phiên mã thành RNA và kết quả cuối cùng là sự hình thành một sản phẩm thực hiện chức năng được gọi là?",
+          "correctOptionText": "snRNP"
+        }
+      ]
+    },
+    {
+      "examCode": "102",
+      "answers": [
+        {
+          "position": 1,
+          "correctLetter": "B",
+          "originalQuestionId": "97870515-e3db-4552-aa1a-10b2dadae588",
+          "originalQuestionIndex": 5,
+          "questionText": "Mô tả nào dưới đây mô tả chính xác nhất về sự đọc sửa?",
+          "correctOptionText": "Các nucleotides bị loại đi khỏi đầu của một sợi DNA mới tổng hợp theo hướng 3' tới 5'"
+        },
+        {
+          "position": 2,
+          "correctLetter": "E",
+          "originalQuestionId": "7c74c3e0-f023-4002-a569-2226c82dec10",
+          "originalQuestionIndex": 10,
+          "questionText": "Sản phẩm phiên mã của một gen cấu trúc là",
+          "correctOptionText": "mRNA"
+        },
+        {
+          "position": 3,
+          "correctLetter": "D",
+          "originalQuestionId": "60c22355-5d5e-4797-9781-21b1b937fc4e",
+          "originalQuestionIndex": 15,
+          "questionText": "Sự tổng hợp một chuỗi polypeptide xảy ra trong giai đoạn nào của quá trình dịch mã?",
+          "correctOptionText": "Kết thúc"
+        },
+        {
+          "position": 4,
+          "correctLetter": "E",
+          "originalQuestionId": "3a13cded-3614-4558-b003-4ccd2db7d8ae",
+          "originalQuestionIndex": 26,
+          "questionText": "Quá trình nào dưới đây là biện pháp thường được thực hiện để sửa chữa đột biến DNA?",
+          "correctOptionText": "(A), (B) và (C)"
+        },
+        {
+          "position": 5,
+          "correctLetter": "A",
+          "originalQuestionId": "3af5223a-5f38-4987-ad45-b5d238dcce1e",
+          "originalQuestionIndex": 2,
+          "questionText": "Mô tả nào sau đây là không đúng?",
+          "correctOptionText": "Số lượng Adenine bằng Guanine trong DNA sợi đôi"
+        },
+        {
+          "position": 6,
+          "correctLetter": "A",
+          "originalQuestionId": "210b421c-c04b-460d-8f81-9f9fa47c062b",
+          "originalQuestionIndex": 8,
+          "questionText": "Mô tả nào dưới đây mô tả chính xác nhất về thuyết trung tâm của biểu hiện gen?",
+          "correctOptionText": "Không có mô tả nào ở trên"
+        },
+        {
+          "position": 7,
+          "correctLetter": "D",
+          "originalQuestionId": "750433ae-cc3f-4985-8b91-c476362027ff",
+          "originalQuestionIndex": 21,
+          "questionText": "Các quá trình nào dưới đây là quá trình điều hòa di truyền ở vi khuẩn? i. Chế biến RNA ii.   Khởi đầu phiên mã iii.   Biến đổi sau dịch mã          iv.   Khởi đầu dịch mã",
+          "correctOptionText": "i, ii, iii"
+        },
+        {
+          "position": 8,
+          "correctLetter": "B",
+          "originalQuestionId": "121a5e4f-0e52-4c9d-a8cf-cf5e7ff8bf7f",
+          "originalQuestionIndex": 7,
+          "questionText": "Câu hỏi ĐÚNG hoặc SAI: có một phần nhỏ DNA sợi đơn được tìm thấy ở đầu mút của một nhiễm sắc thể?",
+          "correctOptionText": "Đúng"
+        },
+        {
+          "position": 9,
+          "correctLetter": "D",
+          "originalQuestionId": "f5bf4c67-204f-4fdb-ba2a-79057568afce",
+          "originalQuestionIndex": 12,
+          "questionText": "Một trình tự DNA nhất định đảm bảo một mảnh DNA được phiên mã thành RNA và kết quả cuối cùng là sự hình thành một sản phẩm thực hiện chức năng được gọi là?",
+          "correctOptionText": "snRNP"
+        },
+        {
+          "position": 10,
+          "correctLetter": "A",
+          "originalQuestionId": "db60d159-8ec9-47e7-ba21-8b9dd9419b4c",
+          "originalQuestionIndex": 27,
+          "questionText": "Mô tả nào dưới đây không phải là một ví dụ về đột biến điểm?",
+          "correctOptionText": "Thay đổi trong một codon tryptophan thành codon stop – Hết –"
+        },
+        {
+          "position": 11,
+          "correctLetter": "E",
+          "originalQuestionId": "e89fe9ee-b3a0-4040-bef0-b550b91142b2",
+          "originalQuestionIndex": 16,
+          "questionText": "Một phân tử RNA mà có hoạt tính xúc tác được gọi là:",
+          "correctOptionText": "RNase"
+        },
+        {
+          "position": 12,
+          "correctLetter": "A",
+          "originalQuestionId": "fa04aa4b-3abe-44a8-8dcb-94899727380a",
+          "originalQuestionIndex": 17,
+          "questionText": "Câu hỏi ĐÚNG hoặc SAI: tRNA bắt cặp bổ sung với mã mở đầu có nằm ở vị trí A của ribosome",
+          "correctOptionText": "Sai"
+        },
+        {
+          "position": 13,
+          "correctLetter": "C",
+          "originalQuestionId": "e803edb7-13ab-488a-a0a2-214edeef6713",
+          "originalQuestionIndex": 0,
+          "questionText": "Thành phần nào dưới đây xác định nucletide đó sẽ được kết hợp vào DNA hoặc RNA",
+          "correctOptionText": "Đường pentose"
+        },
+        {
+          "position": 14,
+          "correctLetter": "D",
+          "originalQuestionId": "b43fc0e6-b979-4d3b-9f9c-ccfcfb4224a2",
+          "originalQuestionIndex": 18,
+          "questionText": "Quá trình nào dưới đây không liên quan đến mức độ điều hòa gen ở prokaryote?",
+          "correctOptionText": "Quá trình biến đổi sau dịch mã"
+        },
+        {
+          "position": 15,
+          "correctLetter": "A",
+          "originalQuestionId": "b1a5aaa0-3eba-4d3a-bd14-34901f51caf3",
+          "originalQuestionIndex": 1,
+          "questionText": "Sắp xếp các thuật ngữ di truyền dưới đây theo thứ tự phức tạp tăng dần: i. Nhiễm sắc thể ii.   Nucleotide iii.   Hệ gen iv.   Chuỗi xoắn kép",
+          "correctOptionText": "iii, ii, iv, i"
+        },
+        {
+          "position": 16,
+          "correctLetter": "E",
+          "originalQuestionId": "e3c5fdad-abc4-4296-a5c9-fea507865210",
+          "originalQuestionIndex": 6,
+          "questionText": "Enzyme DNA polymerase nào sau đây được tìm thấy chủ yếu trong eukaryote?",
+          "correctOptionText": "(A), (B) và (C)"
+        },
+        {
+          "position": 17,
+          "correctLetter": "E",
+          "originalQuestionId": "4327676e-5ad5-4c62-ac07-b02f63a4d662",
+          "originalQuestionIndex": 9,
+          "questionText": "Quan hệ giữa các nucleotide trong một phân tử mRNA và trình tự aa trong một chuỗi polypeptide được quy định bởi:",
+          "correctOptionText": "Ribosome"
+        },
+        {
+          "position": 18,
+          "correctLetter": "A",
+          "originalQuestionId": "4d5b0602-4e4c-45a2-90a5-e4cb7ce6a159",
+          "originalQuestionIndex": 20,
+          "questionText": "Câu hỏi ĐÚNG hoặc SAI: Số lượng gen của mỗi sinh vật không phụ thuộc hoàn toàn vào kích thước hệ gen",
+          "correctOptionText": "Sai"
+        },
+        {
+          "position": 19,
+          "correctLetter": "A",
+          "originalQuestionId": "ed659d93-a2ae-4a0c-9f05-5b4b34b3a7df",
+          "originalQuestionIndex": 3,
+          "questionText": "Khi nói về các protein khác nhau và chức năng của chúng đối với quá tình sao chép DNA, mô tả nào dưới đây là không chính xác?",
+          "correctOptionText": "DNA helicase dãn xoắn phân tử DNA mạch kép"
+        },
+        {
+          "position": 20,
+          "correctLetter": "D",
+          "originalQuestionId": "f2e287f8-7d9d-4330-ab40-0bb80de8c8b4",
+          "originalQuestionIndex": 23,
+          "questionText": "Operon ức chế chủ yếu liên quan đến………………..và operon cảm ứng chủ yếu liên quan đến………………..",
+          "correctOptionText": "Prokaryote; eukaryote"
+        },
+        {
+          "position": 21,
+          "correctLetter": "A",
+          "originalQuestionId": "b3442db3-807b-4bce-b665-d37303f804ee",
+          "originalQuestionIndex": 19,
+          "questionText": "Yếu tố phiên mã bám vào DNA và kích thích quá trình phiên mã là",
+          "correctOptionText": "Chất hoạt hóa"
+        },
+        {
+          "position": 22,
+          "correctLetter": "B",
+          "originalQuestionId": "81942f85-f7a5-4dc7-bf80-ec7fcc4963a2",
+          "originalQuestionIndex": 13,
+          "questionText": "Ở vi khuẩn, các protein được gọi là……………..nhận biết trình tự nucleotide trong một promoter; ở sinh vật nhân thực, các protein thực hiện chức năng này được gọi là…………………",
+          "correctOptionText": "Nhân tố sigma, snRNPs"
+        },
+        {
+          "position": 23,
+          "correctLetter": "A",
+          "originalQuestionId": "f5a07a6c-dce6-474a-982f-e1ca64fb107d",
+          "originalQuestionIndex": 14,
+          "questionText": "Trong bước khởi đầu của quá trình dịch mã, mã đầu tiên………sẽ đi vào vị trí……….và kết hợp với tRNA khởi đầu",
+          "correctOptionText": "AUG, vị trí E"
+        },
+        {
+          "position": 24,
+          "correctLetter": "B",
+          "originalQuestionId": "1bd9183b-9a5c-4716-8895-d63a636fb499",
+          "originalQuestionIndex": 25,
+          "questionText": "Kiểu đột biến làm thay đổi toàn bộ trình tự acid amin từ vị trí đột biến được gọi là đột biến…………………………?",
+          "correctOptionText": "Im lặng"
+        },
+        {
+          "position": 25,
+          "correctLetter": "C",
+          "originalQuestionId": "601b6132-dc41-494e-af3b-d2570678c1f7",
+          "originalQuestionIndex": 24,
+          "questionText": "Mô tả nào dưới đây về đột biến là không chính xác?",
+          "correctOptionText": "Đột biến có thể truyền từ các tế bào thế hệ này sang thế hệ mới, hoặc từ cha mẹ sang con cái"
+        },
+        {
+          "position": 26,
+          "correctLetter": "D",
+          "originalQuestionId": "36c7767e-e268-43f2-8ad3-c623d140ed35",
+          "originalQuestionIndex": 11,
+          "questionText": "………………là một bào quan nơi quá trình dịch mã diễn ra",
+          "correctOptionText": "Lysosome"
+        },
+        {
+          "position": 27,
+          "correctLetter": "A",
+          "originalQuestionId": "dfc58509-b0b2-49f3-8a03-70529b491ec4",
+          "originalQuestionIndex": 22,
+          "questionText": "Mô tả nào dưới đây về điều hòa lactose ở E. coli là sai?",
+          "correctOptionText": "Sản phẩm protein của gen lacZ chuyển hóa lactose thành glucose và galactose"
+        },
+        {
+          "position": 28,
+          "correctLetter": "B",
+          "originalQuestionId": "ebaee37e-7ebd-40fd-9eee-3cd208adde89",
+          "originalQuestionIndex": 4,
+          "questionText": "Câu hỏi ĐÚNG hoặc SAI: Sao chép DNA bắt đầu với sự tổng hợp RNA primer, một chuỗi xoắn kép hoàn chỉnh chính là một phân tử lai của hầu hết DNA với một số RNA",
+          "correctOptionText": "Sai"
+        }
+      ]
+    },
+    {
+      "examCode": "103",
+      "answers": [
+        {
+          "position": 1,
+          "correctLetter": "A",
+          "originalQuestionId": "db60d159-8ec9-47e7-ba21-8b9dd9419b4c",
+          "originalQuestionIndex": 27,
+          "questionText": "Mô tả nào dưới đây không phải là một ví dụ về đột biến điểm?",
+          "correctOptionText": "Thay đổi trong một codon tryptophan thành codon stop – Hết –"
+        },
+        {
+          "position": 2,
+          "correctLetter": "D",
+          "originalQuestionId": "4327676e-5ad5-4c62-ac07-b02f63a4d662",
+          "originalQuestionIndex": 9,
+          "questionText": "Quan hệ giữa các nucleotide trong một phân tử mRNA và trình tự aa trong một chuỗi polypeptide được quy định bởi:",
+          "correctOptionText": "Ribosome"
+        },
+        {
+          "position": 3,
+          "correctLetter": "B",
+          "originalQuestionId": "fa04aa4b-3abe-44a8-8dcb-94899727380a",
+          "originalQuestionIndex": 17,
+          "questionText": "Câu hỏi ĐÚNG hoặc SAI: tRNA bắt cặp bổ sung với mã mở đầu có nằm ở vị trí A của ribosome",
+          "correctOptionText": "Sai"
+        },
+        {
+          "position": 4,
+          "correctLetter": "A",
+          "originalQuestionId": "ebaee37e-7ebd-40fd-9eee-3cd208adde89",
+          "originalQuestionIndex": 4,
+          "questionText": "Câu hỏi ĐÚNG hoặc SAI: Sao chép DNA bắt đầu với sự tổng hợp RNA primer, một chuỗi xoắn kép hoàn chỉnh chính là một phân tử lai của hầu hết DNA với một số RNA",
+          "correctOptionText": "Sai"
+        },
+        {
+          "position": 5,
+          "correctLetter": "C",
+          "originalQuestionId": "3a13cded-3614-4558-b003-4ccd2db7d8ae",
+          "originalQuestionIndex": 26,
+          "questionText": "Quá trình nào dưới đây là biện pháp thường được thực hiện để sửa chữa đột biến DNA?",
+          "correctOptionText": "(A), (B) và (C)"
+        },
+        {
+          "position": 6,
+          "correctLetter": "D",
+          "originalQuestionId": "60c22355-5d5e-4797-9781-21b1b937fc4e",
+          "originalQuestionIndex": 15,
+          "questionText": "Sự tổng hợp một chuỗi polypeptide xảy ra trong giai đoạn nào của quá trình dịch mã?",
+          "correctOptionText": "Kết thúc"
+        },
+        {
+          "position": 7,
+          "correctLetter": "D",
+          "originalQuestionId": "f5a07a6c-dce6-474a-982f-e1ca64fb107d",
+          "originalQuestionIndex": 14,
+          "questionText": "Trong bước khởi đầu của quá trình dịch mã, mã đầu tiên………sẽ đi vào vị trí……….và kết hợp với tRNA khởi đầu",
+          "correctOptionText": "AUG, vị trí E"
+        },
+        {
+          "position": 8,
+          "correctLetter": "B",
+          "originalQuestionId": "f2e287f8-7d9d-4330-ab40-0bb80de8c8b4",
+          "originalQuestionIndex": 23,
+          "questionText": "Operon ức chế chủ yếu liên quan đến………………..và operon cảm ứng chủ yếu liên quan đến………………..",
+          "correctOptionText": "Prokaryote; eukaryote"
+        },
+        {
+          "position": 9,
+          "correctLetter": "B",
+          "originalQuestionId": "3af5223a-5f38-4987-ad45-b5d238dcce1e",
+          "originalQuestionIndex": 2,
+          "questionText": "Mô tả nào sau đây là không đúng?",
+          "correctOptionText": "Số lượng Adenine bằng Guanine trong DNA sợi đôi"
+        },
+        {
+          "position": 10,
+          "correctLetter": "D",
+          "originalQuestionId": "e89fe9ee-b3a0-4040-bef0-b550b91142b2",
+          "originalQuestionIndex": 16,
+          "questionText": "Một phân tử RNA mà có hoạt tính xúc tác được gọi là:",
+          "correctOptionText": "RNase"
+        },
+        {
+          "position": 11,
+          "correctLetter": "A",
+          "originalQuestionId": "e803edb7-13ab-488a-a0a2-214edeef6713",
+          "originalQuestionIndex": 0,
+          "questionText": "Thành phần nào dưới đây xác định nucletide đó sẽ được kết hợp vào DNA hoặc RNA",
+          "correctOptionText": "Đường pentose"
+        },
+        {
+          "position": 12,
+          "correctLetter": "D",
+          "originalQuestionId": "f5bf4c67-204f-4fdb-ba2a-79057568afce",
+          "originalQuestionIndex": 12,
+          "questionText": "Một trình tự DNA nhất định đảm bảo một mảnh DNA được phiên mã thành RNA và kết quả cuối cùng là sự hình thành một sản phẩm thực hiện chức năng được gọi là?",
+          "correctOptionText": "snRNP"
+        },
+        {
+          "position": 13,
+          "correctLetter": "A",
+          "originalQuestionId": "dfc58509-b0b2-49f3-8a03-70529b491ec4",
+          "originalQuestionIndex": 22,
+          "questionText": "Mô tả nào dưới đây về điều hòa lactose ở E. coli là sai?",
+          "correctOptionText": "Sản phẩm protein của gen lacZ chuyển hóa lactose thành glucose và galactose"
+        },
+        {
+          "position": 14,
+          "correctLetter": "E",
+          "originalQuestionId": "b1a5aaa0-3eba-4d3a-bd14-34901f51caf3",
+          "originalQuestionIndex": 1,
+          "questionText": "Sắp xếp các thuật ngữ di truyền dưới đây theo thứ tự phức tạp tăng dần: i. Nhiễm sắc thể ii.   Nucleotide iii.   Hệ gen iv.   Chuỗi xoắn kép",
+          "correctOptionText": "iii, ii, iv, i"
+        },
+        {
+          "position": 15,
+          "correctLetter": "B",
+          "originalQuestionId": "7c74c3e0-f023-4002-a569-2226c82dec10",
+          "originalQuestionIndex": 10,
+          "questionText": "Sản phẩm phiên mã của một gen cấu trúc là",
+          "correctOptionText": "mRNA"
+        },
+        {
+          "position": 16,
+          "correctLetter": "A",
+          "originalQuestionId": "601b6132-dc41-494e-af3b-d2570678c1f7",
+          "originalQuestionIndex": 24,
+          "questionText": "Mô tả nào dưới đây về đột biến là không chính xác?",
+          "correctOptionText": "Đột biến có thể truyền từ các tế bào thế hệ này sang thế hệ mới, hoặc từ cha mẹ sang con cái"
+        },
+        {
+          "position": 17,
+          "correctLetter": "D",
+          "originalQuestionId": "210b421c-c04b-460d-8f81-9f9fa47c062b",
+          "originalQuestionIndex": 8,
+          "questionText": "Mô tả nào dưới đây mô tả chính xác nhất về thuyết trung tâm của biểu hiện gen?",
+          "correctOptionText": "Không có mô tả nào ở trên"
+        },
+        {
+          "position": 18,
+          "correctLetter": "A",
+          "originalQuestionId": "e3c5fdad-abc4-4296-a5c9-fea507865210",
+          "originalQuestionIndex": 6,
+          "questionText": "Enzyme DNA polymerase nào sau đây được tìm thấy chủ yếu trong eukaryote?",
+          "correctOptionText": "(A), (B) và (C)"
+        },
+        {
+          "position": 19,
+          "correctLetter": "B",
+          "originalQuestionId": "4d5b0602-4e4c-45a2-90a5-e4cb7ce6a159",
+          "originalQuestionIndex": 20,
+          "questionText": "Câu hỏi ĐÚNG hoặc SAI: Số lượng gen của mỗi sinh vật không phụ thuộc hoàn toàn vào kích thước hệ gen",
+          "correctOptionText": "Sai"
+        },
+        {
+          "position": 20,
+          "correctLetter": "A",
+          "originalQuestionId": "750433ae-cc3f-4985-8b91-c476362027ff",
+          "originalQuestionIndex": 21,
+          "questionText": "Các quá trình nào dưới đây là quá trình điều hòa di truyền ở vi khuẩn? i. Chế biến RNA ii.   Khởi đầu phiên mã iii.   Biến đổi sau dịch mã          iv.   Khởi đầu dịch mã",
+          "correctOptionText": "i, ii, iii"
+        },
+        {
+          "position": 21,
+          "correctLetter": "C",
+          "originalQuestionId": "b43fc0e6-b979-4d3b-9f9c-ccfcfb4224a2",
+          "originalQuestionIndex": 18,
+          "questionText": "Quá trình nào dưới đây không liên quan đến mức độ điều hòa gen ở prokaryote?",
+          "correctOptionText": "Quá trình biến đổi sau dịch mã"
+        },
+        {
+          "position": 22,
+          "correctLetter": "A",
+          "originalQuestionId": "97870515-e3db-4552-aa1a-10b2dadae588",
+          "originalQuestionIndex": 5,
+          "questionText": "Mô tả nào dưới đây mô tả chính xác nhất về sự đọc sửa?",
+          "correctOptionText": "Các nucleotides bị loại đi khỏi đầu của một sợi DNA mới tổng hợp theo hướng 3' tới 5'"
+        },
+        {
+          "position": 23,
+          "correctLetter": "A",
+          "originalQuestionId": "81942f85-f7a5-4dc7-bf80-ec7fcc4963a2",
+          "originalQuestionIndex": 13,
+          "questionText": "Ở vi khuẩn, các protein được gọi là……………..nhận biết trình tự nucleotide trong một promoter; ở sinh vật nhân thực, các protein thực hiện chức năng này được gọi là…………………",
+          "correctOptionText": "Nhân tố sigma, snRNPs"
+        },
+        {
+          "position": 24,
+          "correctLetter": "D",
+          "originalQuestionId": "36c7767e-e268-43f2-8ad3-c623d140ed35",
+          "originalQuestionIndex": 11,
+          "questionText": "………………là một bào quan nơi quá trình dịch mã diễn ra",
+          "correctOptionText": "Lysosome"
+        },
+        {
+          "position": 25,
+          "correctLetter": "A",
+          "originalQuestionId": "ed659d93-a2ae-4a0c-9f05-5b4b34b3a7df",
+          "originalQuestionIndex": 3,
+          "questionText": "Khi nói về các protein khác nhau và chức năng của chúng đối với quá tình sao chép DNA, mô tả nào dưới đây là không chính xác?",
+          "correctOptionText": "DNA helicase dãn xoắn phân tử DNA mạch kép"
+        },
+        {
+          "position": 26,
+          "correctLetter": "A",
+          "originalQuestionId": "121a5e4f-0e52-4c9d-a8cf-cf5e7ff8bf7f",
+          "originalQuestionIndex": 7,
+          "questionText": "Câu hỏi ĐÚNG hoặc SAI: có một phần nhỏ DNA sợi đơn được tìm thấy ở đầu mút của một nhiễm sắc thể?",
+          "correctOptionText": "Đúng"
+        },
+        {
+          "position": 27,
+          "correctLetter": "E",
+          "originalQuestionId": "1bd9183b-9a5c-4716-8895-d63a636fb499",
+          "originalQuestionIndex": 25,
+          "questionText": "Kiểu đột biến làm thay đổi toàn bộ trình tự acid amin từ vị trí đột biến được gọi là đột biến…………………………?",
+          "correctOptionText": "Im lặng"
+        },
+        {
+          "position": 28,
+          "correctLetter": "B",
+          "originalQuestionId": "b3442db3-807b-4bce-b665-d37303f804ee",
+          "originalQuestionIndex": 19,
+          "questionText": "Yếu tố phiên mã bám vào DNA và kích thích quá trình phiên mã là",
+          "correctOptionText": "Chất hoạt hóa"
+        }
+      ]
+    },
+    {
+      "examCode": "104",
+      "answers": [
+        {
+          "position": 1,
+          "correctLetter": "A",
+          "originalQuestionId": "97870515-e3db-4552-aa1a-10b2dadae588",
+          "originalQuestionIndex": 5,
+          "questionText": "Mô tả nào dưới đây mô tả chính xác nhất về sự đọc sửa?",
+          "correctOptionText": "Các nucleotides bị loại đi khỏi đầu của một sợi DNA mới tổng hợp theo hướng 3' tới 5'"
+        },
+        {
+          "position": 2,
+          "correctLetter": "E",
+          "originalQuestionId": "36c7767e-e268-43f2-8ad3-c623d140ed35",
+          "originalQuestionIndex": 11,
+          "questionText": "………………là một bào quan nơi quá trình dịch mã diễn ra",
+          "correctOptionText": "Lysosome"
+        },
+        {
+          "position": 3,
+          "correctLetter": "D",
+          "originalQuestionId": "7c74c3e0-f023-4002-a569-2226c82dec10",
+          "originalQuestionIndex": 10,
+          "questionText": "Sản phẩm phiên mã của một gen cấu trúc là",
+          "correctOptionText": "mRNA"
+        },
+        {
+          "position": 4,
+          "correctLetter": "A",
+          "originalQuestionId": "ed659d93-a2ae-4a0c-9f05-5b4b34b3a7df",
+          "originalQuestionIndex": 3,
+          "questionText": "Khi nói về các protein khác nhau và chức năng của chúng đối với quá tình sao chép DNA, mô tả nào dưới đây là không chính xác?",
+          "correctOptionText": "DNA helicase dãn xoắn phân tử DNA mạch kép"
+        },
+        {
+          "position": 5,
+          "correctLetter": "A",
+          "originalQuestionId": "f2e287f8-7d9d-4330-ab40-0bb80de8c8b4",
+          "originalQuestionIndex": 23,
+          "questionText": "Operon ức chế chủ yếu liên quan đến………………..và operon cảm ứng chủ yếu liên quan đến………………..",
+          "correctOptionText": "Prokaryote; eukaryote"
+        },
+        {
+          "position": 6,
+          "correctLetter": "A",
+          "originalQuestionId": "1bd9183b-9a5c-4716-8895-d63a636fb499",
+          "originalQuestionIndex": 25,
+          "questionText": "Kiểu đột biến làm thay đổi toàn bộ trình tự acid amin từ vị trí đột biến được gọi là đột biến…………………………?",
+          "correctOptionText": "Im lặng"
+        },
+        {
+          "position": 7,
+          "correctLetter": "A",
+          "originalQuestionId": "f5a07a6c-dce6-474a-982f-e1ca64fb107d",
+          "originalQuestionIndex": 14,
+          "questionText": "Trong bước khởi đầu của quá trình dịch mã, mã đầu tiên………sẽ đi vào vị trí……….và kết hợp với tRNA khởi đầu",
+          "correctOptionText": "AUG, vị trí E"
+        },
+        {
+          "position": 8,
+          "correctLetter": "E",
+          "originalQuestionId": "81942f85-f7a5-4dc7-bf80-ec7fcc4963a2",
+          "originalQuestionIndex": 13,
+          "questionText": "Ở vi khuẩn, các protein được gọi là……………..nhận biết trình tự nucleotide trong một promoter; ở sinh vật nhân thực, các protein thực hiện chức năng này được gọi là…………………",
+          "correctOptionText": "Nhân tố sigma, snRNPs"
+        },
+        {
+          "position": 9,
+          "correctLetter": "B",
+          "originalQuestionId": "ebaee37e-7ebd-40fd-9eee-3cd208adde89",
+          "originalQuestionIndex": 4,
+          "questionText": "Câu hỏi ĐÚNG hoặc SAI: Sao chép DNA bắt đầu với sự tổng hợp RNA primer, một chuỗi xoắn kép hoàn chỉnh chính là một phân tử lai của hầu hết DNA với một số RNA",
+          "correctOptionText": "Sai"
+        },
+        {
+          "position": 10,
+          "correctLetter": "A",
+          "originalQuestionId": "3a13cded-3614-4558-b003-4ccd2db7d8ae",
+          "originalQuestionIndex": 26,
+          "questionText": "Quá trình nào dưới đây là biện pháp thường được thực hiện để sửa chữa đột biến DNA?",
+          "correctOptionText": "(A), (B) và (C)"
+        },
+        {
+          "position": 11,
+          "correctLetter": "A",
+          "originalQuestionId": "b43fc0e6-b979-4d3b-9f9c-ccfcfb4224a2",
+          "originalQuestionIndex": 18,
+          "questionText": "Quá trình nào dưới đây không liên quan đến mức độ điều hòa gen ở prokaryote?",
+          "correctOptionText": "Quá trình biến đổi sau dịch mã"
+        },
+        {
+          "position": 12,
+          "correctLetter": "C",
+          "originalQuestionId": "60c22355-5d5e-4797-9781-21b1b937fc4e",
+          "originalQuestionIndex": 15,
+          "questionText": "Sự tổng hợp một chuỗi polypeptide xảy ra trong giai đoạn nào của quá trình dịch mã?",
+          "correctOptionText": "Kết thúc"
+        },
+        {
+          "position": 13,
+          "correctLetter": "A",
+          "originalQuestionId": "3af5223a-5f38-4987-ad45-b5d238dcce1e",
+          "originalQuestionIndex": 2,
+          "questionText": "Mô tả nào sau đây là không đúng?",
+          "correctOptionText": "Số lượng Adenine bằng Guanine trong DNA sợi đôi"
+        },
+        {
+          "position": 14,
+          "correctLetter": "C",
+          "originalQuestionId": "dfc58509-b0b2-49f3-8a03-70529b491ec4",
+          "originalQuestionIndex": 22,
+          "questionText": "Mô tả nào dưới đây về điều hòa lactose ở E. coli là sai?",
+          "correctOptionText": "Sản phẩm protein của gen lacZ chuyển hóa lactose thành glucose và galactose"
+        },
+        {
+          "position": 15,
+          "correctLetter": "C",
+          "originalQuestionId": "601b6132-dc41-494e-af3b-d2570678c1f7",
+          "originalQuestionIndex": 24,
+          "questionText": "Mô tả nào dưới đây về đột biến là không chính xác?",
+          "correctOptionText": "Đột biến có thể truyền từ các tế bào thế hệ này sang thế hệ mới, hoặc từ cha mẹ sang con cái"
+        },
+        {
+          "position": 16,
+          "correctLetter": "B",
+          "originalQuestionId": "4327676e-5ad5-4c62-ac07-b02f63a4d662",
+          "originalQuestionIndex": 9,
+          "questionText": "Quan hệ giữa các nucleotide trong một phân tử mRNA và trình tự aa trong một chuỗi polypeptide được quy định bởi:",
+          "correctOptionText": "Ribosome"
+        },
+        {
+          "position": 17,
+          "correctLetter": "A",
+          "originalQuestionId": "e89fe9ee-b3a0-4040-bef0-b550b91142b2",
+          "originalQuestionIndex": 16,
+          "questionText": "Một phân tử RNA mà có hoạt tính xúc tác được gọi là:",
+          "correctOptionText": "RNase"
+        },
+        {
+          "position": 18,
+          "correctLetter": "B",
+          "originalQuestionId": "121a5e4f-0e52-4c9d-a8cf-cf5e7ff8bf7f",
+          "originalQuestionIndex": 7,
+          "questionText": "Câu hỏi ĐÚNG hoặc SAI: có một phần nhỏ DNA sợi đơn được tìm thấy ở đầu mút của một nhiễm sắc thể?",
+          "correctOptionText": "Đúng"
+        },
+        {
+          "position": 19,
+          "correctLetter": "D",
+          "originalQuestionId": "db60d159-8ec9-47e7-ba21-8b9dd9419b4c",
+          "originalQuestionIndex": 27,
+          "questionText": "Mô tả nào dưới đây không phải là một ví dụ về đột biến điểm?",
+          "correctOptionText": "Thay đổi trong một codon tryptophan thành codon stop – Hết –"
+        },
+        {
+          "position": 20,
+          "correctLetter": "D",
+          "originalQuestionId": "f5bf4c67-204f-4fdb-ba2a-79057568afce",
+          "originalQuestionIndex": 12,
+          "questionText": "Một trình tự DNA nhất định đảm bảo một mảnh DNA được phiên mã thành RNA và kết quả cuối cùng là sự hình thành một sản phẩm thực hiện chức năng được gọi là?",
+          "correctOptionText": "snRNP"
+        },
+        {
+          "position": 21,
+          "correctLetter": "B",
+          "originalQuestionId": "4d5b0602-4e4c-45a2-90a5-e4cb7ce6a159",
+          "originalQuestionIndex": 20,
+          "questionText": "Câu hỏi ĐÚNG hoặc SAI: Số lượng gen của mỗi sinh vật không phụ thuộc hoàn toàn vào kích thước hệ gen",
+          "correctOptionText": "Sai"
+        },
+        {
+          "position": 22,
+          "correctLetter": "D",
+          "originalQuestionId": "e803edb7-13ab-488a-a0a2-214edeef6713",
+          "originalQuestionIndex": 0,
+          "questionText": "Thành phần nào dưới đây xác định nucletide đó sẽ được kết hợp vào DNA hoặc RNA",
+          "correctOptionText": "Đường pentose"
+        },
+        {
+          "position": 23,
+          "correctLetter": "A",
+          "originalQuestionId": "b3442db3-807b-4bce-b665-d37303f804ee",
+          "originalQuestionIndex": 19,
+          "questionText": "Yếu tố phiên mã bám vào DNA và kích thích quá trình phiên mã là",
+          "correctOptionText": "Chất hoạt hóa"
+        },
+        {
+          "position": 24,
+          "correctLetter": "A",
+          "originalQuestionId": "fa04aa4b-3abe-44a8-8dcb-94899727380a",
+          "originalQuestionIndex": 17,
+          "questionText": "Câu hỏi ĐÚNG hoặc SAI: tRNA bắt cặp bổ sung với mã mở đầu có nằm ở vị trí A của ribosome",
+          "correctOptionText": "Sai"
+        },
+        {
+          "position": 25,
+          "correctLetter": "D",
+          "originalQuestionId": "e3c5fdad-abc4-4296-a5c9-fea507865210",
+          "originalQuestionIndex": 6,
+          "questionText": "Enzyme DNA polymerase nào sau đây được tìm thấy chủ yếu trong eukaryote?",
+          "correctOptionText": "(A), (B) và (C)"
+        },
+        {
+          "position": 26,
+          "correctLetter": "B",
+          "originalQuestionId": "210b421c-c04b-460d-8f81-9f9fa47c062b",
+          "originalQuestionIndex": 8,
+          "questionText": "Mô tả nào dưới đây mô tả chính xác nhất về thuyết trung tâm của biểu hiện gen?",
+          "correctOptionText": "Không có mô tả nào ở trên"
+        },
+        {
+          "position": 27,
+          "correctLetter": "D",
+          "originalQuestionId": "b1a5aaa0-3eba-4d3a-bd14-34901f51caf3",
+          "originalQuestionIndex": 1,
+          "questionText": "Sắp xếp các thuật ngữ di truyền dưới đây theo thứ tự phức tạp tăng dần: i. Nhiễm sắc thể ii.   Nucleotide iii.   Hệ gen iv.   Chuỗi xoắn kép",
+          "correctOptionText": "iii, ii, iv, i"
+        },
+        {
+          "position": 28,
+          "correctLetter": "E",
+          "originalQuestionId": "750433ae-cc3f-4985-8b91-c476362027ff",
+          "originalQuestionIndex": 21,
+          "questionText": "Các quá trình nào dưới đây là quá trình điều hòa di truyền ở vi khuẩn? i. Chế biến RNA ii.   Khởi đầu phiên mã iii.   Biến đổi sau dịch mã          iv.   Khởi đầu dịch mã",
+          "correctOptionText": "i, ii, iii"
+        }
+      ]
+    }
+  ]
+}

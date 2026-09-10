@@ -74,8 +74,15 @@ function buildParagraphFromChunk(doc: XMLDocument, chunk: ParagraphXmlChunk, opt
   return pEl;
 }
 
-function buildPlainParagraph(doc: XMLDocument, text: string, bold: boolean): Element {
+function buildPlainParagraph(doc: XMLDocument, text: string, bold: boolean, centered = false): Element {
   const pEl = doc.createElementNS(WORD_NS, 'w:p');
+  if (centered) {
+    const pPrEl = doc.createElementNS(WORD_NS, 'w:pPr');
+    const jcEl = doc.createElementNS(WORD_NS, 'w:jc');
+    jcEl.setAttributeNS(WORD_NS, 'w:val', 'center');
+    pPrEl.appendChild(jcEl);
+    pEl.appendChild(pPrEl);
+  }
   const rEl = doc.createElementNS(WORD_NS, 'w:r');
   if (bold) {
     const rPr = doc.createElementNS(WORD_NS, 'w:rPr');
@@ -158,6 +165,10 @@ export async function generateExamVariantDocx(input: GenerateExamVariantDocxInpu
       );
     });
   });
+
+  // Báo hiệu hết đề — chèn TRƯỚC preserveAfterXml (thường chỉ có <w:sectPr> quy định khổ giấy/lề,
+  // phải luôn là phần tử CUỐI CÙNG trong <w:body> để file .docx còn hợp lệ).
+  body.appendChild(buildPlainParagraph(doc, '-- Hết --', true, true));
 
   for (const xml of structure.preserveAfterXml) {
     const el = parseFragment(doc, xml);

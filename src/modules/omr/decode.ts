@@ -1,6 +1,6 @@
 import { alignAndThreshold } from './alignSheet';
 import { decodeMssv, decodeExamCode, decodeAnswers } from './bubbleSample';
-import { PAGE_WIDTH_MM, PAGE_HEIGHT_MM, mmToPx, buildQuestionGridLayout } from '../pdf-export/bubbleSheetTemplate';
+import { mmToPx, buildQuestionGridLayoutFor, getTemplateGeometry } from '../pdf-export/bubbleSheetTemplate';
 import type { OmrAnswerReading } from './types';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -20,16 +20,22 @@ export interface DecodeSheetResult {
   answers: OmrAnswerReading[];
 }
 
-/** Giải mã 1 ảnh phiếu trả lời đã scan/chụp: căn chỉnh phối cảnh rồi đọc từng ô tròn. */
+/**
+ * Giải mã 1 ảnh phiếu trả lời đã scan/chụp: căn chỉnh phối cảnh rồi đọc từng ô tròn.
+ * `templateVersion` PHẢI lấy từ chính AnswerKeyBundle.templateVersion đi kèm lô bài đang chấm —
+ * đây là version layout lúc phiếu này được IN RA, có thể khác version hiện tại của code.
+ */
 export function decodeSheet(
   cv: CvNamespace,
   srcMat: CvMat,
   totalQuestions: number,
   maxOptions: number,
+  templateVersion?: number | null,
 ): DecodeSheetResult {
-  const canonicalWidthPx = Math.round(mmToPx(PAGE_WIDTH_MM, PROCESS_DPI));
-  const canonicalHeightPx = Math.round(mmToPx(PAGE_HEIGHT_MM, PROCESS_DPI));
-  const { warped, ok } = alignAndThreshold(cv, srcMat, canonicalWidthPx, canonicalHeightPx, PROCESS_DPI);
+  const geometry = getTemplateGeometry(templateVersion);
+  const canonicalWidthPx = Math.round(mmToPx(geometry.pageWidthMm, PROCESS_DPI));
+  const canonicalHeightPx = Math.round(mmToPx(geometry.pageHeightMm, PROCESS_DPI));
+  const { warped, ok } = alignAndThreshold(cv, srcMat, canonicalWidthPx, canonicalHeightPx, PROCESS_DPI, geometry);
 
   if (!ok || !warped) {
     return {
@@ -43,10 +49,10 @@ export function decodeSheet(
   }
 
   try {
-    const layout = buildQuestionGridLayout(maxOptions, totalQuestions);
-    const mssvDecoding = decodeMssv(cv, warped, PROCESS_DPI);
-    const examCodeDecoding = decodeExamCode(cv, warped, PROCESS_DPI);
-    const answers = decodeAnswers(cv, warped, PROCESS_DPI, totalQuestions, layout);
+    const layout = buildQuestionGridLayoutFor(geometry, maxOptions, totalQuestions);
+    const mssvDecoding = decodeMssv(cv, warped, PROCESS_DPI, geometry);
+    const examCodeDecoding = decodeExamCode(cv, warped, PROCESS_DPI, geometry);
+    const answers = decodeAnswers(cv, warped, PROCESS_DPI, totalQuestions, layout, geometry);
     return {
       alignmentFailed: false,
       mssv: mssvDecoding.value,

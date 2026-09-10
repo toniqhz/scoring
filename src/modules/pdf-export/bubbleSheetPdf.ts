@@ -27,6 +27,8 @@ import {
   buildQuestionGridLayout,
   getQuestionBubbleCenter,
   getQuestionLabelPosition,
+  CURRENT_TEMPLATE_VERSION,
+  HOLLOW_CORNER_ID,
 } from './bubbleSheetTemplate';
 
 export interface FilledAnswer {
@@ -65,10 +67,16 @@ function drawBubble(page: PDFPage, center: PointMm, diameterMm: number, filled: 
   });
 }
 
-function drawMarker(page: PDFPage, marker: MarkerSpec) {
+function drawMarker(page: PDFPage, marker: MarkerSpec, hollow = false) {
   const bottomLeftTD: PointMm = { xMm: marker.topLeft.xMm, yMm: marker.topLeft.yMm + marker.sizeMm };
   const { x, y } = topDownMmToPdfPt(bottomLeftTD);
-  page.drawRectangle({ x, y, width: mmToPt(marker.sizeMm), height: mmToPt(marker.sizeMm), color: BLACK });
+  const sizePt = mmToPt(marker.sizeMm);
+  if (hollow) {
+    // Chỉ vẽ viền (không tô đặc) — OMR nhận ra góc này bằng cách kiểm tra tâm không có mực.
+    page.drawRectangle({ x, y, width: sizePt, height: sizePt, borderColor: BLACK, borderWidth: mmToPt(1.5) });
+  } else {
+    page.drawRectangle({ x, y, width: sizePt, height: sizePt, color: BLACK });
+  }
 }
 
 function drawTextTD(
@@ -85,6 +93,49 @@ function drawTextTD(
     size: opts.size,
     font: opts.font,
     color: BLACK,
+  });
+}
+
+/** Bề rộng an toàn để đặt chữ căn giữa — chừa thêm lề bên TRONG 2 ô vuông marker góc trái/phải
+ * (marker chiếm từ MARKER_MARGIN_MM đến MARKER_MARGIN_MM+MARKER_SIZE_MM = 8-18mm mỗi bên),
+ * tránh chữ dài tràn ra đè lên/lấn quá sát marker.
+ */
+const SAFE_TEXT_WIDTH_MM = 170;
+
+function wrapTextToWidth(font: PDFFont, text: string, size: number, maxWidthMm: number): string[] {
+  const maxWidthPt = mmToPt(maxWidthMm);
+  const words = text.split(' ');
+  const lines: string[] = [];
+  let current = '';
+  for (const word of words) {
+    const candidate = current ? `${current} ${word}` : word;
+    if (current && font.widthOfTextAtSize(candidate, size) > maxWidthPt) {
+      lines.push(current);
+      current = word;
+    } else {
+      current = candidate;
+    }
+  }
+  if (current) lines.push(current);
+  return lines;
+}
+
+/**
+ * Vẽ danh sách gạch đầu dòng, căn TRÁI (không căn giữa) — dùng cho đoạn hướng dẫn trước lưới câu
+ * hỏi. Mỗi phần tử của `lines` là 1 gạch đầu dòng riêng, không tự động ngắt theo bề rộng.
+ */
+function drawBulletedLines(
+  page: PDFPage,
+  xMm: number,
+  startYMm: number,
+  lines: string[],
+  opts: { size: number; font: PDFFont; lineHeightMm: number },
+) {
+  lines.forEach((line, i) => {
+    drawTextTD(page, { xMm, yMm: startYMm + i * opts.lineHeightMm }, `- ${line}`, {
+      size: opts.size,
+      font: opts.font,
+    });
   });
 }
 
@@ -114,8 +165,9 @@ export async function generateBubbleSheetPdf(input: BubbleSheetInput): Promise<U
   const { regular, bold } = await embedVietnameseFonts(pdfDoc);
   const page = pdfDoc.addPage([mmToPt(PAGE_WIDTH_MM), mmToPt(PAGE_HEIGHT_MM)]);
 
-  // Marker góc để căn chỉnh phối cảnh ảnh scan
-  for (const marker of CORNER_MARKERS) drawMarker(page, marker);
+  // Marker góc để căn chỉnh phối cảnh ảnh scan — marker góc trên-trái có thể được vẽ RỖNG (xem
+  // HOLLOW_CORNER_ID) giúp OMR tự nhận ra đúng góc nào là góc nào, tự sửa ảnh scan bị lật/xoay.
+  for (const marker of CORNER_MARKERS) drawMarker(page, marker, marker.id === HOLLOW_CORNER_ID);
 
   const isAnswerKeySheet = Boolean(input.filledExamCode);
 
@@ -126,14 +178,19 @@ export async function generateBubbleSheetPdf(input: BubbleSheetInput): Promise<U
     isAnswerKeySheet ? `PHIẾU ĐÁP ÁN — MÃ ĐỀ ${input.filledExamCode}` : 'PHIẾU TRẢ LỜI TRẮC NGHIỆM',
     { size: 15, font: bold, centered: true },
   );
-  drawTextTD(
-    page,
-    { xMm: PAGE_WIDTH_MM / 2, yMm: 32 },
-    isAnswerKeySheet
-      ? 'Đã tô sẵn đáp án đúng theo mã đề trên — dùng làm mẫu đối chiếu/đục lỗ khi chấm tay. KHÔNG phát cho thí sinh.'
-      : 'Tô đen hoàn toàn ô tương ứng (kể cả Mã số sinh viên và Mã đề ghi trên đề thi) bằng bút chì/bút bi đen. Không tẩy xóa, không tô nhiều hơn 1 ô/câu.',
-    { size: 8.5, font: regular, centered: true },
-  );
+  // Cảnh báo "KHÔNG phát cho thí sinh" phải nổi bật ngay dưới tiêu đề — giữ nguyên vị trí này.
+  // Hướng dẫn tô bài của phiếu trắng thì chuyển xuống ngay trước lưới câu hỏi (xem bên dưới).
+  if (isAnswerKeySheet) {
+    const lines = wrapTextToWidth(
+      regular,
+      'Đã tô sẵn đáp án đúng theo mã đề trên — dùng làm mẫu đối chiếu/đục lỗ khi chấm tay. KHÔNG phát cho thí sinh.',
+      8.5,
+      SAFE_TEXT_WIDTH_MM,
+    );
+    lines.forEach((line, i) => {
+      drawTextTD(page, { xMm: PAGE_WIDTH_MM / 2, yMm: 30 + i * 4.2 }, line, { size: 8.5, font: regular, centered: true });
+    });
+  }
 
   // ---- Ô điền tay: Môn thi / Kỳ thi / Họ và tên ----
   drawFormField(page, regular, 20, 42, 'Môn thi:', 105);
@@ -182,11 +239,24 @@ export async function generateBubbleSheetPdf(input: BubbleSheetInput): Promise<U
     }
   }
 
-  // ---- Lưới câu hỏi PHẦN I ----
-  drawTextTD(page, { xMm: QUESTION_GRID_ORIGIN.xMm, yMm: 134 }, 'PHẦN I — Trả lời trắc nghiệm', {
-    size: 11,
-    font: bold,
-  });
+  // ---- Lưới câu hỏi ----
+  if (isAnswerKeySheet) {
+    drawTextTD(page, { xMm: QUESTION_GRID_ORIGIN.xMm, yMm: 134 }, 'PHẦN I — Trả lời trắc nghiệm', {
+      size: 11,
+      font: bold,
+    });
+  } else {
+    drawBulletedLines(
+      page,
+      QUESTION_GRID_ORIGIN.xMm,
+      134,
+      [
+        'Tô đen hoàn toàn ô tương ứng (kể cả Mã số sinh viên và Mã đề ghi trên đề thi) bằng bút chì/bút bi đen.',
+        'Không tẩy xóa, không tô nhiều hơn 1 ô/câu.',
+      ],
+      { size: 8.5, font: regular, lineHeightMm: 4.2 },
+    );
+  }
 
   for (let subCol = 0; subCol < layout.subcolumnCount; subCol++) {
     const headerY = QUESTION_GRID_ORIGIN.yMm - 5;
@@ -210,6 +280,14 @@ export async function generateBubbleSheetPdf(input: BubbleSheetInput): Promise<U
       );
     }
   }
+
+  // Ghi nhỏ version layout ở mép dưới trang — không dùng để tự động chấm (việc đó đã dựa vào
+  // AnswerKeyBundle.templateVersion), chỉ để con người tham chiếu nếu cần tra cứu/so sánh tay.
+  drawTextTD(page, { xMm: PAGE_WIDTH_MM / 2, yMm: PAGE_HEIGHT_MM - 3 }, `Mẫu phiếu v${CURRENT_TEMPLATE_VERSION}`, {
+    size: 6,
+    font: regular,
+    centered: true,
+  });
 
   return pdfDoc.save();
 }

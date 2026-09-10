@@ -23,5 +23,12 @@ export interface AnswerKeyBundle {
   totalQuestions: number;
   /** Số đáp án LỚN NHẤT trong số các câu hỏi — quyết định số cột (A, B, C...) trên phiếu trả lời. */
   maxOptionsPerQuestion: number;
+  /**
+   * Version layout phiếu trả lời (bubbleSheetTemplate.ts) lúc bộ đề này được sinh ra — dùng để
+   * chấm đúng tọa độ ô tô ngay cả khi code layout đã đổi sau này (xem "VERSIONING" trong
+   * bubbleSheetTemplate.ts). Optional vì file dap-an.json cũ (trước khi có trường này) không có —
+   * khi đó getTemplateGeometry() sẽ mặc định về version hiện tại.
+   */
+  templateVersion?: number;
   variants: AnswerKeyVariant[];
 }

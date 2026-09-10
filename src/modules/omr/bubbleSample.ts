@@ -1,14 +1,10 @@
 import {
   mmToPx,
-  MSSV_DIGIT_COUNT,
-  MSSV_BUBBLE_DIAMETER_MM,
-  getMssvBubbleCenter,
-  EXAM_CODE_DIGIT_COUNT,
-  EXAM_CODE_BUBBLE_DIAMETER_MM,
-  getExamCodeBubbleCenter,
-  QUESTION_BUBBLE_DIAMETER_MM,
-  getQuestionBubbleCenter,
+  getMssvBubbleCenterFor,
+  getExamCodeBubbleCenterFor,
+  getQuestionBubbleCenterFor,
   type QuestionGridLayout,
+  type TemplateGeometry,
 } from '../pdf-export/bubbleSheetTemplate';
 import { letterAt } from '../../lib/optionLetters';
 import { decideFromScores } from './decision';
@@ -77,12 +73,21 @@ function decodeDigitGrid(
   return { value, ambiguous: ambiguous || value === null };
 }
 
-export function decodeMssv(cv: CvNamespace, mat: CvMat, dpi: number): DigitsDecoding {
-  return decodeDigitGrid(cv, mat, dpi, MSSV_DIGIT_COUNT, MSSV_BUBBLE_DIAMETER_MM, getMssvBubbleCenter);
+export function decodeMssv(cv: CvNamespace, mat: CvMat, dpi: number, geometry: TemplateGeometry): DigitsDecoding {
+  return decodeDigitGrid(cv, mat, dpi, geometry.mssv.digitCount, geometry.mssv.bubbleDiameterMm, (col, digit) =>
+    getMssvBubbleCenterFor(geometry, col, digit),
+  );
 }
 
-export function decodeExamCode(cv: CvNamespace, mat: CvMat, dpi: number): DigitsDecoding {
-  return decodeDigitGrid(cv, mat, dpi, EXAM_CODE_DIGIT_COUNT, EXAM_CODE_BUBBLE_DIAMETER_MM, getExamCodeBubbleCenter);
+export function decodeExamCode(cv: CvNamespace, mat: CvMat, dpi: number, geometry: TemplateGeometry): DigitsDecoding {
+  return decodeDigitGrid(
+    cv,
+    mat,
+    dpi,
+    geometry.examCode.digitCount,
+    geometry.examCode.bubbleDiameterMm,
+    (col, digit) => getExamCodeBubbleCenterFor(geometry, col, digit),
+  );
 }
 
 export interface AnswerReading {
@@ -97,13 +102,14 @@ export function decodeAnswers(
   dpi: number,
   totalQuestions: number,
   layout: QuestionGridLayout,
+  geometry: TemplateGeometry,
 ): AnswerReading[] {
-  const diameterPx = mmToPx(QUESTION_BUBBLE_DIAMETER_MM, dpi);
+  const diameterPx = mmToPx(geometry.question.bubbleDiameterMm, dpi);
   const readings: AnswerReading[] = [];
   for (let position = 1; position <= totalQuestions; position++) {
     const scores: number[] = [];
     for (let optionIndex = 0; optionIndex < layout.maxOptions; optionIndex++) {
-      const c = getQuestionBubbleCenter(layout, position, optionIndex);
+      const c = getQuestionBubbleCenterFor(geometry, layout, position, optionIndex);
       scores.push(sampleBubbleDarkness(cv, mat, { x: mmToPx(c.xMm, dpi), y: mmToPx(c.yMm, dpi) }, diameterPx));
     }
     const decision = decideFromScores(scores);

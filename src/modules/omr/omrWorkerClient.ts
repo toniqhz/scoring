@@ -33,10 +33,15 @@ export class OmrWorkerClient {
     return worker;
   }
 
-  processSheet(bitmap: ImageBitmap, totalQuestions: number, maxOptions: number): Promise<OmrResultMessage> {
+  processSheet(
+    bitmap: ImageBitmap,
+    totalQuestions: number,
+    maxOptions: number,
+    templateVersion?: number | null,
+  ): Promise<OmrResultMessage> {
     const worker = this.ensureWorker();
     const taskId = `t${this.nextId++}`;
-    const message: OmrTaskMessage = { taskId, bitmap, totalQuestions, maxOptions };
+    const message: OmrTaskMessage = { taskId, bitmap, totalQuestions, maxOptions, templateVersion };
     return new Promise((resolve, reject) => {
       this.pending.set(taskId, { resolve, reject });
       worker.postMessage(message, [bitmap]);

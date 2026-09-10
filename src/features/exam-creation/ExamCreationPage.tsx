@@ -87,7 +87,8 @@ export function ExamCreationPage() {
         answerKeyBundle,
         originalDocxBuffer,
       });
-      downloadBlob(zipBlob, `${examTitle.replace(/\s+/g, '_')}_bo_de.zip`);
+      const baseName = fileName ? fileName.replace(/\.docx$/i, '') : examTitle.replace(/\s+/g, '_');
+      downloadBlob(zipBlob, `${baseName}.zip`);
       setGenerateSuccess(true);
     } catch (err) {
       setGenerateError(err instanceof Error ? err.message : 'Lỗi không xác định khi tạo đề');

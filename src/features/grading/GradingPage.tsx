@@ -99,6 +99,7 @@ export function GradingPage() {
           bitmap,
           answerKeyBundle.totalQuestions,
           answerKeyBundle.maxOptionsPerQuestion,
+          answerKeyBundle.templateVersion,
         );
         const graded = matchAndScore({
           sheetId: `${fileName}-${i}`,
