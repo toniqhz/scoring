@@ -116,8 +116,8 @@
 .review-badge {
   display: inline-block;
   font-size: 0.75rem;
-  background: var(--error-badge-bg);
-  color: var(--error-badge-text);
+  background: var(--warning-badge-bg);
+  color: var(--warning-badge-text);
   padding: 2px 8px;
   border-radius: 999px;
   cursor: help;
@@ -138,8 +138,9 @@
   color: var(--warning-text);
 }
 
-.link-button {
+.grading-page .link-button {
   margin-top: 4px;
+  margin-right: 10px;
   padding: 0;
   background: none;
   border: none;
@@ -149,9 +150,31 @@
   cursor: pointer;
 }
 
-.link-button:hover {
+.grading-page .link-button:hover:not(:disabled) {
   background: none;
   color: var(--accent-hover);
+}
+
+.grading-page .link-button-danger {
+  color: var(--error-text);
+}
+
+.grading-page .link-button-danger:hover:not(:disabled) {
+  color: var(--error-text);
+  opacity: 0.8;
+}
+
+.discarded-badge {
+  display: inline-block;
+  font-size: 0.75rem;
+  background: var(--error-badge-bg);
+  color: var(--error-badge-text);
+  padding: 2px 8px;
+  border-radius: 999px;
+}
+
+.results-table tr.discarded {
+  opacity: 0.6;
 }
 
 .manual-review-row-wrap td {

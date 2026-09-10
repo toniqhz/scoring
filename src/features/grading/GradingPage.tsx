@@ -122,17 +122,25 @@ export function GradingPage() {
 
   async function handleExportExcel() {
     if (!answerKeyBundle) return;
-    const bytes = await exportResultsToXlsxBytes(results, answerKeyBundle);
+    const bytes = await exportResultsToXlsxBytes(activeResults, answerKeyBundle);
     const blob = new Blob([bytes as BlobPart], {
       type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
     });
     downloadBlob(blob, `${answerKeyBundle?.examTitle ?? 'ket-qua'}_bang-diem.xlsx`);
   }
 
-  const reviewCount = results.filter((r) => r.needsManualReview).length;
+  // Bài đã "bỏ" (vd trùng 2 ảnh scan của cùng 1 sinh viên) vẫn hiện trong bảng để xem/khôi phục,
+  // nhưng không tính vào tổng kết điểm/biểu đồ/file Excel xuất ra.
+  const activeResults = results.filter((r) => !r.discarded);
+  const discardedCount = results.length - activeResults.length;
+  const reviewCount = activeResults.filter((r) => r.needsManualReview).length;
 
   function handleUpdateResult(updated: GradingResult) {
     setResults((prev) => prev.map((r) => (r.sheetId === updated.sheetId ? updated : r)));
+  }
+
+  function handleSetDiscarded(sheetId: string, discarded: boolean) {
+    setResults((prev) => prev.map((r) => (r.sheetId === sheetId ? { ...r, discarded } : r)));
   }
 
   return (
@@ -170,8 +178,9 @@ export function GradingPage() {
           Chọn ảnh/PDF bài scan (có thể chọn nhiều file)
         </label>
         <p className="field-hint">
-          Có thể chọn nhiều ảnh cùng lúc, hoặc 1 file PDF nhiều trang (vd cả xấp bài scan chung 1 file) — mỗi trang
-          PDF sẽ được chấm như 1 bài thi riêng.
+          - Có thể chọn nhiều ảnh / nhiều file PDF cùng lúc, hoặc 1 file PDF nhiều trang (vd cả xấp bài scan chung 1 file — mỗi trang
+          PDF sẽ được chấm như 1 bài thi riêng).<br/>
+          - Các bài thi xoay chiều nào cũng được.
         </p>
         {scanFiles.length > 0 && <span className="file-name">{scanFiles.length} file đã chọn</span>}
 
@@ -188,14 +197,14 @@ export function GradingPage() {
             <p>
               {isProcessing
                 ? `Đang chấm ${progress.done}/${progress.total} phiếu...`
-                : `Đã chấm ${results.length} phiếu — ${results.length - reviewCount} phiếu OK, ${reviewCount} phiếu cần xem lại tay.`}
+                : `Đã chấm ${activeResults.length} phiếu — ${activeResults.length - reviewCount} phiếu OK, ${reviewCount} phiếu cần xem lại tay${discardedCount > 0 ? `, ${discardedCount} phiếu đã bỏ` : ''}.`}
             </p>
             <button onClick={handleExportExcel} disabled={isProcessing}>
               Xuất Excel bảng điểm
             </button>
             {isProcessing && <p className="issue-hint">Đợi chấm xong toàn bộ để tránh xuất thiếu dữ liệu.</p>}
           </section>
-          <ScoreHistogram results={results} />
+          <ScoreHistogram results={activeResults} />
           {answerKeyBundle && (
             <ResultsTable
               results={results}
@@ -203,6 +212,7 @@ export function GradingPage() {
               roster={roster}
               rosterByMssv={rosterByMssv}
               onUpdateResult={handleUpdateResult}
+              onSetDiscarded={handleSetDiscarded}
             />
           )}
         </>

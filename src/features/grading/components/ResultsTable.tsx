@@ -10,6 +10,7 @@ interface Props {
   roster: RosterEntry[];
   rosterByMssv: Map<string, RosterEntry>;
   onUpdateResult: (updated: GradingResult) => void;
+  onSetDiscarded: (sheetId: string, discarded: boolean) => void;
 }
 
 function displayFileLabel(r: GradingResult): string {
@@ -28,8 +29,17 @@ function describeIssues(r: GradingResult): string[] {
   return issues;
 }
 
-export function ResultsTable({ results, answerKeyBundle, roster, rosterByMssv, onUpdateResult }: Props) {
+export function ResultsTable({ results, answerKeyBundle, roster, rosterByMssv, onUpdateResult, onSetDiscarded }: Props) {
   const [editingSheetId, setEditingSheetId] = useState<string | null>(null);
+
+  function handleDiscard(r: GradingResult) {
+    const label = displayFileLabel(r);
+    if (!window.confirm(`Bỏ bài thi "${label}" khỏi bảng điểm? (dùng khi có 2 ảnh scan trùng của cùng 1 sinh viên)`)) {
+      return;
+    }
+    if (editingSheetId === r.sheetId) setEditingSheetId(null);
+    onSetDiscarded(r.sheetId, true);
+  }
 
   return (
     <div className="results-table-wrap">
@@ -52,7 +62,7 @@ export function ResultsTable({ results, answerKeyBundle, roster, rosterByMssv, o
             const isEditing = editingSheetId === r.sheetId;
             return (
               <Fragment key={r.sheetId}>
-                <tr className={r.needsManualReview ? 'needs-review' : ''}>
+                <tr className={r.discarded ? 'discarded' : r.needsManualReview ? 'needs-review' : ''}>
                   <td>{i + 1}</td>
                   <td className="file-cell">
                     {r.previewUrl ? (
@@ -71,7 +81,9 @@ export function ResultsTable({ results, answerKeyBundle, roster, rosterByMssv, o
                     {r.correctCount}/{r.totalQuestions}
                   </td>
                   <td>
-                    {r.needsManualReview ? (
+                    {r.discarded ? (
+                      <span className="discarded-badge">Đã bỏ</span>
+                    ) : r.needsManualReview ? (
                       <span className="review-badge" title={issues.join('; ')}>
                         Cần xem lại
                       </span>
@@ -80,13 +92,32 @@ export function ResultsTable({ results, answerKeyBundle, roster, rosterByMssv, o
                     )}
                     {issues.length > 0 && <div className="issue-hint">{issues.join('; ')}</div>}
                     <div>
-                      <button
-                        type="button"
-                        className="link-button"
-                        onClick={() => setEditingSheetId(isEditing ? null : r.sheetId)}
-                      >
-                        {isEditing ? 'Đóng' : 'Sửa tay'}
-                      </button>
+                      {!r.discarded && (
+                        <button
+                          type="button"
+                          className="link-button"
+                          onClick={() => setEditingSheetId(isEditing ? null : r.sheetId)}
+                        >
+                          {isEditing ? 'Đóng' : 'Sửa tay'}
+                        </button>
+                      )}
+                      {r.discarded ? (
+                        <button
+                          type="button"
+                          className="link-button"
+                          onClick={() => onSetDiscarded(r.sheetId, false)}
+                        >
+                          Khôi phục
+                        </button>
+                      ) : (
+                        <button
+                          type="button"
+                          className="link-button link-button-danger"
+                          onClick={() => handleDiscard(r)}
+                        >
+                          Bỏ bài thi
+                        </button>
+                      )}
                     </div>
                   </td>
                 </tr>

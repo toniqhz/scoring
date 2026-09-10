@@ -45,5 +45,8 @@ export interface GradingResult {
   needsManualReview: boolean;
   /** true nếu giáo viên đã xác nhận/chỉnh tay ít nhất 1 lần. */
   manuallyReviewed?: boolean;
+  /** true nếu giáo viên đã bỏ bài này khỏi bảng điểm (vd trùng 2 ảnh scan của cùng 1 sinh viên) —
+   * vẫn giữ lại trong danh sách để xem/khôi phục, nhưng loại khỏi tổng kết điểm/biểu đồ/xuất Excel. */
+  discarded?: boolean;
   processError?: string;
 }
