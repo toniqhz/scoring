@@ -24,7 +24,8 @@ function columnLetter(colIndex0: number): string {
 
 const DETAIL_FIXED_COLUMN_COUNT = 8; // STT, MSSV, Họ tên, Mã đề, Điểm, Số câu đúng, Tổng số câu, Cần xem lại
 
-/** Tab 2: bảng chi tiết đầy đủ, kèm chỉ dẫn tô màu ô câu trả lời sai (hồng) / bỏ trống (xám). */
+/** Tab 2: bảng chi tiết đầy đủ, kèm chỉ dẫn tô màu ô câu trả lời sai (hồng) / bỏ trống (xám) /
+ * đã sửa tay (vàng — ưu tiên cao nhất, để giáo viên khác dễ nhận ra câu nào do người xác nhận). */
 function buildDetailSheet(results: GradingResult[]): { sheet: XLSX.WorkSheet; fills: CellFillInstruction[] } {
   const maxQuestions = Math.max(0, ...results.map((r) => r.totalQuestions));
 
@@ -48,10 +49,11 @@ function buildDetailSheet(results: GradingResult[]): { sheet: XLSX.WorkSheet; fi
       const q = byPosition.get(idx + 1);
       if (q) {
         const cellRef = `${columnLetter(DETAIL_FIXED_COLUMN_COUNT + idx)}${sheetRow}`;
-        if (q.detectedLetter === null) fills.push({ cellRef, kind: 'blank' });
+        if (q.manuallyEdited) fills.push({ cellRef, kind: 'manual' });
+        else if (q.detectedLetters.length === 0) fills.push({ cellRef, kind: 'blank' });
         else if (!q.isCorrect) fills.push({ cellRef, kind: 'wrong' });
       }
-      return q?.detectedLetter ?? '';
+      return q?.detectedLetters.join(',') ?? '';
     });
     return [
       rowIndex + 1,

@@ -6,6 +6,7 @@ import type { OmrResultMessage } from '../omr/types';
 export interface MatchAndScoreInput {
   sheetId: string;
   fileName: string;
+  previewUrl?: string | null;
   omrResult: OmrResultMessage;
   answerKeyBundle: AnswerKeyBundle;
   rosterByMssv: Map<string, RosterEntry>;
@@ -29,11 +30,12 @@ export function matchAndScore(input: MatchAndScoreInput): GradingResult {
     const detectedByPosition = new Map(omrResult.answers.map((a) => [a.position, a]));
     for (const answer of examVariant.answers) {
       const detected = detectedByPosition.get(answer.position);
-      const isCorrect = detected?.letter === answer.correctLetter;
+      const detectedLetters = detected?.letters ?? [];
+      const isCorrect = detectedLetters.length === 1 && detectedLetters[0] === answer.correctLetter;
       if (isCorrect) correctCount++;
       questionResults.push({
         position: answer.position,
-        detectedLetter: detected?.letter ?? null,
+        detectedLetters,
         correctLetter: answer.correctLetter,
         isCorrect,
         ambiguous: detected?.ambiguous ?? true,
@@ -66,6 +68,7 @@ export function matchAndScore(input: MatchAndScoreInput): GradingResult {
   return {
     sheetId: input.sheetId,
     fileName: input.fileName,
+    previewUrl: input.previewUrl ?? null,
     mssv: omrResult.mssv,
     hoTen: rosterEntry?.hoTen ?? null,
     examCode: omrResult.examCode,
@@ -73,6 +76,7 @@ export function matchAndScore(input: MatchAndScoreInput): GradingResult {
     correctCount,
     totalQuestions,
     questionResults,
+    rawAnswers: omrResult.answers,
     flags,
     needsManualReview,
     processError: omrResult.error,

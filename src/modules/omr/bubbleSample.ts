@@ -7,7 +7,7 @@ import {
   type TemplateGeometry,
 } from '../pdf-export/bubbleSheetTemplate';
 import { letterAt } from '../../lib/optionLetters';
-import { decideFromScores } from './decision';
+import { decideFromScores, decideAnswerFromScores } from './decision';
 import type { AnswerLetter } from '../../types/answerKey';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -92,7 +92,8 @@ export function decodeExamCode(cv: CvNamespace, mat: CvMat, dpi: number, geometr
 
 export interface AnswerReading {
   position: number;
-  letter: AnswerLetter | null;
+  /** Mọi chữ cái đã tô cho câu này — rỗng nếu bỏ trống, >1 phần tử nếu tô nhiều hơn 1 ô. */
+  letters: AnswerLetter[];
   ambiguous: boolean;
 }
 
@@ -112,10 +113,10 @@ export function decodeAnswers(
       const c = getQuestionBubbleCenterFor(geometry, layout, position, optionIndex);
       scores.push(sampleBubbleDarkness(cv, mat, { x: mmToPx(c.xMm, dpi), y: mmToPx(c.yMm, dpi) }, diameterPx));
     }
-    const decision = decideFromScores(scores);
+    const decision = decideAnswerFromScores(scores);
     readings.push({
       position,
-      letter: decision.index === null ? null : letterAt(decision.index),
+      letters: decision.indices.map((i) => letterAt(i)),
       ambiguous: decision.ambiguous,
     });
   }

@@ -94,7 +94,7 @@ export function GradingPage() {
 
       const collected: GradingResult[] = [];
       for (let i = 0; i < images.length; i++) {
-        const { fileName, bitmap } = images[i];
+        const { fileName, bitmap, previewUrl } = images[i];
         const omrResult = await client.processSheet(
           bitmap,
           answerKeyBundle.totalQuestions,
@@ -104,6 +104,7 @@ export function GradingPage() {
         const graded = matchAndScore({
           sheetId: `${fileName}-${i}`,
           fileName,
+          previewUrl,
           omrResult,
           answerKeyBundle,
           rosterByMssv,
@@ -129,6 +130,10 @@ export function GradingPage() {
   }
 
   const reviewCount = results.filter((r) => r.needsManualReview).length;
+
+  function handleUpdateResult(updated: GradingResult) {
+    setResults((prev) => prev.map((r) => (r.sheetId === updated.sheetId ? updated : r)));
+  }
 
   return (
     <div className="grading-page">
@@ -187,7 +192,15 @@ export function GradingPage() {
             {isProcessing && <p className="issue-hint">Đợi chấm xong toàn bộ để tránh xuất thiếu dữ liệu.</p>}
           </section>
           <ScoreHistogram results={results} />
-          <ResultsTable results={results} />
+          {answerKeyBundle && (
+            <ResultsTable
+              results={results}
+              answerKeyBundle={answerKeyBundle}
+              roster={roster}
+              rosterByMssv={rosterByMssv}
+              onUpdateResult={handleUpdateResult}
+            />
+          )}
         </>
       )}
     </div>

@@ -12,7 +12,8 @@ export interface OmrTaskMessage {
 
 export interface OmrAnswerReading {
   position: number;
-  letter: AnswerLetter | null;
+  /** Mọi chữ cái đã tô cho câu này — rỗng nếu bỏ trống, >1 phần tử nếu tô nhiều hơn 1 ô. */
+  letters: AnswerLetter[];
   ambiguous: boolean;
 }
 

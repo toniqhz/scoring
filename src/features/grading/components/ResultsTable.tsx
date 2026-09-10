@@ -1,7 +1,19 @@
+import { Fragment, useState } from 'react';
 import type { GradingResult } from '../../../types/gradingResult';
+import type { AnswerKeyBundle } from '../../../types/answerKey';
+import type { RosterEntry } from '../../../types/roster';
+import { ManualReviewForm } from './ManualReviewForm';
 
 interface Props {
   results: GradingResult[];
+  answerKeyBundle: AnswerKeyBundle;
+  roster: RosterEntry[];
+  rosterByMssv: Map<string, RosterEntry>;
+  onUpdateResult: (updated: GradingResult) => void;
+}
+
+function displayFileLabel(r: GradingResult): string {
+  return r.mssv ? `${r.mssv}${r.hoTen ? `-${r.hoTen}` : ''}` : r.fileName;
 }
 
 function describeIssues(r: GradingResult): string[] {
@@ -16,7 +28,9 @@ function describeIssues(r: GradingResult): string[] {
   return issues;
 }
 
-export function ResultsTable({ results }: Props) {
+export function ResultsTable({ results, answerKeyBundle, roster, rosterByMssv, onUpdateResult }: Props) {
+  const [editingSheetId, setEditingSheetId] = useState<string | null>(null);
+
   return (
     <div className="results-table-wrap">
       <table className="results-table">
@@ -35,28 +49,65 @@ export function ResultsTable({ results }: Props) {
         <tbody>
           {results.map((r, i) => {
             const issues = describeIssues(r);
+            const isEditing = editingSheetId === r.sheetId;
             return (
-              <tr key={r.sheetId} className={r.needsManualReview ? 'needs-review' : ''}>
-                <td>{i + 1}</td>
-                <td className="file-cell">{r.fileName}</td>
-                <td>{r.mssv ?? '—'}</td>
-                <td>{r.hoTen ?? '—'}</td>
-                <td>{r.examCode ?? '—'}</td>
-                <td>{r.score ?? '—'}</td>
-                <td>
-                  {r.correctCount}/{r.totalQuestions}
-                </td>
-                <td>
-                  {r.needsManualReview ? (
-                    <span className="review-badge" title={issues.join('; ')}>
-                      Cần xem lại
-                    </span>
-                  ) : (
-                    <span className="ok-badge">OK</span>
-                  )}
-                  {issues.length > 0 && <div className="issue-hint">{issues.join('; ')}</div>}
-                </td>
-              </tr>
+              <Fragment key={r.sheetId}>
+                <tr className={r.needsManualReview ? 'needs-review' : ''}>
+                  <td>{i + 1}</td>
+                  <td className="file-cell">
+                    {r.previewUrl ? (
+                      <a href={r.previewUrl} target="_blank" rel="noreferrer" title={r.fileName}>
+                        {displayFileLabel(r)}
+                      </a>
+                    ) : (
+                      <span title={r.fileName}>{displayFileLabel(r)}</span>
+                    )}
+                  </td>
+                  <td>{r.mssv ?? '—'}</td>
+                  <td>{r.hoTen ?? '—'}</td>
+                  <td>{r.examCode ?? '—'}</td>
+                  <td>{r.score ?? '—'}</td>
+                  <td>
+                    {r.correctCount}/{r.totalQuestions}
+                  </td>
+                  <td>
+                    {r.needsManualReview ? (
+                      <span className="review-badge" title={issues.join('; ')}>
+                        Cần xem lại
+                      </span>
+                    ) : (
+                      <span className="ok-badge">{r.manuallyReviewed ? 'OK (đã chỉnh tay)' : 'OK'}</span>
+                    )}
+                    {issues.length > 0 && <div className="issue-hint">{issues.join('; ')}</div>}
+                    <div>
+                      <button
+                        type="button"
+                        className="link-button"
+                        onClick={() => setEditingSheetId(isEditing ? null : r.sheetId)}
+                      >
+                        {isEditing ? 'Đóng' : 'Sửa tay'}
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+                {isEditing && (
+                  <tr className="manual-review-row-wrap">
+                    <td colSpan={8}>
+                      <ManualReviewForm
+                        result={r}
+                        answerKeyBundle={answerKeyBundle}
+                        roster={roster}
+                        rosterByMssv={rosterByMssv}
+                        onSave={(updated) => {
+                          onUpdateResult(updated);
+                          setEditingSheetId(null);
+                        }}
+                        onCancel={() => setEditingSheetId(null)}
+                      />
+                    </td>
+                  </tr>
+                )}
+              </Fragment>
             );
           })}
         </tbody>

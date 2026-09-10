@@ -131,3 +131,116 @@
   font-size: 0.75rem;
   color: var(--warning-text);
 }
+
+.link-button {
+  margin-top: 4px;
+  padding: 0;
+  background: none;
+  border: none;
+  color: var(--accent);
+  font-size: 0.8rem;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.link-button:hover {
+  background: none;
+  color: var(--accent-hover);
+}
+
+.manual-review-row-wrap td {
+  background: var(--surface-raised);
+}
+
+.manual-review-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 12px;
+}
+
+.manual-review-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.manual-review-row label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.manual-review-row select {
+  padding: 6px 8px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-primary);
+  min-width: 220px;
+}
+
+.manual-review-questions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.manual-review-question {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--border-hairline);
+}
+
+.manual-review-question-label {
+  min-width: 64px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.manual-review-question.is-answered {
+  opacity: 0.85;
+}
+
+.manual-review-question-label .is-correct {
+  color: var(--success-text);
+}
+
+.manual-review-question-label .is-wrong {
+  color: var(--error-text);
+}
+
+.manual-review-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.manual-review-option {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  cursor: pointer;
+}
+
+.manual-review-summary {
+  font-size: 0.9rem;
+  color: var(--text-primary);
+}
+
+.manual-review-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.manual-review-actions button.secondary {
+  background: var(--border);
+  color: var(--text-primary);
+}
