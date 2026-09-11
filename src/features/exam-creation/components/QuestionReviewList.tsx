@@ -10,6 +10,7 @@ interface Props {
   onEditQuestionText: (questionId: string, text: string) => void;
   onEditOptionText: (questionId: string, optionId: string, text: string) => void;
   onAddOption: (questionId: string) => void;
+  onCloseEditing: (questionId: string) => void;
 }
 
 export function QuestionReviewList({
@@ -19,16 +20,21 @@ export function QuestionReviewList({
   onEditQuestionText,
   onEditOptionText,
   onAddOption,
+  onCloseEditing,
 }: Props) {
   const [editingIds, setEditingIds] = useState<Set<string>>(new Set());
 
   function toggleEditing(questionId: string) {
+    const wasEditing = editingIds.has(questionId);
     setEditingIds((prev) => {
       const next = new Set(prev);
-      if (next.has(questionId)) next.delete(questionId);
+      if (wasEditing) next.delete(questionId);
       else next.add(questionId);
       return next;
     });
+    // Gọi RIÊNG (không lồng trong hàm cập nhật state ở trên) — hàm truyền cho setEditingIds phải
+    // thuần (pure), không được có side effect như gọi setState của component khác bên trong.
+    if (wasEditing) onCloseEditing(questionId);
   }
 
   return (
@@ -111,9 +117,12 @@ export function QuestionReviewList({
               )}
             </ul>
             {isEditing && (
-              <button type="button" className="add-option-btn" onClick={() => onAddOption(q.id)}>
-                + Thêm đáp án
-              </button>
+              <div className="add-option-row">
+                <button type="button" className="add-option-btn" onClick={() => onAddOption(q.id)}>
+                  + Thêm đáp án
+                </button>
+                <span className="field-hint">Đáp án để trống sẽ tự xóa khi bấm "Xong"</span>
+              </div>
             )}
             {q.parseIssues.length > 0 && (
               <ul className="issue-list">

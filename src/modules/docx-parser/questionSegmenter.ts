@@ -81,10 +81,10 @@ function draftToQuestion(draft: DraftQuestion): Question {
     const id = uuidv4();
     if (!found) {
       issues.push(`Thiếu đáp án ${letter}`);
-      options.push({ id, text: '' });
+      options.push({ id, text: '', sourceLetter: letter });
       continue;
     }
-    options.push({ id, text: found.text });
+    options.push({ id, text: found.text, sourceLetter: letter });
     if (found.bold) correctOptionId = id;
   }
 

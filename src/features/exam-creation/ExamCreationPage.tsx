@@ -4,6 +4,7 @@ import { parseDocxFile } from '../../modules/docx-parser';
 import { generateVariants, type CrossReferenceStrategy } from '../../modules/shuffle/generateVariants';
 import { questionHasOptionCrossReference } from '../../modules/shuffle/optionCrossReference';
 import { letterAt } from '../../lib/optionLetters';
+import { MIN_OPTIONS } from '../../modules/docx-parser/patterns';
 import { buildExportBundle } from './buildExportBundle';
 import { downloadBlob } from '../../lib/downloadFile';
 import { QuestionReviewList } from './components/QuestionReviewList';
@@ -108,6 +109,35 @@ export function ExamCreationPage() {
     );
   }
 
+  // Đóng form sửa (bấm "Xong") -> tự xóa các đáp án còn để trống (vd lỡ bấm "+ Thêm đáp án" rồi
+  // không điền gì, hoặc đáp án vốn thiếu từ file gốc mà giáo viên không bổ sung) — tránh phải có
+  // thêm nút xóa riêng cho từng đáp án.
+  function handleCloseEditing(questionId: string) {
+    setQuestions((prev) =>
+      prev.map((q) => {
+        if (q.id !== questionId) return q;
+        const blankLetters = new Set(
+          q.options.map((o, idx) => (o.text.trim().length === 0 ? letterAt(idx) : null)).filter((l): l is string => l !== null),
+        );
+        if (blankLetters.size === 0) return q;
+
+        const options = q.options.filter((o) => o.text.trim().length > 0);
+        let parseIssues = q.parseIssues.filter(
+          (issue) => !(issue.startsWith('Thiếu đáp án ') && blankLetters.has(issue.slice('Thiếu đáp án '.length))),
+        );
+        let correctOptionId = q.correctOptionId;
+        if (correctOptionId && !options.some((o) => o.id === correctOptionId)) {
+          correctOptionId = null;
+          parseIssues = [...parseIssues, 'Không tìm thấy đáp án in đậm (đáp án đúng)'];
+        }
+        if (options.length < MIN_OPTIONS) {
+          parseIssues = [...parseIssues, `Câu hỏi cần tối thiểu ${MIN_OPTIONS} đáp án (tìm thấy ${options.length})`];
+        }
+        return { ...q, options, parseIssues, correctOptionId };
+      }),
+    );
+  }
+
   async function handleGenerate() {
     setGenerateError(null);
     setGenerateSuccess(false);
@@ -204,6 +234,7 @@ export function ExamCreationPage() {
             onEditQuestionText={handleEditQuestionText}
             onEditOptionText={handleEditOptionText}
             onAddOption={handleAddOption}
+            onCloseEditing={handleCloseEditing}
           />
 
           <h2>Bước 3: Trộn đề & xuất file</h2>

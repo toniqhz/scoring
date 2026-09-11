@@ -171,10 +171,11 @@ export async function generateExamVariantDocx(input: GenerateExamVariantDocxInpu
     const letterRewriteMap = variant.optionLetterRewrites?.[qId];
 
     optionOrderIds.forEach((optionId, optIdx) => {
-      const originalOptionIndex = question.options.findIndex((o) => o.id === optionId);
-      const option = question.options[originalOptionIndex];
-      const originalLetter = letterAt(originalOptionIndex);
-      const optionBlock = block.options.find((o) => o.letter === originalLetter);
+      const option = question.options.find((o) => o.id === optionId);
+      // Dùng sourceLetter (chữ cái GỐC lúc parse, gắn theo id — không phụ thuộc vị trí hiện tại
+      // trong mảng options) để tìm đúng khối XML gốc — nhờ vậy giáo viên xóa/thêm đáp án trên web
+      // (làm lệch vị trí so với lúc parse) vẫn không làm sai lệch đáp án nào khớp với run XML nào.
+      const optionBlock = option?.sourceLetter ? block.options.find((o) => o.letter === option.sourceLetter) : undefined;
       // Đáp án đã sửa tay, hoặc mới được thêm trên web (không có run XML gốc tương ứng) — dựng lại
       // đoạn văn bản thuần từ nội dung hiện tại, mượn định dạng của 1 đáp án khác cùng câu.
       const baseChunk =

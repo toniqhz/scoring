@@ -211,8 +211,14 @@
   box-sizing: border-box;
 }
 
-.add-option-btn {
+.add-option-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
   margin-top: 8px;
+}
+
+.add-option-btn {
   padding: 4px 10px;
   font-size: 0.8rem;
   color: var(--accent);
@@ -225,6 +231,12 @@
 
 .add-option-btn:hover {
   background: var(--warning-bg);
+}
+
+.add-option-row .field-hint {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.8rem;
 }
 
 .issue-list {
