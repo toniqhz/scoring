@@ -103,15 +103,10 @@ export function QuestionReviewList({
                   </li>
                 ) : (
                   <li key={opt.id} className={opt.id === q.correctOptionId ? 'correct' : ''}>
-                    <label>
-                      <input
-                        type="radio"
-                        name={`correct-${q.id}`}
-                        checked={opt.id === q.correctOptionId}
-                        onChange={() => onFixCorrectOption(q.id, opt.id)}
-                      />
-                      {String.fromCharCode(65 + i)}. {opt.text || <em>(trống)</em>}
-                    </label>
+                    <span className="option-mark" aria-hidden="true">
+                      {opt.id === q.correctOptionId ? '✓' : '○'}
+                    </span>
+                    {String.fromCharCode(65 + i)}. {opt.text || <em>(trống)</em>}
                   </li>
                 ),
               )}
