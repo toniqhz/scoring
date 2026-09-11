@@ -41,6 +41,8 @@ export interface GradingResult {
   questionResults: QuestionResult[];
   /** Đáp án thô theo vị trí, giữ lại để chấm lại khi giáo viên sửa tay (đổi mã đề/chọn lại đáp án). */
   rawAnswers: RawAnswerReading[];
+  /** Số ô trong cụm "Chỗ đánh dấu" cạnh marker góc đã được tô (0 nếu phiếu version không có cụm này). */
+  markCount: number;
   flags: GradingFlags;
   needsManualReview: boolean;
   /** true nếu giáo viên đã xác nhận/chỉnh tay ít nhất 1 lần. */

@@ -273,3 +273,80 @@
   background: var(--border);
   color: var(--text-primary);
 }
+
+.collusion-panel {
+  margin-bottom: 16px;
+  padding: 12px 14px;
+  background: var(--warning-bg);
+  border: 1px solid var(--border-hairline);
+  border-radius: 8px;
+}
+
+.collusion-panel h3 {
+  margin: 0 0 6px;
+  font-size: 1rem;
+  color: var(--text-primary);
+}
+
+.collusion-config {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 20px;
+  margin-bottom: 8px;
+}
+
+.collusion-config label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.85rem;
+  color: var(--text-primary);
+}
+
+.collusion-config input[type='number'] {
+  width: 64px;
+  padding: 4px 6px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--text-primary);
+}
+
+.collusion-group {
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border-hairline);
+}
+
+.collusion-group:first-of-type {
+  border-top: none;
+}
+
+.collusion-group-title {
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: var(--text-primary);
+}
+
+.collusion-pairs-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--surface);
+  font-size: 0.85rem;
+  color: var(--text-primary);
+}
+
+.collusion-pairs-table th,
+.collusion-pairs-table td {
+  border: 1px solid var(--border-hairline);
+  padding: 4px 8px;
+  text-align: left;
+}
+
+.collusion-pairs-table th {
+  background: var(--surface-raised);
+}
+
+.collusion-pair-row-last td {
+  border-bottom: 2px solid var(--border);
+}

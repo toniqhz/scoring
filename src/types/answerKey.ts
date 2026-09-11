@@ -9,6 +9,14 @@ export interface AnswerKeyAnswer {
   /** Optional — thiếu khi đọc file dap-an.json cũ sinh ra trước khi có 2 trường này. */
   questionText?: string;
   correctOptionText?: string;
+  /**
+   * Với MỖI chữ cái đáp án của câu này (không chỉ đáp án đúng) — chỉ số của đáp án đó trong danh
+   * sách đáp án GỐC (trước khi xáo trộn theo mã đề) của câu hỏi. Dùng để so sánh 2 bài chọn "cùng 1
+   * đáp án sai" xuyên suốt các mã đề KHÁC NHAU (đề bị xáo khác nhau nên cùng chữ cái ở 2 mã đề không
+   * cùng nghĩa — phải quy về chỉ số đáp án GỐC mới so được, xem detectCollusion.ts). Optional — thiếu
+   * khi đọc file dap-an.json cũ sinh ra trước khi có trường này (khi đó chỉ so được trong cùng mã đề).
+   */
+  optionOriginalIndexByLetter?: Record<AnswerLetter, number>;
 }
 
 export interface AnswerKeyVariant {

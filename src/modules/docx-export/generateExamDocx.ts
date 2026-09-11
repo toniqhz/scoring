@@ -1,6 +1,11 @@
 import JSZip from 'jszip';
 import { letterAt } from '../../lib/optionLetters';
-import type { ParagraphXmlChunk, ExtractedExamXml } from './xmlBlockExtractor';
+import {
+  rewriteChunkLetterReferences,
+  makeSyntheticChunk,
+  type ParagraphXmlChunk,
+  type ExtractedExamXml,
+} from './xmlBlockExtractor';
 import type { Question } from '../../types/question';
 import type { ExamVariant } from '../../types/examVariant';
 
@@ -142,7 +147,15 @@ export async function generateExamVariantDocx(input: GenerateExamVariantDocxInpu
     const displayPosition = idx + 1;
     const optionOrderIds = variant.optionOrderByQuestion[qId] ?? [];
 
-    if (block.stemChunks.length === 0) {
+    // Câu hỏi đã sửa tay trên web (stemEdited) không còn khớp với run XML gốc nữa — dựng lại 1
+    // đoạn văn bản thuần từ đúng nội dung đã sửa, mượn định dạng của đoạn đầu tiên trong đề gốc.
+    if (question.stemEdited) {
+      body.appendChild(
+        buildParagraphFromChunk(doc, makeSyntheticChunk(question.text, block.stemChunks[0]), {
+          labelText: `Câu ${displayPosition}: `,
+        }),
+      );
+    } else if (block.stemChunks.length === 0) {
       body.appendChild(buildPlainParagraph(doc, `Câu ${displayPosition}:`, false));
     } else {
       block.stemChunks.forEach((chunk, i) => {
@@ -152,13 +165,25 @@ export async function generateExamVariantDocx(input: GenerateExamVariantDocxInpu
       });
     }
 
+    // Câu chọn xử lý "vẫn xáo + tự cập nhật chữ cái" (thay vì giữ nguyên thứ tự) có map chữ cái
+    // cũ->mới riêng ở đây — áp dụng để chữ cái được nhắc tới trong nội dung đáp án (vd "Cả A và B
+    // đều đúng") khớp đúng vị trí MỚI sau khi xáo (xem generateVariants.ts, xmlBlockExtractor.ts).
+    const letterRewriteMap = variant.optionLetterRewrites?.[qId];
+
     optionOrderIds.forEach((optionId, optIdx) => {
       const originalOptionIndex = question.options.findIndex((o) => o.id === optionId);
+      const option = question.options[originalOptionIndex];
       const originalLetter = letterAt(originalOptionIndex);
       const optionBlock = block.options.find((o) => o.letter === originalLetter);
-      if (!optionBlock) return;
+      // Đáp án đã sửa tay, hoặc mới được thêm trên web (không có run XML gốc tương ứng) — dựng lại
+      // đoạn văn bản thuần từ nội dung hiện tại, mượn định dạng của 1 đáp án khác cùng câu.
+      const baseChunk =
+        option?.edited || !optionBlock
+          ? makeSyntheticChunk(option?.text ?? '', optionBlock?.chunk ?? block.options[0]?.chunk)
+          : optionBlock.chunk;
+      const chunk = letterRewriteMap ? rewriteChunkLetterReferences(baseChunk, letterRewriteMap) : baseChunk;
       body.appendChild(
-        buildParagraphFromChunk(doc, optionBlock.chunk, {
+        buildParagraphFromChunk(doc, chunk, {
           labelText: `${letterAt(optIdx)}. `,
           stripBold: true,
         }),

@@ -4,12 +4,14 @@ import { exportResultsToXlsxBytes } from '../../modules/excel/resultsExport';
 import { loadSheetImagesFromFiles } from '../../modules/omr/loadSheetImages';
 import { OmrWorkerClient } from '../../modules/omr/omrWorkerClient';
 import { matchAndScore } from '../../modules/grading/matchAndScore';
+import { detectCollusion, DEFAULT_COLLUSION_OPTIONS } from '../../modules/grading/detectCollusion';
 import { downloadBlob } from '../../lib/downloadFile';
 import type { RosterEntry } from '../../types/roster';
 import type { AnswerKeyBundle } from '../../types/answerKey';
 import type { GradingResult } from '../../types/gradingResult';
 import { ResultsTable } from './components/ResultsTable';
 import { ScoreHistogram } from './components/ScoreHistogram';
+import { CollusionPanel } from './components/CollusionPanel';
 import './GradingPage.css';
 
 export function GradingPage() {
@@ -26,6 +28,9 @@ export function GradingPage() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [progress, setProgress] = useState({ done: 0, total: 0 });
   const [processError, setProcessError] = useState<string | null>(null);
+
+  const [minEitherWrongCount, setMinEitherWrongCount] = useState(DEFAULT_COLLUSION_OPTIONS.minEitherWrongCount);
+  const [matchRatioPercent, setMatchRatioPercent] = useState(DEFAULT_COLLUSION_OPTIONS.matchRatioThreshold * 100);
 
   const workerClientRef = useRef<OmrWorkerClient | null>(null);
   useEffect(() => {
@@ -122,7 +127,7 @@ export function GradingPage() {
 
   async function handleExportExcel() {
     if (!answerKeyBundle) return;
-    const bytes = await exportResultsToXlsxBytes(activeResults, answerKeyBundle);
+    const bytes = await exportResultsToXlsxBytes(activeResults, answerKeyBundle, collusionGroups);
     const blob = new Blob([bytes as BlobPart], {
       type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
     });
@@ -134,6 +139,21 @@ export function GradingPage() {
   const activeResults = results.filter((r) => !r.discarded);
   const discardedCount = results.length - activeResults.length;
   const reviewCount = activeResults.filter((r) => r.needsManualReview).length;
+  const markedCount = activeResults.filter((r) => r.markCount > 0).length;
+  const collusionOptions = useMemo(
+    () => ({
+      minEitherWrongCount: Number.isFinite(minEitherWrongCount) && minEitherWrongCount > 0 ? minEitherWrongCount : DEFAULT_COLLUSION_OPTIONS.minEitherWrongCount,
+      matchRatioThreshold:
+        Number.isFinite(matchRatioPercent) && matchRatioPercent > 0
+          ? Math.min(matchRatioPercent, 100) / 100
+          : DEFAULT_COLLUSION_OPTIONS.matchRatioThreshold,
+    }),
+    [minEitherWrongCount, matchRatioPercent],
+  );
+  const collusionGroups = useMemo(
+    () => (answerKeyBundle ? detectCollusion(activeResults, answerKeyBundle, collusionOptions) : []),
+    [activeResults, answerKeyBundle, collusionOptions],
+  );
 
   function handleUpdateResult(updated: GradingResult) {
     setResults((prev) => prev.map((r) => (r.sheetId === updated.sheetId ? updated : r)));
@@ -197,7 +217,7 @@ export function GradingPage() {
             <p>
               {isProcessing
                 ? `Đang chấm ${progress.done}/${progress.total} phiếu...`
-                : `Đã chấm ${activeResults.length} phiếu — ${activeResults.length - reviewCount} phiếu OK, ${reviewCount} phiếu cần xem lại tay${discardedCount > 0 ? `, ${discardedCount} phiếu đã bỏ` : ''}.`}
+                : `Đã chấm ${activeResults.length} phiếu — ${activeResults.length - reviewCount} phiếu OK, ${reviewCount} phiếu cần xem lại tay, ${markedCount} phiếu bị đánh dấu bài${discardedCount > 0 ? `, ${discardedCount} phiếu đã bỏ` : ''}.`}
             </p>
             <button onClick={handleExportExcel} disabled={isProcessing}>
               Xuất Excel bảng điểm
@@ -205,6 +225,13 @@ export function GradingPage() {
             {isProcessing && <p className="issue-hint">Đợi chấm xong toàn bộ để tránh xuất thiếu dữ liệu.</p>}
           </section>
           <ScoreHistogram results={activeResults} />
+          <CollusionPanel
+            groups={collusionGroups}
+            minEitherWrongCount={minEitherWrongCount}
+            matchRatioPercent={matchRatioPercent}
+            onMinEitherWrongCountChange={setMinEitherWrongCount}
+            onMatchRatioPercentChange={setMatchRatioPercent}
+          />
           {answerKeyBundle && (
             <ResultsTable
               results={results}

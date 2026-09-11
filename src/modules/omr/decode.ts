@@ -1,5 +1,5 @@
 import { alignAndThreshold } from './alignSheet';
-import { decodeMssv, decodeExamCode, decodeAnswers } from './bubbleSample';
+import { decodeMssv, decodeExamCode, decodeAnswers, decodeOrientationMarks } from './bubbleSample';
 import { mmToPx, buildQuestionGridLayoutFor, getTemplateGeometry } from '../pdf-export/bubbleSheetTemplate';
 import type { OmrAnswerReading } from './types';
 
@@ -18,6 +18,8 @@ export interface DecodeSheetResult {
   examCode: string | null;
   examCodeAmbiguous: boolean;
   answers: OmrAnswerReading[];
+  /** Số ô trong cụm "Chỗ đánh dấu" đã được tô (0 nếu version này không có cụm ô định hướng). */
+  markedCount: number;
 }
 
 /**
@@ -45,6 +47,7 @@ export function decodeSheet(
       examCode: null,
       examCodeAmbiguous: true,
       answers: [],
+      markedCount: 0,
     };
   }
 
@@ -53,6 +56,7 @@ export function decodeSheet(
     const mssvDecoding = decodeMssv(cv, warped, PROCESS_DPI, geometry);
     const examCodeDecoding = decodeExamCode(cv, warped, PROCESS_DPI, geometry);
     const answers = decodeAnswers(cv, warped, PROCESS_DPI, totalQuestions, layout, geometry);
+    const orientationMarksDecoding = decodeOrientationMarks(cv, warped, PROCESS_DPI, geometry);
     return {
       alignmentFailed: false,
       mssv: mssvDecoding.value,
@@ -60,6 +64,7 @@ export function decodeSheet(
       examCode: examCodeDecoding.value,
       examCodeAmbiguous: examCodeDecoding.ambiguous,
       answers,
+      markedCount: orientationMarksDecoding.markedCount,
     };
   } finally {
     warped.delete();

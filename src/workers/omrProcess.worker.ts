@@ -78,6 +78,7 @@ self.onmessage = async (event: MessageEvent<OmrTaskMessage>) => {
       examCode: null,
       examCodeAmbiguous: true,
       answers: [],
+      markedCount: 0,
     };
     self.postMessage(message);
   }

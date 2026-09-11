@@ -77,6 +77,7 @@ export function matchAndScore(input: MatchAndScoreInput): GradingResult {
     totalQuestions,
     questionResults,
     rawAnswers: omrResult.answers,
+    markCount: omrResult.markedCount,
     flags,
     needsManualReview,
     processError: omrResult.error,

@@ -1,6 +1,9 @@
 import { useMemo, useState } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 import { parseDocxFile } from '../../modules/docx-parser';
-import { generateVariants } from '../../modules/shuffle/generateVariants';
+import { generateVariants, type CrossReferenceStrategy } from '../../modules/shuffle/generateVariants';
+import { questionHasOptionCrossReference } from '../../modules/shuffle/optionCrossReference';
+import { letterAt } from '../../lib/optionLetters';
 import { buildExportBundle } from './buildExportBundle';
 import { downloadBlob } from '../../lib/downloadFile';
 import { QuestionReviewList } from './components/QuestionReviewList';
@@ -17,12 +20,18 @@ export function ExamCreationPage() {
   const [examTitle, setExamTitle] = useState('Đề kiểm tra');
   const [count, setCount] = useState(4);
   const [startCode, setStartCode] = useState(101);
+  const [crossReferenceStrategy, setCrossReferenceStrategy] = useState<CrossReferenceStrategy>('lock');
   const [isGenerating, setIsGenerating] = useState(false);
   const [generateError, setGenerateError] = useState<string | null>(null);
   const [generateSuccess, setGenerateSuccess] = useState(false);
+  const [generatedCrossReferenceCount, setGeneratedCrossReferenceCount] = useState(0);
 
   const validCount = useMemo(
     () => questions.filter((q) => q.parseIssues.length === 0 && q.correctOptionId).length,
+    [questions],
+  );
+  const crossReferenceCount = useMemo(
+    () => questions.filter((q) => questionHasOptionCrossReference(q.options)).length,
     [questions],
   );
 
@@ -62,6 +71,43 @@ export function ExamCreationPage() {
     );
   }
 
+  function handleEditQuestionText(questionId: string, text: string) {
+    setQuestions((prev) =>
+      prev.map((q) => {
+        if (q.id !== questionId) return q;
+        const parseIssues =
+          text.trim().length > 0 ? q.parseIssues.filter((issue) => issue !== 'Câu hỏi không có nội dung') : q.parseIssues;
+        return { ...q, text, stemEdited: true, parseIssues };
+      }),
+    );
+  }
+
+  function handleEditOptionText(questionId: string, optionId: string, text: string) {
+    setQuestions((prev) =>
+      prev.map((q) => {
+        if (q.id !== questionId) return q;
+        const optIdx = q.options.findIndex((o) => o.id === optionId);
+        const letter = letterAt(optIdx);
+        const parseIssues =
+          text.trim().length > 0 ? q.parseIssues.filter((issue) => issue !== `Thiếu đáp án ${letter}`) : q.parseIssues;
+        const options = q.options.map((o) => (o.id === optionId ? { ...o, text, edited: true } : o));
+        return { ...q, options, parseIssues };
+      }),
+    );
+  }
+
+  function handleAddOption(questionId: string) {
+    setQuestions((prev) =>
+      prev.map((q) => {
+        if (q.id !== questionId) return q;
+        const newOption = { id: uuidv4(), text: '', edited: true };
+        const options = [...q.options, newOption];
+        const parseIssues = q.parseIssues.filter((issue) => !issue.startsWith('Câu hỏi cần tối thiểu'));
+        return { ...q, options, parseIssues };
+      }),
+    );
+  }
+
   async function handleGenerate() {
     setGenerateError(null);
     setGenerateSuccess(false);
@@ -79,6 +125,7 @@ export function ExamCreationPage() {
         count,
         startCode,
         examTitle,
+        crossReferenceStrategy,
       });
       const zipBlob = await buildExportBundle({
         examTitle,
@@ -90,6 +137,7 @@ export function ExamCreationPage() {
       const baseName = fileName ? fileName.replace(/\.docx$/i, '') : examTitle.replace(/\s+/g, '_');
       downloadBlob(zipBlob, `${baseName}.zip`);
       setGenerateSuccess(true);
+      setGeneratedCrossReferenceCount(crossReferenceStrategy === 'rewrite' ? crossReferenceCount : 0);
     } catch (err) {
       setGenerateError(err instanceof Error ? err.message : 'Lỗi không xác định khi tạo đề');
     } finally {
@@ -120,8 +168,43 @@ export function ExamCreationPage() {
             </p>
           </section>
 
+          {crossReferenceCount > 0 && (
+            <section className="cross-reference-section">
+              <p>
+                Phát hiện <strong>{crossReferenceCount}</strong> câu có đáp án nhắc tới chữ cái đáp án khác
+                (vd "Cả A và B đều đúng") — nếu xáo thứ tự đáp án, chữ cái được nhắc tới có thể trỏ sai đáp
+                án khác. Chọn cách xử lý:
+              </p>
+              <label className="radio-option">
+                <input
+                  type="radio"
+                  name="cross-reference-strategy"
+                  checked={crossReferenceStrategy === 'lock'}
+                  onChange={() => setCrossReferenceStrategy('lock')}
+                />
+                Giữ nguyên thứ tự đáp án cho các câu này (an toàn, đơn giản)
+              </label>
+              <label className="radio-option">
+                <input
+                  type="radio"
+                  name="cross-reference-strategy"
+                  checked={crossReferenceStrategy === 'rewrite'}
+                  onChange={() => setCrossReferenceStrategy('rewrite')}
+                />
+                Vẫn xáo bình thường, tự cập nhật lại chữ cái theo vị trí mới (cần tự kiểm tra lại đề đã tạo)
+              </label>
+            </section>
+          )}
+
           <h2>Bước 2: Kiểm tra câu hỏi</h2>
-          <QuestionReviewList questions={questions} onFixCorrectOption={handleFixCorrectOption} />
+          <QuestionReviewList
+            questions={questions}
+            crossReferenceStrategy={crossReferenceStrategy}
+            onFixCorrectOption={handleFixCorrectOption}
+            onEditQuestionText={handleEditQuestionText}
+            onEditOptionText={handleEditOptionText}
+            onAddOption={handleAddOption}
+          />
 
           <h2>Bước 3: Trộn đề & xuất file</h2>
           <section className="generate-section">
@@ -151,7 +234,18 @@ export function ExamCreationPage() {
               {isGenerating ? 'Đang tạo...' : `Tạo ${count} bộ đề + phiếu trả lời + đáp án (.zip)`}
             </button>
             {generateError && <p className="error-text">{generateError}</p>}
-            {generateSuccess && <p className="success-text">Đã tạo và tải xuống file zip thành công.</p>}
+            {generateSuccess && (
+              <>
+                <p className="success-text">Đã tạo và tải xuống file zip thành công.</p>
+                {generatedCrossReferenceCount > 0 && (
+                  <p className="warning-text">
+                    ⚠ Có {generatedCrossReferenceCount} câu đáp án ghép đã được tự động cập nhật chữ cái khi
+                    trộn — vui lòng mở lại các file đề đã tạo (de-thi_*.docx) để kiểm tra trước khi in/phát
+                    cho sinh viên.
+                  </p>
+                )}
+              </>
+            )}
           </section>
         </>
       )}

@@ -3,6 +3,7 @@ import {
   getMssvBubbleCenterFor,
   getExamCodeBubbleCenterFor,
   getQuestionBubbleCenterFor,
+  getOrientationMarksFor,
   type QuestionGridLayout,
   type TemplateGeometry,
 } from '../pdf-export/bubbleSheetTemplate';
@@ -88,6 +89,38 @@ export function decodeExamCode(cv: CvNamespace, mat: CvMat, dpi: number, geometr
     geometry.examCode.bubbleDiameterMm,
     (col, digit) => getExamCodeBubbleCenterFor(geometry, col, digit),
   );
+}
+
+/** Tỉ lệ mực tối thiểu trong lõi 1 ô định hướng để coi là "đã đánh dấu" — cao hơn hẳn ngưỡng phát
+ * hiện đáp án (0.18) vì mục đích chỉ cần phân biệt RÕ RỆT ô trống (giấy trắng, gần 0) với ô đã tô
+ * kín/gạch tay (thường phủ phần lớn lõi lấy mẫu), tránh báo nhầm khi ảnh chụp có nhiễu nền cục bộ. */
+const ORIENTATION_MARK_FILL_THRESHOLD = 0.4;
+
+export interface OrientationMarksDecoding {
+  /** Số ô trong cụm đã được đánh dấu (0..count). */
+  markedCount: number;
+  /** Trạng thái từng ô, đúng thứ tự getOrientationMarksFor trả về. */
+  states: boolean[];
+}
+
+/** Đọc cụm ô vuông nhỏ "Chỗ đánh dấu" (nếu geometry này có) — chỉ đếm số ô đã tô, không liên quan
+ * tới việc chỉnh phối cảnh (đã dùng ở alignSheet.ts, đây là bước đọc NỘI DUNG sau khi đã warp xong). */
+export function decodeOrientationMarks(
+  cv: CvNamespace,
+  mat: CvMat,
+  dpi: number,
+  geometry: TemplateGeometry,
+): OrientationMarksDecoding {
+  const marks = getOrientationMarksFor(geometry);
+  const sizePx = mmToPx(geometry.orientationMarks?.sizeMm ?? 0, dpi);
+  const states = marks.map((mark) => {
+    const centerPx = {
+      x: mmToPx(mark.topLeft.xMm + mark.sizeMm / 2, dpi),
+      y: mmToPx(mark.topLeft.yMm + mark.sizeMm / 2, dpi),
+    };
+    return sampleBubbleDarkness(cv, mat, centerPx, sizePx) >= ORIENTATION_MARK_FILL_THRESHOLD;
+  });
+  return { markedCount: states.filter(Boolean).length, states };
 }
 
 export interface AnswerReading {

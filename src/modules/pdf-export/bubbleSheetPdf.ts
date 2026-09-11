@@ -9,6 +9,7 @@ import {
   type PointMm,
   type MarkerSpec,
   CORNER_MARKERS,
+  ORIENTATION_MARKS,
   MSSV_DIGIT_COUNT,
   MSSV_BUBBLE_DIAMETER_MM,
   MSSV_LABEL_OFFSET_MM,
@@ -28,7 +29,6 @@ import {
   getQuestionBubbleCenter,
   getQuestionLabelPosition,
   CURRENT_TEMPLATE_VERSION,
-  HOLLOW_CORNER_ID,
 } from './bubbleSheetTemplate';
 
 export interface FilledAnswer {
@@ -67,16 +67,20 @@ function drawBubble(page: PDFPage, center: PointMm, diameterMm: number, filled: 
   });
 }
 
-function drawMarker(page: PDFPage, marker: MarkerSpec, hollow = false) {
+function drawMarker(page: PDFPage, marker: MarkerSpec) {
   const bottomLeftTD: PointMm = { xMm: marker.topLeft.xMm, yMm: marker.topLeft.yMm + marker.sizeMm };
   const { x, y } = topDownMmToPdfPt(bottomLeftTD);
   const sizePt = mmToPt(marker.sizeMm);
-  if (hollow) {
-    // Chỉ vẽ viền (không tô đặc) — OMR nhận ra góc này bằng cách kiểm tra tâm không có mực.
-    page.drawRectangle({ x, y, width: sizePt, height: sizePt, borderColor: BLACK, borderWidth: mmToPt(1.5) });
-  } else {
-    page.drawRectangle({ x, y, width: sizePt, height: sizePt, color: BLACK });
-  }
+  page.drawRectangle({ x, y, width: sizePt, height: sizePt, color: BLACK });
+}
+
+/** Vẽ 1 ô vuông nhỏ RỖNG (chỉ viền) — dùng cho cụm ô định hướng cạnh marker góc (xem
+ * `getOrientationMarksFor`): để trống cho giáo viên tự tô đánh dấu bài, KHÔNG tô sẵn. */
+function drawHollowSquare(page: PDFPage, topLeftMm: PointMm, sizeMm: number) {
+  const bottomLeftTD: PointMm = { xMm: topLeftMm.xMm, yMm: topLeftMm.yMm + sizeMm };
+  const { x, y } = topDownMmToPdfPt(bottomLeftTD);
+  const sizePt = mmToPt(sizeMm);
+  page.drawRectangle({ x, y, width: sizePt, height: sizePt, borderColor: BLACK, borderWidth: mmToPt(0.6) });
 }
 
 function drawTextTD(
@@ -165,9 +169,18 @@ export async function generateBubbleSheetPdf(input: BubbleSheetInput): Promise<U
   const { regular, bold } = await embedVietnameseFonts(pdfDoc);
   const page = pdfDoc.addPage([mmToPt(PAGE_WIDTH_MM), mmToPt(PAGE_HEIGHT_MM)]);
 
-  // Marker góc để căn chỉnh phối cảnh ảnh scan — marker góc trên-trái có thể được vẽ RỖNG (xem
-  // HOLLOW_CORNER_ID) giúp OMR tự nhận ra đúng góc nào là góc nào, tự sửa ảnh scan bị lật/xoay.
-  for (const marker of CORNER_MARKERS) drawMarker(page, marker, marker.id === HOLLOW_CORNER_ID);
+  // Marker góc để căn chỉnh phối cảnh ảnh scan — cả 4 góc đều vẽ đặc giống nhau.
+  for (const marker of CORNER_MARKERS) drawMarker(page, marker);
+  // Cụm ô vuông nhỏ định hướng cạnh 1 marker góc (nếu version này có) — để trống cho giáo viên tự
+  // tô đánh dấu bài; OMR dùng SỰ HIỆN DIỆN của cụm ô này (không quan tâm đã tô hay chưa) để biết
+  // góc nào là góc nào, tự sửa ảnh scan/chụp bị lật/xoay (xem getOrientationMarksFor).
+  for (const mark of ORIENTATION_MARKS) drawHollowSquare(page, mark.topLeft, mark.sizeMm);
+  if (ORIENTATION_MARKS.length > 0) {
+    drawTextTD(page, { xMm: ORIENTATION_MARKS[0].topLeft.xMm, yMm: ORIENTATION_MARKS[0].topLeft.yMm - 3 }, 'Chỗ đánh dấu', {
+      size: 7,
+      font: regular,
+    });
+  }
 
   const isAnswerKeySheet = Boolean(input.filledExamCode);
 

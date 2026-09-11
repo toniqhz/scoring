@@ -15,12 +15,16 @@ function markerCenterPx(geometry: TemplateGeometry, id: MarkerId, dpi: number): 
 
 const MARKER_MIN_REL_AREA = 0.0006;
 const MARKER_MAX_REL_AREA = 0.015;
-const MARKER_MIN_ASPECT = 0.6;
-const MARKER_MAX_ASPECT = 1.4;
-/** Độ sáng xám (0-255) tối thiểu tại tâm 1 candidate để coi là "rỗng" (nền giấy trắng, không có
- * mực). Marker đặc luôn cho giá trị thấp (tối, gần 0) tại đúng tâm; marker rỗng cho giá trị cao
- * (sáng, gần 255) vì tâm chỉ là giấy trắng. */
-const HOLLOW_CENTER_MIN_INTENSITY = 150;
+// Cụm ô định hướng nhỏ hơn nhiều so với marker góc (4mm vs 10mm cạnh) — dải diện tích riêng, thấp
+// hơn hẳn MARKER_MIN_REL_AREA để không lẫn với marker góc thật.
+const ORIENTATION_MARK_MIN_REL_AREA = 0.00008;
+const ORIENTATION_MARK_MAX_REL_AREA = 0.0005;
+const SQUARE_MIN_ASPECT = 0.6;
+const SQUARE_MAX_ASPECT = 1.4;
+/** Bán kính tìm ô định hướng quanh 1 candidate marker góc, tính theo BẢN THÂN kích thước đo được
+ * của candidate đó (sqrt(area)) — không giả định tỉ lệ px/mm cố định, nên vẫn đúng dù ảnh chụp
+ * nghiêng khiến các góc có độ phóng đại khác nhau (giống cách tính probe size trước đây). */
+const ORIENTATION_SEARCH_RADIUS_FACTOR = 4;
 
 export interface AlignResult {
   /** Ảnh grayscale đã warp về đúng khung mẫu + nhị phân hóa lại (nền đen, nét mực = trắng/255). Cần .delete() sau khi dùng. */
@@ -38,9 +42,8 @@ function distance(a: MarkerCandidate, b: MarkerCandidate): number {
   return Math.hypot(a.cx - b.cx, a.cy - b.cy);
 }
 
-/** Gộp các candidate gần trùng nhau (do 1 hình vuông đôi khi sinh ra 2 contour lồng sát nhau, hoặc
- * viền + lỗ rỗng của cùng 1 marker rỗng) thành 1 đại diện — nếu không, các bước phân loại phía sau
- * sẽ bị nhiễu bởi các bản sao gần nhau. */
+/** Gộp các candidate gần trùng nhau (do 1 hình vuông đôi khi sinh ra 2 contour lồng sát nhau) thành
+ * 1 đại diện — nếu không, các bước phân loại phía sau sẽ bị nhiễu bởi các bản sao gần nhau. */
 function dedupeCandidates(candidates: MarkerCandidate[], epsilonPx: number): MarkerCandidate[] {
   const result: MarkerCandidate[] = [];
   for (const c of candidates) {
@@ -49,7 +52,15 @@ function dedupeCandidates(candidates: MarkerCandidate[], epsilonPx: number): Mar
   return result;
 }
 
-function findSquareCandidates(cv: CvNamespace, thresh: CvMat, imageArea: number): MarkerCandidate[] {
+/** Tìm mọi contour hình vuông (4 đỉnh, tỉ lệ cạnh gần 1:1) trong dải diện tích tương đối cho trước
+ * — dùng chung cho cả marker góc (to) lẫn cụm ô định hướng (nhỏ), chỉ khác dải diện tích truyền vào. */
+function findSquareCandidates(
+  cv: CvNamespace,
+  thresh: CvMat,
+  imageArea: number,
+  minRelArea: number,
+  maxRelArea: number,
+): MarkerCandidate[] {
   const contours = new cv.MatVector();
   const hierarchy = new cv.Mat();
   cv.findContours(thresh, contours, hierarchy, cv.RETR_LIST, cv.CHAIN_APPROX_SIMPLE);
@@ -59,10 +70,10 @@ function findSquareCandidates(cv: CvNamespace, thresh: CvMat, imageArea: number)
     const cnt = contours.get(i);
     const area = cv.contourArea(cnt);
     const relArea = area / imageArea;
-    if (relArea > MARKER_MIN_REL_AREA && relArea < MARKER_MAX_REL_AREA) {
+    if (relArea > minRelArea && relArea < maxRelArea) {
       const rect = cv.boundingRect(cnt);
       const aspect = rect.width / rect.height;
-      if (aspect > MARKER_MIN_ASPECT && aspect < MARKER_MAX_ASPECT) {
+      if (aspect > SQUARE_MIN_ASPECT && aspect < SQUARE_MAX_ASPECT) {
         const peri = cv.arcLength(cnt, true);
         const approx = new cv.Mat();
         cv.approxPolyDP(cnt, approx, 0.04 * peri, true);
@@ -83,35 +94,8 @@ function findSquareCandidates(cv: CvNamespace, thresh: CvMat, imageArea: number)
 }
 
 /**
- * Độ sáng trung bình (0-255, ảnh XÁM GỐC trước khi nhị phân hóa) tại 1 vùng nhỏ quanh tâm
- * candidate — kích thước vùng lấy mẫu tính theo chính diện tích đo được của candidate đó (không
- * giả định tỉ lệ px/mm cố định), nên vẫn đúng dù ảnh chụp nghiêng khiến các góc có độ phóng đại
- * khác nhau.
- *
- * QUAN TRỌNG: phải lấy mẫu trên ẢNH XÁM GỐC, KHÔNG lấy trên ảnh đã adaptiveThreshold — vì
- * adaptiveThreshold so mỗi điểm ảnh với TRUNG BÌNH CỤC BỘ quanh nó; một vùng đen ĐẶC lớn (như tâm
- * marker góc) có trung bình cục bộ CŨNG đen, nên bị đọc nhầm thành "nền" (rỗng) dù thực tế là mực
- * đặc — mọi marker đặc sẽ trông "rỗng" ở tâm nếu lấy mẫu trên ảnh đã threshold, khiến không thể
- * phân biệt marker rỗng thật với lỗi này. Trên ảnh xám gốc thì không có vấn đề đó: mực đặc luôn
- * cho giá trị xám thấp (tối) bất kể vùng xung quanh.
- */
-function sampleCenterMeanIntensity(cv: CvNamespace, gray: CvMat, candidate: MarkerCandidate): number {
-  const probeSizePx = Math.max(3, Math.round(Math.sqrt(candidate.area) * 0.3));
-  const half = Math.floor(probeSizePx / 2);
-  const x0 = Math.max(0, Math.round(candidate.cx) - half);
-  const y0 = Math.max(0, Math.round(candidate.cy) - half);
-  const w = Math.min(gray.cols - x0, probeSizePx);
-  const h = Math.min(gray.rows - y0, probeSizePx);
-  if (w <= 0 || h <= 0) return 255;
-  const roi = gray.roi(new cv.Rect(x0, y0, w, h));
-  const meanVal = cv.mean(roi)[0];
-  roi.delete();
-  return meanVal;
-}
-
-/**
  * Gán vai trò 4 góc THEO VỊ TRÍ trong ảnh chụp (không biết/không sửa được chiều thật) — dùng khi
- * không có marker rỗng nào (vd version 1). Nếu ảnh bị lật 180°/xoay 90°/270°, cách này sẽ gán SAI
+ * không có cụm ô định hướng nào (vd version 1). Nếu ảnh bị lật 180°/xoay 90°/270°, cách này sẽ gán SAI
  * vai trò một cách "tự tin" (không báo lỗi) vì 4 marker giống hệt nhau, không mang thông tin
  * chiều — ảnh chụp/scan lệch chiều với version này sẽ chấm sai, không có cách khắc phục.
  */
@@ -124,19 +108,10 @@ function pickCornersByPosition(candidates: MarkerCandidate[]): MarkerCandidate[]
   return [topLeft, topRight, bottomLeft, bottomRight];
 }
 
-/**
- * Gán vai trò 4 góc bằng cách tìm marker RỖNG (kiểm tra mực ngay tại tâm từng candidate — không so
- * sánh candidate này với candidate khác) — đây là "góc thật" đã biết trước theo geometry
- * (hollowCornerId). 3 góc còn lại suy ra từ khoảng cách tới góc rỗng đó: cạnh rộng trang (210mm)
- * NGẮN HƠN cạnh cao trang (297mm), và đường chéo dài nhất — thứ tự gần/vừa/xa này không đổi bất
- * kể ảnh xoay/lật hướng nào hay bị chụp nghiêng phối cảnh thế nào (khác với cách so DIỆN TÍCH giữa
- * các marker — bị ảnh chụp nghiêng làm sai vì marker gần camera luôn đo to hơn marker xa, bất kể in
- * to/nhỏ thế nào; cách kiểm tra RỖNG/ĐẶC ở đây chỉ nhìn vào chính candidate đó nên không bị vậy).
- */
 /** Với 1 góc đã biết danh tính (vd 'top-left'), 3 góc còn lại quan hệ với nó thế nào: đối diện
  * qua đường chéo (xa nhất), kề qua cạnh RỘNG trang 210mm (gần hơn), kề qua cạnh CAO trang 297mm
  * (xa hơn cạnh rộng nhưng vẫn gần hơn đường chéo). Định nghĩa tường minh cho cả 4 trường hợp thay
- * vì hard-code riêng cho 'top-left', để nếu 1 version sau đổi hollowCornerId sang góc khác vẫn đúng. */
+ * vì hard-code riêng cho 'top-left', để nếu 1 version sau đổi cornerId sang góc khác vẫn đúng. */
 const CORNER_RELATIONS: Record<MarkerId, { diagonal: MarkerId; viaWidth: MarkerId; viaHeight: MarkerId }> = {
   'top-left': { diagonal: 'bottom-right', viaWidth: 'top-right', viaHeight: 'bottom-left' },
   'top-right': { diagonal: 'bottom-left', viaWidth: 'top-left', viaHeight: 'bottom-right' },
@@ -144,39 +119,55 @@ const CORNER_RELATIONS: Record<MarkerId, { diagonal: MarkerId; viaWidth: MarkerI
   'bottom-right': { diagonal: 'top-left', viaWidth: 'bottom-left', viaHeight: 'top-right' },
 };
 
-function pickCornersByHollowMark(
-  cv: CvNamespace,
-  gray: CvMat,
-  candidatesRaw: MarkerCandidate[],
-  hollowCornerId: MarkerId,
+/** Đếm số ô định hướng nằm "gần" 1 candidate marker góc — bán kính tìm tính theo kích thước đo
+ * được của chính candidate đó (sqrt(area)), không phải hằng số px cố định, nên vẫn đúng dù ảnh
+ * chụp nghiêng khiến các góc có độ phóng đại khác nhau. */
+function countNearbyOrientationMarks(corner: MarkerCandidate, orientationCandidates: MarkerCandidate[]): number {
+  const searchRadiusPx = Math.sqrt(corner.area) * ORIENTATION_SEARCH_RADIUS_FACTOR;
+  return orientationCandidates.filter((o) => distance(corner, o) < searchRadiusPx).length;
+}
+
+/**
+ * Gán vai trò 4 góc bằng cách tìm góc nào có cụm ô định hướng cạnh nó (đếm số ô định hướng GẦN mỗi
+ * candidate marker góc — không so sánh kích thước/độ sáng giữa các candidate với nhau) — đây là
+ * "góc thật" đã biết trước theo geometry (orientationMarks.cornerId). 3 góc còn lại suy ra từ
+ * khoảng cách tới góc đó: cạnh rộng trang (210mm) NGẮN HƠN cạnh cao trang (297mm), và đường chéo
+ * dài nhất — thứ tự gần/vừa/xa này không đổi bất kể ảnh xoay/lật hướng nào hay bị chụp nghiêng phối
+ * cảnh thế nào (khác với cách so DIỆN TÍCH giữa các marker — bị ảnh chụp nghiêng làm sai vì marker
+ * gần camera luôn đo to hơn marker xa, bất kể in to/nhỏ thế nào).
+ */
+function pickCornersByOrientationMarks(
+  cornerCandidatesRaw: MarkerCandidate[],
+  orientationCandidates: MarkerCandidate[],
+  orientationCornerId: MarkerId,
   epsilonPx: number,
 ): MarkerCandidate[] | null {
-  const candidates = dedupeCandidates(candidatesRaw, epsilonPx);
+  const candidates = dedupeCandidates(cornerCandidatesRaw, epsilonPx);
   if (candidates.length < 4) return null;
 
-  let hollowCandidate: MarkerCandidate | null = null;
-  let highestIntensity = -1;
+  let markedCandidate: MarkerCandidate | null = null;
+  let highestCount = 0;
   for (const c of candidates) {
-    const intensity = sampleCenterMeanIntensity(cv, gray, c);
-    if (intensity > highestIntensity) {
-      highestIntensity = intensity;
-      hollowCandidate = c;
+    const count = countNearbyOrientationMarks(c, orientationCandidates);
+    if (count > highestCount) {
+      highestCount = count;
+      markedCandidate = c;
     }
   }
-  if (!hollowCandidate || highestIntensity < HOLLOW_CENTER_MIN_INTENSITY) return null;
+  if (!markedCandidate) return null;
 
-  const others = candidates.filter((c) => c !== hollowCandidate);
+  const others = candidates.filter((c) => c !== markedCandidate);
   if (others.length < 3) return null;
-  const byDist = others.map((c) => ({ c, d: distance(hollowCandidate!, c) })).sort((a, b) => a.d - b.d);
+  const byDist = others.map((c) => ({ c, d: distance(markedCandidate!, c) })).sort((a, b) => a.d - b.d);
 
-  const rel = CORNER_RELATIONS[hollowCornerId];
+  const rel = CORNER_RELATIONS[orientationCornerId];
   const diagonalCandidate = byDist[byDist.length - 1].c; // xa nhất = đường chéo
   const rest = byDist.slice(0, byDist.length - 1);
   const viaWidthCandidate = rest[0].c; // gần nhất trong số còn lại = cạnh ngắn (rộng trang)
   const viaHeightCandidate = rest[rest.length - 1].c; // xa nhất trong số còn lại = cạnh dài (cao trang)
 
   const roleByMarkerId = new Map<MarkerId, MarkerCandidate>([
-    [hollowCornerId, hollowCandidate],
+    [orientationCornerId, markedCandidate],
     [rel.diagonal, diagonalCandidate],
     [rel.viaWidth, viaWidthCandidate],
     [rel.viaHeight, viaHeightCandidate],
@@ -217,14 +208,29 @@ export function alignAndThreshold(
   blurred.delete();
 
   const imageArea = srcRgbaOrGray.rows * srcRgbaOrGray.cols;
-  const candidates = findSquareCandidates(cv, thresh, imageArea);
+  const cornerCandidates = findSquareCandidates(cv, thresh, imageArea, MARKER_MIN_REL_AREA, MARKER_MAX_REL_AREA);
 
   // Ngưỡng gộp trùng: 1% cạnh ngắn hơn của ảnh — đủ lớn để gộp các contour lồng sát nhau của cùng
   // 1 hình vuông, đủ nhỏ để không gộp nhầm 2 marker góc khác nhau (cách nhau hàng trăm px).
   const epsilonPx = Math.min(srcRgbaOrGray.cols, srcRgbaOrGray.rows) * 0.01;
-  const corners = geometry.hollowCornerId
-    ? pickCornersByHollowMark(cv, gray, candidates, geometry.hollowCornerId, epsilonPx)
-    : pickCornersByPosition(candidates);
+  let corners: MarkerCandidate[] | null;
+  if (geometry.orientationMarks) {
+    const orientationCandidates = findSquareCandidates(
+      cv,
+      thresh,
+      imageArea,
+      ORIENTATION_MARK_MIN_REL_AREA,
+      ORIENTATION_MARK_MAX_REL_AREA,
+    );
+    corners = pickCornersByOrientationMarks(
+      cornerCandidates,
+      orientationCandidates,
+      geometry.orientationMarks.cornerId,
+      epsilonPx,
+    );
+  } else {
+    corners = pickCornersByPosition(cornerCandidates);
+  }
   thresh.delete();
 
   if (!corners) {

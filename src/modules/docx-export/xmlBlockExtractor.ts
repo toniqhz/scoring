@@ -1,6 +1,7 @@
 import JSZip from 'jszip';
 import { parseNumbering, resolveAutoNumberPrefix, createListCounters } from '../docx-parser/numbering';
 import { QUESTION_RE, OPTION_RE } from '../docx-parser/patterns';
+import { findLetterReplacements, applyLetterReplacementsToText } from '../shuffle/optionCrossReference';
 
 const WORD_NS = 'http://schemas.openxmlformats.org/wordprocessingml/2006/main';
 const serializer = new XMLSerializer();
@@ -58,6 +59,61 @@ function stripMatchedPrefix(chunk: ParagraphXmlChunk, matchedLength: number, new
 export interface OptionXmlBlock {
   letter: string;
   chunk: ParagraphXmlChunk;
+}
+
+/**
+ * Dựng 1 ParagraphXmlChunk "giả" từ text thuần (vd sau khi giáo viên sửa tay câu hỏi/đáp án trên
+ * web, không còn khớp với run XML gốc đọc từ file .docx) — mượn định dạng (rPr của run đầu tiên,
+ * pPr của đoạn văn) từ `templateChunk` (nếu có) để nhìn vẫn đồng bộ với các đoạn khác, hoặc dùng
+ * định dạng mặc định của Word nếu đây là đáp án hoàn toàn mới (không có gì để mượn).
+ */
+export function makeSyntheticChunk(text: string, templateChunk?: ParagraphXmlChunk | null): ParagraphXmlChunk {
+  return {
+    text,
+    runs: [{ text, rPrXml: templateChunk?.runs[0]?.rPrXml ?? null }],
+    pPrXml: templateChunk?.pPrXml ?? null,
+    syntheticPrefixLength: 0,
+  };
+}
+
+/**
+ * Tự sửa lại chữ cái đáp án được nhắc tới trong nội dung 1 đoạn XML (vd "Cả A và B đều đúng") theo
+ * `letterMap` (chữ cũ -> chữ mới sau khi xáo) — dùng cho chiến lược "rewrite" khi trộn đề (xem
+ * generateVariants.ts). Chỉ thay ĐÚNG các ký tự chữ cái đã khớp mẫu tham chiếu (không đụng tới ký
+ * tự nào khác), và thay trực tiếp trong TỪNG RUN gốc (giữ nguyên định dạng/font của run đó) — vì
+ * đề in ra dựng lại từ chính các run XML này, không dùng `chunk.text` để hiển thị.
+ */
+export function rewriteChunkLetterReferences(
+  chunk: ParagraphXmlChunk,
+  letterMap: Record<string, string>,
+): ParagraphXmlChunk {
+  const replacements = findLetterReplacements(chunk.text, letterMap);
+  if (replacements.length === 0) return chunk;
+
+  const newRuns: RunChunkXml[] = [];
+  let cursor = 0;
+  let replIdx = 0;
+  for (const run of chunk.runs) {
+    const runStart = cursor;
+    const runEnd = cursor + run.text.length;
+    let text = run.text;
+    while (replIdx < replacements.length && replacements[replIdx].index < runEnd) {
+      const r = replacements[replIdx];
+      if (r.index >= runStart) {
+        const localIndex = r.index - runStart;
+        // Kiểm tra phòng vệ: chỉ thay nếu đúng ký tự mong đợi còn nguyên ở vị trí đó (tránh lệch
+        // offset nếu có bất thường nào đó chưa lường trước — thà bỏ qua còn hơn thay nhầm chữ).
+        if (text[localIndex] === r.oldLetter) {
+          text = text.slice(0, localIndex) + r.newLetter + text.slice(localIndex + 1);
+        }
+      }
+      replIdx++;
+    }
+    newRuns.push({ ...run, text });
+    cursor = runEnd;
+  }
+
+  return { ...chunk, text: applyLetterReplacementsToText(chunk.text, replacements), runs: newRuns };
 }
 
 export interface QuestionXmlBlock {

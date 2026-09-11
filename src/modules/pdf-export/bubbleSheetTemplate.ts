@@ -70,14 +70,27 @@ export interface TemplateGeometry {
   markerSizeMm: number;
   markerMarginMm: number;
   /**
-   * Nếu khác null: marker góc này được vẽ RỖNG (chỉ viền, không tô đặc) thay vì đặc như 3 marker
-   * còn lại — pipeline OMR nhận ra góc này bằng cách kiểm tra TÂM của chính nó có mực hay không
-   * (không so sánh với marker khác), nên KHÔNG bị ảnh hưởng bởi phối cảnh ảnh chụp nghiêng (khác
-   * với cách "so diện tích 4 marker" trước đây — bị ảnh chụp góc nghiêng làm sai lệch vì marker ở
-   * góc gần camera luôn trông to hơn marker ở góc xa, bất kể kích thước in thật). null = không có
-   * marker rỗng nào (vd version 1) -> không tự sửa được ảnh lật/xoay.
+   * Nếu khác null: cạnh marker góc này có thêm 1 cụm ô vuông nhỏ RỖNG (chỉ viền) in sẵn — ban đầu
+   * để giáo viên tự tô đánh dấu bài theo mục đích riêng (không phải input bắt buộc cho OMR), nhưng
+   * pipeline OMR TẬN DỤNG chính SỰ HIỆN DIỆN của cụm ô này (không quan tâm đã tô hay chưa) để biết
+   * góc nào là góc nào, từ đó suy ra 3 góc còn lại theo khoảng cách — tự sửa được ảnh scan/chụp bị
+   * lật 180°/xoay 90°/270°, kể cả ảnh chụp nghiêng có phối cảnh thật.
+   *
+   * Thiết kế này thay cho cách cũ "1 marker góc vẽ rỗng, kiểm tra tâm có mực hay không": cách cũ bị
+   * lỗi "picture frame" của adaptiveThreshold trên ảnh chụp có nhiễu/bóng cục bộ (1 vùng mực ĐẶC đủ
+   * lớn có thể bị đọc nhầm thành "rỗng" ở đúng tâm) — còn cách này chỉ dựa vào HÌNH DẠNG (contour
+   * hình vuông nhỏ) chứ không dựa vào việc lấy mẫu độ sáng, nên không gặp lại lỗi đó dù ô có được tô
+   * hay không. null = không có cụm ô định hướng nào (vd version 1) -> không tự sửa được ảnh lật/xoay.
    */
-  hollowCornerId: MarkerId | null;
+  orientationMarks: {
+    cornerId: MarkerId;
+    count: number;
+    sizeMm: number;
+    /** Khoảng cách giữa 2 ô liền kề trong cụm. */
+    gapMm: number;
+    /** Khoảng cách từ mép marker góc tới ô đầu tiên trong cụm. */
+    gapFromMarkerMm: number;
+  } | null;
   mssv: {
     digitCount: number;
     bubbleDiameterMm: number;
@@ -123,7 +136,7 @@ const TEMPLATE_GEOMETRY_V1: TemplateGeometry = {
   pageHeightMm: 297,
   markerSizeMm: 10,
   markerMarginMm: 8,
-  hollowCornerId: null,
+  orientationMarks: null,
   mssv: {
     digitCount: 8,
     bubbleDiameterMm: 4,
@@ -156,18 +169,20 @@ const TEMPLATE_GEOMETRY_V1: TemplateGeometry = {
 
 /**
  * Version 2 — giống hệt version 1, CHỈ khác:
- *   1. Marker góc trên-trái vẽ RỖNG (chỉ viền) thay vì đặc — pipeline OMR tự nhận ra góc này bằng
- *      cách kiểm tra tâm chính nó rỗng hay đặc, từ đó suy ra 3 góc còn lại theo khoảng cách — tự
- *      sửa được ảnh scan/chụp bị lật 180°/xoay 90°/270°, kể cả ảnh chụp nghiêng có phối cảnh thật
- *      (đã thử và loại bỏ phương án "4 marker kích thước khác nhau" vì bị ảnh chụp nghiêng làm sai
- *      lệch — marker gần camera luôn đo được to hơn marker xa, bất kể in to/nhỏ thế nào).
+ *   1. Cạnh marker góc trên-trái có thêm cụm 3 ô vuông nhỏ RỖNG in sẵn (xem `orientationMarks`) —
+ *      pipeline OMR tự nhận ra góc này nhờ SỰ HIỆN DIỆN của cụm ô này (dù đã tô hay chưa), từ đó
+ *      suy ra 3 góc còn lại theo khoảng cách — tự sửa được ảnh scan/chụp bị lật 180°/xoay 90°/270°,
+ *      kể cả ảnh chụp nghiêng có phối cảnh thật (đã thử và loại bỏ phương án "4 marker kích thước
+ *      khác nhau" vì bị ảnh chụp nghiêng làm sai lệch — marker gần camera luôn đo được to hơn marker
+ *      xa, bất kể in to/nhỏ thế nào; và phương án "1 marker vẽ rỗng, kiểm tra tâm có mực" vì bị lỗi
+ *      "picture frame" của adaptiveThreshold trên ảnh chụp có nhiễu/bóng cục bộ).
  *   2. Lưới câu hỏi chia cụm 5 câu/cụm (rowsPerCluster) thay vì 1 dải 10 câu liền không ngắt, cho
  *      dễ đếm/dò theo mắt.
  */
 const TEMPLATE_GEOMETRY_V2: TemplateGeometry = {
   ...TEMPLATE_GEOMETRY_V1,
   version: 2,
-  hollowCornerId: 'top-left',
+  orientationMarks: { cornerId: 'top-left', count: 3, sizeMm: 4, gapMm: 3, gapFromMarkerMm: 4 },
   question: { ...TEMPLATE_GEOMETRY_V1.question, rowsPerCluster: 5, clusterGapMm: 4 },
 };
 
@@ -217,8 +232,30 @@ export function getCornerMarkersFor(geometry: TemplateGeometry): MarkerSpec[] {
 
 export const CORNER_MARKERS: MarkerSpec[] = getCornerMarkersFor(CURRENT_GEOMETRY);
 
-/** Marker góc nào (nếu có) được vẽ RỖNG ở version hiện tại — null nếu không có (vd version 1). */
-export const HOLLOW_CORNER_ID: MarkerId | null = CURRENT_GEOMETRY.hollowCornerId;
+export interface OrientationMarkSpec {
+  topLeft: PointMm;
+  sizeMm: number;
+}
+
+/**
+ * Vị trí cụm ô vuông nhỏ định hướng (nếu version này có) — đặt thành 1 hàng ngang, ngay cạnh phải
+ * marker góc `orientationMarks.cornerId`, CĂN THẲNG CẠNH DƯỚI với chính marker đó (chừa chỗ phía
+ * trên để in dòng chữ hướng dẫn "Chỗ đánh dấu" — xem bubbleSheetPdf.ts). Tính ĐỘNG từ vị trí marker
+ * góc (không hard-code tọa độ tuyệt đối) để tự đúng nếu 1 version sau đổi vị trí/kích thước marker góc.
+ */
+export function getOrientationMarksFor(geometry: TemplateGeometry): OrientationMarkSpec[] {
+  const cfg = geometry.orientationMarks;
+  if (!cfg) return [];
+  const corner = getCornerMarkersFor(geometry).find((m) => m.id === cfg.cornerId)!;
+  const startXMm = corner.topLeft.xMm + corner.sizeMm + cfg.gapFromMarkerMm;
+  const yMm = corner.topLeft.yMm + corner.sizeMm - cfg.sizeMm;
+  return Array.from({ length: cfg.count }, (_, i) => ({
+    topLeft: { xMm: startXMm + i * (cfg.sizeMm + cfg.gapMm), yMm },
+    sizeMm: cfg.sizeMm,
+  }));
+}
+
+export const ORIENTATION_MARKS: OrientationMarkSpec[] = getOrientationMarksFor(CURRENT_GEOMETRY);
 
 // ---- Lưới Mã số sinh viên (MSSV, sinh viên tự tô) ----
 

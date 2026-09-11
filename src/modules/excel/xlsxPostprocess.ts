@@ -28,7 +28,7 @@ function serialize(doc: Document): string {
 
 const XML_HEADER = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n';
 
-export type CellFillKind = 'wrong' | 'blank' | 'manual';
+export type CellFillKind = 'wrong' | 'blank' | 'manual' | 'marked';
 
 export interface CellFillInstruction {
   /** Tham chiếu ô kiểu Excel, vd "I2". */
@@ -52,9 +52,9 @@ async function readXml(zip: JSZip, path: string): Promise<Document> {
   return parseXml(await file.async('string'));
 }
 
-/** Thêm 3 fill (đỏ nhạt = sai, xám = bỏ trống, vàng = đã sửa tay) + 3 cellXfs tương ứng vào
- * styles.xml, trả về style id để gán cho ô. */
-async function addFillStyles(zip: JSZip): Promise<{ wrong: number; blank: number; manual: number }> {
+/** Thêm 4 fill (đỏ nhạt = sai, xám = bỏ trống, vàng = đã sửa tay, tím = số ô đánh dấu) +
+ * 4 cellXfs tương ứng vào styles.xml, trả về style id để gán cho ô. */
+async function addFillStyles(zip: JSZip): Promise<{ wrong: number; blank: number; manual: number; marked: number }> {
   const doc = await readXml(zip, 'xl/styles.xml');
 
   const fillsEl = doc.getElementsByTagNameNS(SML_NS, 'fills')[0];
@@ -75,10 +75,12 @@ async function addFillStyles(zip: JSZip): Promise<{ wrong: number; blank: number
   const wrongFillId = existingFillCount;
   const blankFillId = existingFillCount + 1;
   const manualFillId = existingFillCount + 2;
+  const markedFillId = existingFillCount + 3;
   addFill('FFF8D7DA'); // đỏ/hồng nhạt — trả lời sai
   addFill('FFD9D9D9'); // xám — bỏ trống
   addFill('FFFFF2CC'); // vàng nhạt — đã sửa tay
-  fillsEl.setAttribute('count', String(existingFillCount + 3));
+  addFill('FFE0CFFA'); // tím nhạt — số ô đánh dấu
+  fillsEl.setAttribute('count', String(existingFillCount + 4));
 
   const cellXfsEl = doc.getElementsByTagNameNS(SML_NS, 'cellXfs')[0];
   const existingXfCount = cellXfsEl.getElementsByTagNameNS(SML_NS, 'xf').length;
@@ -95,21 +97,24 @@ async function addFillStyles(zip: JSZip): Promise<{ wrong: number; blank: number
   const wrongStyleId = existingXfCount;
   const blankStyleId = existingXfCount + 1;
   const manualStyleId = existingXfCount + 2;
+  const markedStyleId = existingXfCount + 3;
   addXf(wrongFillId);
   addXf(blankFillId);
   addXf(manualFillId);
-  cellXfsEl.setAttribute('count', String(existingXfCount + 3));
+  addXf(markedFillId);
+  cellXfsEl.setAttribute('count', String(existingXfCount + 4));
 
   zip.file('xl/styles.xml', serialize(doc));
-  return { wrong: wrongStyleId, blank: blankStyleId, manual: manualStyleId };
+  return { wrong: wrongStyleId, blank: blankStyleId, manual: manualStyleId, marked: markedStyleId };
 }
 
-/** Gán style id (đã thêm ở addFillStyles) vào các ô câu trả lời sai/bỏ trống/đã sửa tay trên 1 sheet. */
+/** Gán style id (đã thêm ở addFillStyles) vào các ô câu trả lời sai/bỏ trống/đã sửa tay/số ô đánh
+ * dấu trên 1 sheet. */
 async function applyCellFills(
   zip: JSZip,
   sheetPath: string,
   fills: CellFillInstruction[],
-  styleIds: { wrong: number; blank: number; manual: number },
+  styleIds: { wrong: number; blank: number; manual: number; marked: number },
 ): Promise<void> {
   if (fills.length === 0) return;
   const doc = await readXml(zip, sheetPath);
@@ -119,8 +124,12 @@ async function applyCellFills(
     const ref = cells[i].getAttribute('r');
     if (ref) cellByRef.set(ref, cells[i]);
   }
-  const styleIdFor = (kind: CellFillKind) =>
-    kind === 'manual' ? styleIds.manual : kind === 'wrong' ? styleIds.wrong : styleIds.blank;
+  const styleIdFor = (kind: CellFillKind) => {
+    if (kind === 'manual') return styleIds.manual;
+    if (kind === 'marked') return styleIds.marked;
+    if (kind === 'wrong') return styleIds.wrong;
+    return styleIds.blank;
+  };
   for (const fill of fills) {
     const cellEl = cellByRef.get(fill.cellRef);
     if (!cellEl) continue;

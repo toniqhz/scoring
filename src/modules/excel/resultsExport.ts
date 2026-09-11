@@ -1,6 +1,7 @@
 import * as XLSX from 'xlsx';
 import type { GradingResult } from '../../types/gradingResult';
 import type { AnswerKeyBundle } from '../../types/answerKey';
+import type { CollusionGroup } from '../grading/detectCollusion';
 import { postprocessResultsWorkbook, type CellFillInstruction, type DistributionChartSpec } from './xlsxPostprocess';
 
 /** Tab 1: chỉ MSSV + Điểm — để dễ import/đối chiếu với hệ thống quản lý điểm khác. */
@@ -22,10 +23,14 @@ function columnLetter(colIndex0: number): string {
   return s;
 }
 
-const DETAIL_FIXED_COLUMN_COUNT = 8; // STT, MSSV, Họ tên, Mã đề, Điểm, Số câu đúng, Tổng số câu, Cần xem lại
+// STT, MSSV, Họ tên, Mã đề, Điểm, Số câu đúng, Tổng số câu, Cần xem lại, Số ô đánh dấu
+const DETAIL_FIXED_COLUMN_COUNT = 9;
+/** Chỉ số cột (0-based) của "Số ô đánh dấu" — cột cuối trong nhóm cột cố định, tô tím. */
+const MARK_COUNT_COLUMN_INDEX = 8;
 
 /** Tab 2: bảng chi tiết đầy đủ, kèm chỉ dẫn tô màu ô câu trả lời sai (hồng) / bỏ trống (xám) /
- * đã sửa tay (vàng — ưu tiên cao nhất, để giáo viên khác dễ nhận ra câu nào do người xác nhận). */
+ * đã sửa tay (vàng — ưu tiên cao nhất, để giáo viên khác dễ nhận ra câu nào do người xác nhận) /
+ * số ô đánh dấu (tím — cột riêng, không phải câu trả lời). */
 function buildDetailSheet(results: GradingResult[]): { sheet: XLSX.WorkSheet; fills: CellFillInstruction[] } {
   const maxQuestions = Math.max(0, ...results.map((r) => r.totalQuestions));
 
@@ -38,6 +43,7 @@ function buildDetailSheet(results: GradingResult[]): { sheet: XLSX.WorkSheet; fi
     'Số câu đúng',
     'Tổng số câu',
     'Cần xem lại',
+    'Số ô đánh dấu',
     ...Array.from({ length: maxQuestions }, (_, i) => `Câu ${i + 1}`),
   ];
 
@@ -45,6 +51,7 @@ function buildDetailSheet(results: GradingResult[]): { sheet: XLSX.WorkSheet; fi
   const rows = results.map((r, rowIndex) => {
     const byPosition = new Map(r.questionResults.map((q) => [q.position, q]));
     const sheetRow = rowIndex + 2; // dòng 1 là header
+    fills.push({ cellRef: `${columnLetter(MARK_COUNT_COLUMN_INDEX)}${sheetRow}`, kind: 'marked' });
     const questionCells = Array.from({ length: maxQuestions }, (_, idx) => {
       const q = byPosition.get(idx + 1);
       if (q) {
@@ -64,6 +71,7 @@ function buildDetailSheet(results: GradingResult[]): { sheet: XLSX.WorkSheet; fi
       r.correctCount,
       r.totalQuestions,
       r.needsManualReview ? 'Có' : '',
+      r.markCount,
       ...questionCells,
     ];
   });
@@ -180,12 +188,60 @@ function buildQuestionDifficultySheet(results: GradingResult[], answerKeyBundle:
 }
 
 /**
- * Xuất bảng điểm ra Excel gồm 4 tab:
+ * Tab 5: nghi vấn trùng đáp án sai (xem detectCollusion.ts) — 1 cặp bài nghi vấn chiếm 2 dòng liền
+ * nhau (mỗi dòng 1 sinh viên, xếp DỌC thay vì 2 sinh viên nằm ngang trên cùng 1 dòng), gộp theo
+ * nhóm (nhiều bài liên quan bắc cầu qua nhau thì cùng 1 mã nhóm). Các cột số liệu so sánh (số câu
+ * ít nhất 1 người sai, số câu trùng, % trùng) đặt TRƯỚC thông tin sinh viên. Các ô cùng giá trị vì
+ * cùng thuộc 1 nhóm/1 cặp (cột "Nhóm" trải hết các dòng của nhóm; 3 cột số liệu trải 2 dòng của
+ * từng cặp) được GỘP LẠI thay vì lặp lại nội dung — dễ nhìn hơn khi 1 nhóm có nhiều hơn 2 sinh viên.
+ */
+function buildCollusionSheet(groups: CollusionGroup[]): XLSX.WorkSheet {
+  const header = [
+    'Nhóm',
+    'Số câu ít nhất 1 người sai',
+    'Số câu trùng đáp án sai',
+    '% trùng đáp án sai',
+    'MSSV',
+    'Họ tên',
+    'Mã đề',
+  ];
+  const rows: (string | number)[][] = [];
+  const merges: XLSX.Range[] = [];
+  let rowIndex = 1; // dòng 0 là header
+
+  for (const g of groups) {
+    const groupStartRow = rowIndex;
+    for (const p of g.pairs) {
+      const pairStartRow = rowIndex;
+      rows.push([g.groupId, p.eitherWrongCount, p.matchingWrongCount, p.matchPercent, p.mssvA ?? '', p.hoTenA ?? '', p.examCodeA]);
+      rows.push(['', '', '', '', p.mssvB ?? '', p.hoTenB ?? '', p.examCodeB]);
+      rowIndex += 2;
+      // Gộp 3 cột số liệu (giống nhau trên cả 2 dòng của 1 cặp) thành 1 ô duy nhất.
+      for (const col of [1, 2, 3]) {
+        merges.push({ s: { r: pairStartRow, c: col }, e: { r: pairStartRow + 1, c: col } });
+      }
+    }
+    // Gộp cột "Nhóm" trải hết mọi dòng (mọi cặp) thuộc nhóm này.
+    merges.push({ s: { r: groupStartRow, c: 0 }, e: { r: rowIndex - 1, c: 0 } });
+  }
+  if (rows.length === 0) {
+    rows.push(['Không phát hiện nhóm nghi vấn nào theo ngưỡng đã đặt (xem detectCollusion.ts).']);
+  }
+  const ws = XLSX.utils.aoa_to_sheet([header, ...rows]);
+  if (merges.length > 0) ws['!merges'] = merges;
+  return ws;
+}
+
+/**
+ * Xuất bảng điểm ra Excel gồm 5 tab:
  * 1. Bảng điểm (MSSV, Điểm) — gọn để đối chiếu/nhập hệ thống khác.
  * 2. Chi tiết (đầy đủ như trước: mã đề, đúng/sai từng câu theo vị trí phiếu — câu sai tô hồng,
- *    câu bỏ trống tô xám).
+ *    câu bỏ trống tô xám, câu sửa tay tô vàng — kèm cột "Số ô đánh dấu" tô tím, đếm số ô
+ *    trong cụm "Chỗ đánh dấu" cạnh marker góc mà giáo viên đã tô trên phiếu).
  * 3. Phổ điểm — tần suất theo khoảng điểm + các chỉ số tổng quan + biểu đồ cột.
  * 4. Độ khó câu hỏi — tỷ lệ trả lời sai theo từng câu hỏi gốc trong ngân hàng câu hỏi.
+ * 5. Nghi vấn gian lận — các cặp/nhóm bài trùng đáp án sai vượt ngưỡng, so được xuyên suốt mọi mã
+ *    đề (detectCollusion.ts).
  *
  * LƯU Ý: thứ tự tab (sheet1..sheet4) phải khớp đúng thứ tự book_append_sheet bên dưới, vì bước
  * hậu xử lý XML thô (postprocessResultsWorkbook) tham chiếu trực tiếp tới sheet2.xml/sheet3.xml.
@@ -193,6 +249,7 @@ function buildQuestionDifficultySheet(results: GradingResult[], answerKeyBundle:
 export async function exportResultsToXlsxBytes(
   results: GradingResult[],
   answerKeyBundle: AnswerKeyBundle,
+  collusionGroups: CollusionGroup[] = [],
 ): Promise<Uint8Array> {
   const wb = XLSX.utils.book_new();
   const detail = buildDetailSheet(results);
@@ -202,6 +259,7 @@ export async function exportResultsToXlsxBytes(
   XLSX.utils.book_append_sheet(wb, detail.sheet, 'Chi tiết'); // sheet2.xml
   XLSX.utils.book_append_sheet(wb, distribution.sheet, 'Phổ điểm'); // sheet3.xml
   XLSX.utils.book_append_sheet(wb, buildQuestionDifficultySheet(results, answerKeyBundle), 'Độ khó câu hỏi'); // sheet4.xml
+  XLSX.utils.book_append_sheet(wb, buildCollusionSheet(collusionGroups), 'Nghi vấn gian lận'); // sheet5.xml
 
   const baseBytes = XLSX.write(wb, { type: 'array', bookType: 'xlsx' }) as Uint8Array;
   return postprocessResultsWorkbook(baseBytes, {

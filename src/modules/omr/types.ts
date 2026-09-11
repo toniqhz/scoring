@@ -27,4 +27,6 @@ export interface OmrResultMessage {
   examCode: string | null;
   examCodeAmbiguous: boolean;
   answers: OmrAnswerReading[];
+  /** Số ô trong cụm "Chỗ đánh dấu" đã được tô (0 nếu version phiếu không có cụm ô định hướng). */
+  markedCount: number;
 }
