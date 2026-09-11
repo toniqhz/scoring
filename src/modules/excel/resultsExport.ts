@@ -30,7 +30,8 @@ const MARK_COUNT_COLUMN_INDEX = 8;
 
 /** Tab 2: bảng chi tiết đầy đủ, kèm chỉ dẫn tô màu ô câu trả lời sai (hồng) / bỏ trống (xám) /
  * đã sửa tay (vàng — ưu tiên cao nhất, để giáo viên khác dễ nhận ra câu nào do người xác nhận) /
- * số ô đánh dấu (tím — cột riêng, không phải câu trả lời). */
+ * số ô đánh dấu (tím — cột riêng, không phải câu trả lời; chỉ tô khi phiếu thực sự có ô bị đánh
+ * dấu, markCount > 0 — phiếu không đánh dấu gì để nền trắng bình thường). */
 function buildDetailSheet(results: GradingResult[]): { sheet: XLSX.WorkSheet; fills: CellFillInstruction[] } {
   const maxQuestions = Math.max(0, ...results.map((r) => r.totalQuestions));
 
@@ -51,7 +52,9 @@ function buildDetailSheet(results: GradingResult[]): { sheet: XLSX.WorkSheet; fi
   const rows = results.map((r, rowIndex) => {
     const byPosition = new Map(r.questionResults.map((q) => [q.position, q]));
     const sheetRow = rowIndex + 2; // dòng 1 là header
-    fills.push({ cellRef: `${columnLetter(MARK_COUNT_COLUMN_INDEX)}${sheetRow}`, kind: 'marked' });
+    if (r.markCount > 0) {
+      fills.push({ cellRef: `${columnLetter(MARK_COUNT_COLUMN_INDEX)}${sheetRow}`, kind: 'marked' });
+    }
     const questionCells = Array.from({ length: maxQuestions }, (_, idx) => {
       const q = byPosition.get(idx + 1);
       if (q) {
