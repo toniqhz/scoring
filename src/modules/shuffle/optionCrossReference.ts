@@ -61,6 +61,12 @@ export interface LetterReplacement {
  * Tìm mọi vị trí chữ cái cần thay trong `text` theo `letterMap` (chữ cũ -> chữ mới sau khi xáo) —
  * CHỈ trong phạm vi các đoạn đã khớp mẫu tham chiếu (REWRITE_SCAN_PATTERNS), không quét/thay bừa
  * mọi chữ cái đơn lẻ trong toàn bộ text.
+ *
+ * Với mỗi cụm khớp mẫu có NHIỀU chữ cái (vd "(B), (A) và (C)"), các chữ cái MỚI được SẮP XẾP LẠI
+ * theo thứ tự alphabet (A, B, C...) trước khi gán vào từng vị trí — để đáp án ghép luôn đọc theo
+ * thứ tự tăng dần cho dễ đọc, thay vì giữ nguyên thứ tự (có thể trông lộn xộn) do vị trí gốc của
+ * từng chữ cái để lại sau khi xáo. Việc sắp xếp lại không đổi TẬP chữ cái được nhắc tới (vẫn đúng
+ * những đáp án đó), chỉ đổi thứ tự liệt kê trong câu.
  */
 export function findLetterReplacements(text: string, letterMap: Record<string, string>): LetterReplacement[] {
   const replacements: LetterReplacement[] = [];
@@ -71,14 +77,18 @@ export function findLetterReplacements(text: string, letterMap: Record<string, s
       const span = m[0];
       const spanStart = m.index;
       const letterRe = /[A-E]/g;
+      const occurrences: { index: number; oldLetter: string }[] = [];
       let lm: RegExpExecArray | null;
       while ((lm = letterRe.exec(span))) {
-        const oldLetter = lm[0];
-        const newLetter = letterMap[oldLetter];
-        if (newLetter && newLetter !== oldLetter) {
-          replacements.push({ index: spanStart + lm.index, oldLetter, newLetter });
-        }
+        occurrences.push({ index: spanStart + lm.index, oldLetter: lm[0] });
       }
+      const sortedNewLetters = occurrences.map((o) => letterMap[o.oldLetter] ?? o.oldLetter).sort();
+      occurrences.forEach((o, i) => {
+        const newLetter = sortedNewLetters[i];
+        if (newLetter !== o.oldLetter) {
+          replacements.push({ index: o.index, oldLetter: o.oldLetter, newLetter });
+        }
+      });
       if (m[0].length === 0) pattern.lastIndex++; // an toàn, tránh vòng lặp vô hạn với match rỗng
     }
   }
