@@ -1,12 +1,12 @@
 import { fisherYatesShuffle, mulberry32 } from './prng';
 import { letterAt } from '../../lib/optionLetters';
 import { CURRENT_TEMPLATE_VERSION } from '../pdf-export/bubbleSheetTemplate';
-import { questionHasOptionCrossReference, rewriteOptionTextReferences } from './optionCrossReference';
-import type { Question } from '../../types/question';
+import { questionHasOptionCrossReference, optionReferencesOtherLetter, rewriteOptionTextReferences } from './optionCrossReference';
+import type { Question, QuestionOption } from '../../types/question';
 import type { ExamVariant } from '../../types/examVariant';
 import type { AnswerKeyBundle, AnswerKeyVariant } from '../../types/answerKey';
 
-export type CrossReferenceStrategy = 'lock' | 'rewrite';
+export type CrossReferenceStrategy = 'lock' | 'rewrite' | 'partition';
 
 export interface GenerateVariantsOptions {
   count: number;
@@ -14,11 +14,18 @@ export interface GenerateVariantsOptions {
   examTitle: string;
   /**
    * Cách xử lý câu có đáp án nhắc tới chữ cái đáp án khác (vd "Cả A và B đều đúng") khi trộn đề —
-   * mặc định 'lock'. 'lock' = giữ nguyên thứ tự đáp án gốc của câu đó (an toàn tuyệt đối, không cần
-   * kiểm tra gì thêm, đổi lại câu đó giảm chống copy giữa các mã đề). 'rewrite' = vẫn xáo đáp án
-   * bình thường như mọi câu khác, rồi TỰ CẬP NHẬT lại chữ cái được nhắc tới cho khớp vị trí mới
-   * (cả trong đề .docx in ra lẫn đáp án) — quy tắc nhận diện không bắt được MỌI cách diễn đạt nên
-   * vẫn cần giáo viên tự mở lại đề đã tạo để kiểm tra trước khi in/phát cho sinh viên.
+   * mặc định 'lock'.
+   *   - 'lock': giữ nguyên thứ tự đáp án gốc của câu đó (an toàn tuyệt đối, không cần kiểm tra gì
+   *     thêm, đổi lại câu đó giảm chống copy giữa các mã đề).
+   *   - 'rewrite': vẫn xáo TOÀN BỘ đáp án bình thường như mọi câu khác, rồi TỰ CẬP NHẬT lại chữ cái
+   *     được nhắc tới cho khớp vị trí mới.
+   *   - 'partition': xáo RIÊNG 2 nhóm — các đáp án "đơn" (không nhắc chữ cái nào khác) xáo với nhau
+   *     rồi xếp lên ĐẦU, các đáp án "ghép" (có nhắc chữ cái khác, vd "Cả A và B đều đúng") xáo riêng
+   *     với nhau rồi xếp xuống CUỐI, sau đó chữ cái được nhắc tới trong đáp án ghép được TỰ CẬP NHẬT
+   *     theo vị trí mới của đáp án đơn — tránh trường hợp đáp án ghép bị xáo lên trước chính đáp án
+   *     nó đang nhắc tới (đọc tự nhiên hơn 'rewrite').
+   * Cả 'rewrite' và 'partition' đều dựa trên quy tắc nhận diện heuristic, không bắt được MỌI cách
+   * diễn đạt, nên vẫn cần giáo viên tự mở lại đề đã tạo để kiểm tra trước khi in/phát cho sinh viên.
    */
   crossReferenceStrategy?: CrossReferenceStrategy;
 }
@@ -67,12 +74,23 @@ export function generateVariants(
       const question = questionById.get(qId)!;
       const hasCrossReference = questionHasOptionCrossReference(question.options);
       const useLock = hasCrossReference && crossReferenceStrategy === 'lock';
+      const usePartition = hasCrossReference && crossReferenceStrategy === 'partition';
 
       // Câu có đáp án nhắc tới chữ cái đáp án khác (vd "Cả A và B đều đúng"): nếu chọn "lock" thì
       // GIỮ NGUYÊN thứ tự đáp án gốc — nếu xáo, chữ cái được nhắc tới sẽ trỏ sai sang đáp án khác,
-      // làm câu hỏi sai nghĩa (xem optionCrossReference.ts). Nếu chọn "rewrite" thì vẫn xáo bình
-      // thường, chữ cái tham chiếu sẽ được TỰ SỬA LẠI bên dưới.
-      const shuffledOptions = useLock ? question.options : fisherYatesShuffle(question.options, rng);
+      // làm câu hỏi sai nghĩa (xem optionCrossReference.ts). Nếu chọn "rewrite" thì xáo TOÀN BỘ đáp
+      // án bình thường. Nếu chọn "partition" thì xáo RIÊNG đáp án đơn (lên đầu) và đáp án ghép
+      // (xuống cuối) — cả "rewrite" và "partition" đều tự sửa lại chữ cái tham chiếu bên dưới.
+      let shuffledOptions: QuestionOption[];
+      if (useLock) {
+        shuffledOptions = question.options;
+      } else if (usePartition) {
+        const singles = question.options.filter((o) => !optionReferencesOtherLetter(o));
+        const combining = question.options.filter((o) => optionReferencesOtherLetter(o));
+        shuffledOptions = [...fisherYatesShuffle(singles, rng), ...fisherYatesShuffle(combining, rng)];
+      } else {
+        shuffledOptions = fisherYatesShuffle(question.options, rng);
+      }
       optionOrderByQuestion[qId] = shuffledOptions.map((o) => o.id);
 
       let letterMap: Record<string, string> | null = null;

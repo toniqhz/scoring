@@ -167,7 +167,7 @@ export function ExamCreationPage() {
       const baseName = fileName ? fileName.replace(/\.docx$/i, '') : examTitle.replace(/\s+/g, '_');
       downloadBlob(zipBlob, `${baseName}.zip`);
       setGenerateSuccess(true);
-      setGeneratedCrossReferenceCount(crossReferenceStrategy === 'rewrite' ? crossReferenceCount : 0);
+      setGeneratedCrossReferenceCount(crossReferenceStrategy !== 'lock' ? crossReferenceCount : 0);
     } catch (err) {
       setGenerateError(err instanceof Error ? err.message : 'Lỗi không xác định khi tạo đề');
     } finally {
@@ -222,6 +222,16 @@ export function ExamCreationPage() {
                   onChange={() => setCrossReferenceStrategy('rewrite')}
                 />
                 Vẫn xáo bình thường, tự cập nhật lại chữ cái theo vị trí mới (cần tự kiểm tra lại đề đã tạo)
+              </label>
+              <label className="radio-option">
+                <input
+                  type="radio"
+                  name="cross-reference-strategy"
+                  checked={crossReferenceStrategy === 'partition'}
+                  onChange={() => setCrossReferenceStrategy('partition')}
+                />
+                Xáo riêng đáp án đơn lẻ (đưa lên đầu) và đáp án ghép nhiều chữ cái (đưa xuống cuối),
+                tự cập nhật chữ cái theo vị trí mới (cần tự kiểm tra lại đề đã tạo)
               </label>
             </section>
           )}

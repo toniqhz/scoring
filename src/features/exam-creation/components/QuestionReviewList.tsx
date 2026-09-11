@@ -63,6 +63,14 @@ export function QuestionReviewList({
                   🔄 Sẽ tự cập nhật chữ cái khi trộn
                 </span>
               )}
+              {hasCrossReference && crossReferenceStrategy === 'partition' && (
+                <span
+                  className="rewrite-badge"
+                  title='Phát hiện đáp án nhắc tới chữ cái đáp án khác (vd "Cả A và B đều đúng") — đáp án đơn lẻ sẽ xáo lên đầu, đáp án ghép xáo riêng xuống cuối, chữ cái sẽ được TỰ CẬP NHẬT theo vị trí mới. Hãy mở lại đề đã tạo để kiểm tra trước khi in.'
+                >
+                  🔀 Đơn lẻ lên đầu, ghép xuống cuối (tự cập nhật chữ cái)
+                </span>
+              )}
               <button type="button" className="edit-toggle-btn" onClick={() => toggleEditing(q.id)}>
                 {isEditing ? '✓ Xong' : '✎ Sửa'}
               </button>

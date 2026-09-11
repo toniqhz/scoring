@@ -43,6 +43,13 @@ export function questionHasOptionCrossReference(options: Pick<QuestionOption, 't
   return options.some((o) => textReferencesOtherLetter(o.text));
 }
 
+/** true nếu RIÊNG đáp án này nhắc tới chữ cái đáp án khác (đáp án "ghép", vd "Cả A và B đều đúng") —
+ * false = đáp án "đơn" (không nhắc tới đáp án nào khác). Dùng cho chiến lược "partition" (xem
+ * generateVariants.ts): tách riêng 2 nhóm để xáo, đáp án đơn lên đầu, đáp án ghép xuống cuối. */
+export function optionReferencesOtherLetter(option: Pick<QuestionOption, 'text'>): boolean {
+  return textReferencesOtherLetter(option.text);
+}
+
 export interface LetterReplacement {
   /** Vị trí ký tự (0-based, tính trên chuỗi text gốc) cần thay. */
   index: number;
