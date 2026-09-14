@@ -145,6 +145,14 @@ function buildParagraphFromChunk(doc: XMLDocument, chunk: ParagraphXmlChunk, opt
     for (const el of Array.from(pPrEl.getElementsByTagNameNS(WORD_NS, 'numPr'))) {
       el.parentNode?.removeChild(el);
     }
+    // Bỏ luôn w:ind (thụt lề) kế thừa từ file gốc — mỗi câu hỏi trong file gốc có thể được gõ với
+    // mức thụt lề tuỳ tiện khác nhau (tab, list tự động, thụt tay...), giữ lại sẽ làm đề in ra thụt
+    // vào nông/sâu không đều giữa các câu. Thụt lề của đề in ra do CHÍNH ta quy định thống nhất:
+    // 0 cho nội dung câu hỏi (kể cả dòng phụ), OPTION_INDENT_TWIPS cho các dòng đáp án (setLeftIndent
+    // gọi riêng ở nơi build đáp án bên dưới) — không phụ thuộc định dạng gốc.
+    for (const el of Array.from(pPrEl.getElementsByTagNameNS(WORD_NS, 'ind'))) {
+      el.parentNode?.removeChild(el);
+    }
     pEl.appendChild(pPrEl);
   }
   const firstRunRPr = chunk.runs[0]?.rPrXml ?? null;
