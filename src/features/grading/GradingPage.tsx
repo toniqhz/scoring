@@ -5,6 +5,7 @@ import { loadSheetImagesFromFiles } from '../../modules/omr/loadSheetImages';
 import { OmrWorkerClient } from '../../modules/omr/omrWorkerClient';
 import { matchAndScore } from '../../modules/grading/matchAndScore';
 import { detectCollusion, DEFAULT_COLLUSION_OPTIONS } from '../../modules/grading/detectCollusion';
+import { detectDuplicateStudents } from '../../modules/grading/detectDuplicateStudents';
 import { downloadBlob } from '../../lib/downloadFile';
 import type { RosterEntry } from '../../types/roster';
 import type { AnswerKeyBundle } from '../../types/answerKey';
@@ -12,6 +13,7 @@ import type { GradingResult } from '../../types/gradingResult';
 import { ResultsTable } from './components/ResultsTable';
 import { ScoreHistogram } from './components/ScoreHistogram';
 import { CollusionPanel } from './components/CollusionPanel';
+import { DuplicateStudentPanel } from './components/DuplicateStudentPanel';
 import './GradingPage.css';
 
 export function GradingPage() {
@@ -154,6 +156,7 @@ export function GradingPage() {
     () => (answerKeyBundle ? detectCollusion(activeResults, answerKeyBundle, collusionOptions) : []),
     [activeResults, answerKeyBundle, collusionOptions],
   );
+  const duplicateStudentGroups = useMemo(() => detectDuplicateStudents(activeResults), [activeResults]);
 
   function handleUpdateResult(updated: GradingResult) {
     setResults((prev) => prev.map((r) => (r.sheetId === updated.sheetId ? updated : r)));
@@ -224,6 +227,7 @@ export function GradingPage() {
             </button>
             {isProcessing && <p className="issue-hint">Đợi chấm xong toàn bộ để tránh xuất thiếu dữ liệu.</p>}
           </section>
+          <DuplicateStudentPanel groups={duplicateStudentGroups} />
           <ScoreHistogram results={activeResults} />
           <CollusionPanel
             groups={collusionGroups}

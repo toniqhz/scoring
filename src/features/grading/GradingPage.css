@@ -282,6 +282,26 @@
   border-radius: 8px;
 }
 
+.duplicate-student-panel {
+  margin-bottom: 16px;
+  padding: 12px 14px;
+  background: var(--warning-bg);
+  border: 1px solid var(--warning-border);
+  border-radius: 8px;
+}
+
+.duplicate-student-panel h3 {
+  margin: 0 0 6px;
+  font-size: 1rem;
+  color: var(--text-primary);
+}
+
+.duplicate-student-panel ul {
+  margin: 8px 0 0;
+  padding-left: 18px;
+  color: var(--text-primary);
+}
+
 .collusion-panel h3 {
   margin: 0 0 6px;
   font-size: 1rem;
