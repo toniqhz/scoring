@@ -257,6 +257,35 @@ export function getOrientationMarksFor(geometry: TemplateGeometry): OrientationM
 
 export const ORIENTATION_MARKS: OrientationMarkSpec[] = getOrientationMarksFor(CURRENT_GEOMETRY);
 
+/**
+ * Điểm chính giữa + "đường kính" (theo đúng quy ước của `sampleBubbleDarkness`) của 1 vùng giấy
+ * CHẮC CHẮN không in gì lên — chính là khoảng cách (`gapFromMarkerMm`) giữa mép phải marker góc và
+ * ô đầu tiên trong cụm "Chỗ đánh dấu" (xem bubbleSheetPdf.ts: chỉ vẽ marker + 3 ô rỗng + dòng chữ
+ * PHÍA TRÊN cụm ô, không có gì vẽ vào khoảng trống này). Dùng làm MỐC NỀN để đọc độ đậm cụm ô định
+ * hướng THEO TƯƠNG ĐỐI (xem decodeOrientationMarks trong bubbleSample.ts) — tự thích ứng theo mức
+ * nhiễu nền/độ tương phản của TỪNG phiếu scan, thay vì so với 1 ngưỡng tuyệt đối cố định chung cho
+ * mọi phiếu (dễ sai khi có phiếu scan tối/sáng khác nhau — xem lịch sử ORIENTATION_MARK_FILL_THRESHOLD
+ * cũ). null nếu version này không có cụm ô định hướng.
+ */
+export function getOrientationBlankReferenceFor(
+  geometry: TemplateGeometry,
+): { center: PointMm; diameterMm: number } | null {
+  const cfg = geometry.orientationMarks;
+  if (!cfg) return null;
+  const corner = getCornerMarkersFor(geometry).find((m) => m.id === cfg.cornerId)!;
+  // Đường kính lấy mẫu = cạnh NHỎ HƠN giữa bề rộng thật của khoảng trống (gapFromMarkerMm) và kích
+  // thước 1 ô (sizeMm) — đảm bảo vùng lõi lấy mẫu (SAMPLE_CORE_RATIO trong bubbleSample.ts) luôn
+  // nằm gọn trong khoảng trống, không lấn sang marker góc hay ô đầu tiên dù geometry đổi tỉ lệ.
+  const diameterMm = Math.min(cfg.gapFromMarkerMm, cfg.sizeMm);
+  return {
+    center: {
+      xMm: corner.topLeft.xMm + corner.sizeMm + cfg.gapFromMarkerMm / 2,
+      yMm: corner.topLeft.yMm + corner.sizeMm - cfg.sizeMm / 2,
+    },
+    diameterMm,
+  };
+}
+
 // ---- Lưới Mã số sinh viên (MSSV, sinh viên tự tô) ----
 
 export const MSSV_DIGIT_COUNT = CURRENT_GEOMETRY.mssv.digitCount;

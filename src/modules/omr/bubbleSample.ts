@@ -4,6 +4,7 @@ import {
   getExamCodeBubbleCenterFor,
   getQuestionBubbleCenterFor,
   getOrientationMarksFor,
+  getOrientationBlankReferenceFor,
   type QuestionGridLayout,
   type TemplateGeometry,
 } from '../pdf-export/bubbleSheetTemplate';
@@ -92,16 +93,20 @@ export function decodeExamCode(cv: CvNamespace, mat: CvMat, dpi: number, geometr
 }
 
 /**
- * Tỉ lệ mực tối thiểu trong lõi 1 ô định hướng để coi là "đã đánh dấu".
+ * Độ đậm tối thiểu CAO HƠN mốc nền (vùng giấy trắng thật gần đó — xem getOrientationBlankReferenceFor)
+ * để coi 1 ô định hướng là "đã đánh dấu".
  *
- * Kiểm tra trên ảnh scan thật (test/filein/scan/Scan*.jpeg.pdf) cho thấy giáo viên có thể đánh dấu ô
- * này theo 2 KIỂU khác nhau: (1) tô kín/gạch tay bằng bút — phủ gần hết lõi lấy mẫu (đo được cao,
- * ví dụ ~0.49 trở lên); (2) đóng dấu bằng hình có sẵn kiểu "gạch chéo" (pattern fill trong Word) —
- * chỉ phủ được khoảng 0.3-0.4 do các đường gạch có khoảng trống xen kẽ, KHÔNG đạt ngưỡng cũ (0.4)
- * nên từng bị đọc nhầm thành "chưa đánh dấu". Trong khi đó ô THẬT SỰ chưa đánh dấu trên các phiếu
- * scan thật đo được rất thấp (0.00-0.05). Hạ ngưỡng xuống dưới mức thấp nhất của kiểu (2) nhưng vẫn
- * cao hơn hẳn mức nhiễu nền của ô trống — vừa bắt được cả 2 kiểu đánh dấu, vừa an toàn với nhiễu. */
-const ORIENTATION_MARK_FILL_THRESHOLD = 0.15;
+ * LỊCH SỬ: bản đầu so từng ô với 1 NGƯỠNG TUYỆT ĐỐI cố định. Kiểm tra trên nhiều ảnh scan thật
+ * (test/filein/scan/Scan*.jpeg.pdf) cho thấy giáo viên có thể đánh dấu ô này theo NHIỀU kiểu khác
+ * nhau, độ đậm đo được rất khác nhau tuỳ kiểu VÀ tuỳ điều kiện scan (sáng/tối, tương phản...) của
+ * từng phiếu: có phiếu tô kín/gạch tay đo được ~0.49, có phiếu đóng dấu hình "gạch chéo" chỉ đo
+ * được ~0.3-0.4, có phiếu khác lại chỉ ~0.04 — không có 1 ngưỡng tuyệt đối nào an toàn cho MỌI
+ * phiếu (thấp quá thì phiếu scan tối/nhiễu bị báo nhầm, cao quá thì phiếu tô nhạt bị bỏ sót — đã
+ * phải chỉnh tay hằng số này nhiều lần). Trong khi đó, ô THẬT SỰ chưa đánh dấu trên mọi phiếu kiểm
+ * tra được đều đo rất gần mốc nền của CHÍNH phiếu đó — nên so TƯƠNG ĐỐI với mốc nền (đo ngay trên
+ * cùng phiếu, tự phản ánh đúng điều kiện scan của phiếu đó) thay vì 1 hằng số chung, giống cách đã
+ * làm cho đáp án câu hỏi/MSSV/mã đề (xem decision.ts). */
+const ORIENTATION_MARK_RELATIVE_MARGIN = 0.02;
 
 export interface OrientationMarksDecoding {
   /** Số ô trong cụm đã được đánh dấu (0..count). */
@@ -120,13 +125,24 @@ export function decodeOrientationMarks(
 ): OrientationMarksDecoding {
   const marks = getOrientationMarksFor(geometry);
   const sizePx = mmToPx(geometry.orientationMarks?.sizeMm ?? 0, dpi);
+
+  const blankRef = getOrientationBlankReferenceFor(geometry);
+  const baseline = blankRef
+    ? sampleBubbleDarkness(
+        cv,
+        mat,
+        { x: mmToPx(blankRef.center.xMm, dpi), y: mmToPx(blankRef.center.yMm, dpi) },
+        mmToPx(blankRef.diameterMm, dpi),
+      )
+    : 0;
+
   const states = marks.map((mark) => {
     const centerPx = {
       x: mmToPx(mark.topLeft.xMm + mark.sizeMm / 2, dpi),
       y: mmToPx(mark.topLeft.yMm + mark.sizeMm / 2, dpi),
     };
     const darkness = sampleBubbleDarkness(cv, mat, centerPx, sizePx);
-    return darkness >= ORIENTATION_MARK_FILL_THRESHOLD;
+    return darkness - baseline >= ORIENTATION_MARK_RELATIVE_MARGIN;
   });
   return { markedCount: states.filter(Boolean).length, states };
 }
