@@ -38,6 +38,83 @@ function stripBoldFromRPrXml(rPrXml: string | null): string | null {
   return serializer.serializeToString(root);
 }
 
+/**
+ * Chèn 1 phần tử con vào ĐÚNG vị trí theo thứ tự schema OOXML của phần tử cha (vd các con của
+ * <w:pPr> hay <w:rPr> phải theo đúng thứ tự quy định, không thì 1 số phiên bản Word có thể báo lỗi
+ * "cần sửa chữa" khi mở file) — chèn trước phần tử con ĐẦU TIÊN có thứ tự SAU phần tử mới trong
+ * `order`; nếu không có phần tử nào như vậy thì thêm vào cuối. Bỏ qua (không dùng để định vị) các
+ * phần tử con không có tên trong `order`.
+ */
+function insertInSchemaOrder(parent: Element, newChild: Element, order: string[]): void {
+  const newIdx = order.indexOf(newChild.localName);
+  let insertBefore: Element | null = null;
+  for (const child of Array.from(parent.children)) {
+    const childIdx = order.indexOf(child.localName);
+    if (childIdx === -1) continue;
+    if (newIdx === -1 || childIdx > newIdx) {
+      insertBefore = child;
+      break;
+    }
+  }
+  if (insertBefore) parent.insertBefore(newChild, insertBefore);
+  else parent.appendChild(newChild);
+}
+
+/** Thứ tự các phần tử con hợp lệ của <w:pPr>/<w:rPr> theo schema OOXML (rút gọn, chỉ liệt kê các
+ * phần tử thường gặp trong file đề thi thật) — dùng để chèn phần tử mới (indent, bold...) đúng chỗ. */
+const PPR_CHILD_ORDER = [
+  'pStyle', 'keepNext', 'keepLines', 'pageBreakBefore', 'framePr', 'widowControl', 'numPr',
+  'suppressLineNumbers', 'pBdr', 'shd', 'tabs', 'suppressAutoHyphens', 'kinsoku', 'wordWrap',
+  'overflowPunct', 'topLinePunct', 'autoSpaceDE', 'autoSpaceDN', 'bidi', 'adjustRightInd',
+  'snapToGrid', 'spacing', 'ind', 'contextualSpacing', 'mirrorIndents', 'suppressOverlap', 'jc',
+  'textDirection', 'textAlignment', 'textboxTightWrap', 'outlineLvl', 'divId', 'cnfStyle', 'rPr',
+];
+const RPR_CHILD_ORDER = [
+  'rStyle', 'rFonts', 'b', 'bCs', 'i', 'iCs', 'caps', 'smallCaps', 'strike', 'dstrike', 'outline',
+  'shadow', 'emboss', 'imprint', 'noProof', 'snapToGrid', 'vanish', 'webHidden', 'color', 'spacing',
+  'w', 'kern', 'position', 'sz', 'szCs', 'highlight', 'u', 'effect', 'bdr', 'shd', 'fitText',
+  'vertAlign', 'rtl', 'cs', 'em', 'lang', 'eastAsianLayout', 'specVanish', 'oMath',
+];
+
+/** Đảm bảo 1 đoạn XML <w:rPr> có in đậm (thêm <w:b/><w:bCs/> nếu chưa có, hoặc bật lại nếu đang bị
+ * tắt) — dùng để nhãn "Câu N:" LUÔN in đậm bất kể định dạng gốc của đoạn văn mượn theo. */
+function addBoldToRPrXml(rPrXml: string | null): string {
+  const wrapped = `<w:root xmlns:w="${WORD_NS}">${rPrXml ?? ''}</w:root>`;
+  const fragDoc = new DOMParser().parseFromString(wrapped, 'application/xml');
+  const root = fragDoc.documentElement;
+  let rPrEl = root.getElementsByTagNameNS(WORD_NS, 'rPr')[0] ?? null;
+  if (!rPrEl) {
+    rPrEl = fragDoc.createElementNS(WORD_NS, 'w:rPr');
+    root.appendChild(rPrEl);
+  }
+  for (const tag of ['b', 'bCs']) {
+    for (const el of Array.from(rPrEl.getElementsByTagNameNS(WORD_NS, tag))) {
+      el.parentNode?.removeChild(el);
+    }
+    insertInSchemaOrder(rPrEl, fragDoc.createElementNS(WORD_NS, `w:${tag}`), RPR_CHILD_ORDER);
+  }
+  return serializer.serializeToString(rPrEl);
+}
+
+/** Thụt lề trái 1 đoạn văn (dùng cho các dòng đáp án A/B/C/D... — thụt vào so với dòng "Câu N:"). */
+function setLeftIndent(doc: XMLDocument, pEl: Element, twips: number): void {
+  let pPrEl = pEl.getElementsByTagNameNS(WORD_NS, 'pPr')[0];
+  if (!pPrEl) {
+    pPrEl = doc.createElementNS(WORD_NS, 'w:pPr');
+    pEl.insertBefore(pPrEl, pEl.firstChild);
+  }
+  let indEl = pPrEl.getElementsByTagNameNS(WORD_NS, 'ind')[0];
+  if (!indEl) {
+    indEl = doc.createElementNS(WORD_NS, 'w:ind');
+    insertInSchemaOrder(pPrEl, indEl, PPR_CHILD_ORDER);
+  }
+  indEl.setAttributeNS(WORD_NS, 'w:left', String(twips));
+}
+
+/** Độ thụt lề đáp án so với lề trang, tính bằng twips (1/1440 inch) — 720 = 0.5 inch ≈ 1.27cm,
+ * tương đương 1 lần Tab mặc định trong Word. */
+const OPTION_INDENT_TWIPS = 720;
+
 function buildRun(doc: XMLDocument, text: string, rPrXml: string | null): Element {
   const rEl = doc.createElementNS(WORD_NS, 'w:r');
   const rPrEl = parseFragment(doc, rPrXml);
@@ -54,6 +131,9 @@ interface BuildParagraphOptions {
   labelText?: string;
   /** true = xóa in đậm khỏi MỌI run trong đoạn (dùng cho đáp án — không để lộ đáp án đúng). */
   stripBold?: boolean;
+  /** true = LUÔN in đậm riêng phần nhãn (`labelText`) — dùng cho nhãn "Câu N:" — bất kể phần nội
+   * dung câu hỏi phía sau có in đậm hay không. */
+  boldLabel?: boolean;
 }
 
 function buildParagraphFromChunk(doc: XMLDocument, chunk: ParagraphXmlChunk, opts: BuildParagraphOptions = {}): Element {
@@ -69,7 +149,8 @@ function buildParagraphFromChunk(doc: XMLDocument, chunk: ParagraphXmlChunk, opt
   }
   const firstRunRPr = chunk.runs[0]?.rPrXml ?? null;
   if (opts.labelText) {
-    const labelRPr = opts.stripBold ? stripBoldFromRPrXml(firstRunRPr) : firstRunRPr;
+    let labelRPr = opts.stripBold ? stripBoldFromRPrXml(firstRunRPr) : firstRunRPr;
+    if (opts.boldLabel) labelRPr = addBoldToRPrXml(labelRPr);
     pEl.appendChild(buildRun(doc, opts.labelText, labelRPr));
   }
   for (const run of chunk.runs) {
@@ -153,14 +234,18 @@ export async function generateExamVariantDocx(input: GenerateExamVariantDocxInpu
       body.appendChild(
         buildParagraphFromChunk(doc, makeSyntheticChunk(question.text, block.stemChunks[0]), {
           labelText: `Câu ${displayPosition}: `,
+          boldLabel: true,
         }),
       );
     } else if (block.stemChunks.length === 0) {
-      body.appendChild(buildPlainParagraph(doc, `Câu ${displayPosition}:`, false));
+      body.appendChild(buildPlainParagraph(doc, `Câu ${displayPosition}:`, true));
     } else {
       block.stemChunks.forEach((chunk, i) => {
         body.appendChild(
-          buildParagraphFromChunk(doc, chunk, { labelText: i === 0 ? `Câu ${displayPosition}: ` : undefined }),
+          buildParagraphFromChunk(doc, chunk, {
+            labelText: i === 0 ? `Câu ${displayPosition}: ` : undefined,
+            boldLabel: i === 0,
+          }),
         );
       });
     }
@@ -183,12 +268,12 @@ export async function generateExamVariantDocx(input: GenerateExamVariantDocxInpu
           ? makeSyntheticChunk(option?.text ?? '', optionBlock?.chunk ?? block.options[0]?.chunk)
           : optionBlock.chunk;
       const chunk = letterRewriteMap ? rewriteChunkLetterReferences(baseChunk, letterRewriteMap) : baseChunk;
-      body.appendChild(
-        buildParagraphFromChunk(doc, chunk, {
-          labelText: `${letterAt(optIdx)}. `,
-          stripBold: true,
-        }),
-      );
+      const optionPEl = buildParagraphFromChunk(doc, chunk, {
+        labelText: `${letterAt(optIdx)}. `,
+        stripBold: true,
+      });
+      setLeftIndent(doc, optionPEl, OPTION_INDENT_TWIPS);
+      body.appendChild(optionPEl);
     });
   });
 

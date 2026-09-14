@@ -12,6 +12,10 @@ interface DraftOption {
 
 interface DraftQuestion {
   originalIndex: number;
+  /** Số thứ tự câu hỏi ĐỌC ĐƯỢC từ chính văn bản gốc (vd "Câu 5:" -> 5) — null nếu không bắt được
+   * (hiếm, chỉ xảy ra nếu QUESTION_RE khớp nhưng không có nhóm số nào, về lý thuyết không xảy ra
+   * với pattern hiện tại). Dùng để phát hiện nhảy số thứ tự câu hỏi, xem validateExport.ts. */
+  declaredNumber: number | null;
   stemLines: string[];
   options: DraftOption[];
 }
@@ -28,8 +32,10 @@ export function segmentQuestions(paragraphs: DocxParagraph[]): Question[] {
     const qMatch = QUESTION_RE.exec(text);
     if (qMatch) {
       if (current) drafts.push(current);
+      const declaredRaw = qMatch[1] ?? qMatch[2];
       current = {
         originalIndex: drafts.length,
+        declaredNumber: declaredRaw ? Number(declaredRaw) : null,
         stemLines: [text.slice(qMatch[0].length).trim()].filter(Boolean),
         options: [],
       };
@@ -106,6 +112,7 @@ function draftToQuestion(draft: DraftQuestion): Question {
   return {
     id: uuidv4(),
     originalIndex: draft.originalIndex,
+    declaredNumber: draft.declaredNumber,
     text: stemText,
     options,
     correctOptionId,

@@ -91,10 +91,17 @@ export function decodeExamCode(cv: CvNamespace, mat: CvMat, dpi: number, geometr
   );
 }
 
-/** Tỉ lệ mực tối thiểu trong lõi 1 ô định hướng để coi là "đã đánh dấu" — cao hơn hẳn ngưỡng phát
- * hiện đáp án (0.18) vì mục đích chỉ cần phân biệt RÕ RỆT ô trống (giấy trắng, gần 0) với ô đã tô
- * kín/gạch tay (thường phủ phần lớn lõi lấy mẫu), tránh báo nhầm khi ảnh chụp có nhiễu nền cục bộ. */
-const ORIENTATION_MARK_FILL_THRESHOLD = 0.4;
+/**
+ * Tỉ lệ mực tối thiểu trong lõi 1 ô định hướng để coi là "đã đánh dấu".
+ *
+ * Kiểm tra trên ảnh scan thật (test/filein/scan/Scan*.jpeg.pdf) cho thấy giáo viên có thể đánh dấu ô
+ * này theo 2 KIỂU khác nhau: (1) tô kín/gạch tay bằng bút — phủ gần hết lõi lấy mẫu (đo được cao,
+ * ví dụ ~0.49 trở lên); (2) đóng dấu bằng hình có sẵn kiểu "gạch chéo" (pattern fill trong Word) —
+ * chỉ phủ được khoảng 0.3-0.4 do các đường gạch có khoảng trống xen kẽ, KHÔNG đạt ngưỡng cũ (0.4)
+ * nên từng bị đọc nhầm thành "chưa đánh dấu". Trong khi đó ô THẬT SỰ chưa đánh dấu trên các phiếu
+ * scan thật đo được rất thấp (0.00-0.05). Hạ ngưỡng xuống dưới mức thấp nhất của kiểu (2) nhưng vẫn
+ * cao hơn hẳn mức nhiễu nền của ô trống — vừa bắt được cả 2 kiểu đánh dấu, vừa an toàn với nhiễu. */
+const ORIENTATION_MARK_FILL_THRESHOLD = 0.15;
 
 export interface OrientationMarksDecoding {
   /** Số ô trong cụm đã được đánh dấu (0..count). */
@@ -118,7 +125,8 @@ export function decodeOrientationMarks(
       x: mmToPx(mark.topLeft.xMm + mark.sizeMm / 2, dpi),
       y: mmToPx(mark.topLeft.yMm + mark.sizeMm / 2, dpi),
     };
-    return sampleBubbleDarkness(cv, mat, centerPx, sizePx) >= ORIENTATION_MARK_FILL_THRESHOLD;
+    const darkness = sampleBubbleDarkness(cv, mat, centerPx, sizePx);
+    return darkness >= ORIENTATION_MARK_FILL_THRESHOLD;
   });
   return { markedCount: states.filter(Boolean).length, states };
 }

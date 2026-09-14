@@ -15,6 +15,8 @@ export interface QuestionOption {
 export interface Question {
   id: string;
   originalIndex: number;
+  /** Số thứ tự câu hỏi ĐỌC ĐƯỢC từ chính văn bản gốc (vd "Câu 5:" -> 5) — null nếu không bắt được. */
+  declaredNumber: number | null;
   text: string;
   options: QuestionOption[];
   correctOptionId: string | null;

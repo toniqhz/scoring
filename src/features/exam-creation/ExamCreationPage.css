@@ -74,6 +74,25 @@
   color: var(--text-primary);
 }
 
+.export-blocking-warnings {
+  padding: 12px 14px;
+  background: var(--error-bg);
+  border: 1px solid var(--error-border);
+  border-radius: 8px;
+  color: var(--error-text);
+  font-size: 0.9rem;
+}
+
+.export-blocking-title {
+  margin: 0 0 6px;
+  font-weight: 700;
+}
+
+.export-blocking-warnings ul {
+  margin: 0;
+  padding-left: 18px;
+}
+
 .question-list {
   display: flex;
   flex-direction: column;
@@ -90,6 +109,11 @@
 .question-card.has-issue {
   border-color: var(--warning-border);
   background: var(--warning-bg);
+}
+
+.question-card.has-blocking-error {
+  border: 2px solid var(--error-border);
+  background: var(--error-bg);
 }
 
 .question-card-header {
@@ -124,6 +148,15 @@
   font-size: 0.75rem;
   background: var(--warning-badge-bg);
   color: var(--warning-badge-text);
+  padding: 2px 8px;
+  border-radius: 999px;
+}
+
+.blocking-error-badge {
+  font-size: 0.75rem;
+  font-weight: 600;
+  background: var(--error-badge-bg);
+  color: var(--error-badge-text);
   padding: 2px 8px;
   border-radius: 999px;
 }

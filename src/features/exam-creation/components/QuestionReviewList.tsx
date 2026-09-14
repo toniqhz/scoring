@@ -6,6 +6,9 @@ import { questionHasOptionCrossReference } from '../../../modules/shuffle/option
 interface Props {
   questions: Question[];
   crossReferenceStrategy: CrossReferenceStrategy;
+  /** Vị trí (1-based, "Câu N") của các câu bị lỗi chặn xuất đề (xem validateExport.ts) — khoanh
+   * viền đỏ để giáo viên tìm nhanh, khác với viền vàng của `has-issue` (chỉ là "cần kiểm tra"). */
+  errorPositions: Set<number>;
   onFixCorrectOption: (questionId: string, optionId: string) => void;
   onEditQuestionText: (questionId: string, text: string) => void;
   onEditOptionText: (questionId: string, optionId: string, text: string) => void;
@@ -16,6 +19,7 @@ interface Props {
 export function QuestionReviewList({
   questions,
   crossReferenceStrategy,
+  errorPositions,
   onFixCorrectOption,
   onEditQuestionText,
   onEditOptionText,
@@ -42,10 +46,15 @@ export function QuestionReviewList({
       {questions.map((q, idx) => {
         const hasCrossReference = questionHasOptionCrossReference(q.options);
         const isEditing = editingIds.has(q.id);
+        const hasBlockingError = errorPositions.has(idx + 1);
         return (
-          <div key={q.id} className={`question-card${q.parseIssues.length > 0 ? ' has-issue' : ''}`}>
+          <div
+            key={q.id}
+            className={`question-card${q.parseIssues.length > 0 ? ' has-issue' : ''}${hasBlockingError ? ' has-blocking-error' : ''}`}
+          >
             <div className="question-card-header">
               <span className="question-index">Câu {idx + 1}</span>
+              {hasBlockingError && <span className="blocking-error-badge">✕ Lỗi — không xuất được</span>}
               {q.parseIssues.length > 0 && <span className="issue-badge">Cần kiểm tra</span>}
               {hasCrossReference && crossReferenceStrategy === 'lock' && (
                 <span

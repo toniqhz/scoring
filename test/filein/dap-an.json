@@ -1,0 +1,1130 @@
+{
+  "schemaVersion": 1,
+  "examTitle": "Đề kiểm tra test",
+  "createdAt": "2026-09-12T02:45:16.427Z",
+  "totalQuestions": 19,
+  "maxOptionsPerQuestion": 5,
+  "templateVersion": 2,
+  "variants": [
+    {
+      "examCode": "101",
+      "answers": [
+        {
+          "position": 1,
+          "correctLetter": "A",
+          "originalQuestionId": "0aae6c85-d82f-4604-acf6-f49c23ad81de",
+          "originalQuestionIndex": 18,
+          "questionText": "Enzyme….........loại bỏ cấu trúc siêu xoắn của DNA được tạo thành do quá trình ruỗi xoắn của DNA sợi đôi bởi……......",
+          "correctOptionText": "topoisomerase; helicase",
+          "optionOriginalIndexByLetter": {
+            "A": 2,
+            "B": 4,
+            "C": 1,
+            "D": 3,
+            "E": 0
+          }
+        },
+        {
+          "position": 2,
+          "correctLetter": "B",
+          "originalQuestionId": "966e5cb8-9110-438c-a471-e5b99a7ea2ed",
+          "originalQuestionIndex": 3,
+          "questionText": "Khi nói về các protein khác nhau và chức năng của chúng đối với quá tình sao chép DNA, mô tả nào dưới đây là không chính xác?",
+          "correctOptionText": "DNA primase tạo ra các đoạn Okazaki của sợi muộn",
+          "optionOriginalIndexByLetter": {
+            "A": 3,
+            "B": 1,
+            "C": 2,
+            "D": 0
+          }
+        },
+        {
+          "position": 3,
+          "correctLetter": "E",
+          "originalQuestionId": "801c5de6-a21e-437d-9b1c-18742008a364",
+          "originalQuestionIndex": 11,
+          "questionText": "Trong bước khởi đầu của quá trình dịch mã, mã đầu tiên………sẽ đi vào vị trí……….và kết hợp với tRNA khởi đầu",
+          "correctOptionText": "AUG, vị trí P",
+          "optionOriginalIndexByLetter": {
+            "A": 4,
+            "B": 3,
+            "C": 1,
+            "D": 0,
+            "E": 2
+          }
+        },
+        {
+          "position": 4,
+          "correctLetter": "D",
+          "originalQuestionId": "138b3a4d-15e0-4d50-81a8-dbae13f16f20",
+          "originalQuestionIndex": 2,
+          "questionText": "Mô tả nào sau đây là không đúng?",
+          "correctOptionText": "Số lượng Adenine bằng Guanine trong DNA sợi đôi",
+          "optionOriginalIndexByLetter": {
+            "A": 2,
+            "B": 1,
+            "C": 3,
+            "D": 0
+          }
+        },
+        {
+          "position": 5,
+          "correctLetter": "A",
+          "originalQuestionId": "281250fa-b891-478c-acb9-ca9fc1d652fb",
+          "originalQuestionIndex": 6,
+          "questionText": "Enzyme DNA polymerase nào sau đây được tìm thấy chủ yếu trong eukaryote?",
+          "correctOptionText": "(B) và (C)",
+          "optionOriginalIndexByLetter": {
+            "A": 3,
+            "B": 1,
+            "C": 2,
+            "D": 0,
+            "E": 4
+          }
+        },
+        {
+          "position": 6,
+          "correctLetter": "E",
+          "originalQuestionId": "8029ed91-8ab5-4338-9e93-7c0a543fc548",
+          "originalQuestionIndex": 0,
+          "questionText": "Thành phần nào dưới đây không có trong cấu trúc của DNA?",
+          "correctOptionText": "Ribose",
+          "optionOriginalIndexByLetter": {
+            "A": 2,
+            "B": 3,
+            "C": 0,
+            "D": 4,
+            "E": 1
+          }
+        },
+        {
+          "position": 7,
+          "correctLetter": "E",
+          "originalQuestionId": "fb9af180-e272-4090-adba-ba03056cd616",
+          "originalQuestionIndex": 17,
+          "questionText": "Các quá trình nào dưới đây là quá trình điều hòa di truyền ở vi khuẩn? i. Chế biến RNA ii. Khởi đầu phiên mã        iii. Biến đổi sau dịch mã    iv. Khởi đầu dịch mã",
+          "correctOptionText": "ii, iv",
+          "optionOriginalIndexByLetter": {
+            "A": 3,
+            "B": 0,
+            "C": 1,
+            "D": 2,
+            "E": 4
+          }
+        },
+        {
+          "position": 8,
+          "correctLetter": "D",
+          "originalQuestionId": "93f9baa1-0382-4e62-b78c-6fa6b1863ca8",
+          "originalQuestionIndex": 10,
+          "questionText": "Trong quá trình chế biến RNA của sinh vật nhân thực, các trình tự không dịch mã bị loại đi được gọi là",
+          "correctOptionText": "Introns",
+          "optionOriginalIndexByLetter": {
+            "A": 2,
+            "B": 1,
+            "C": 4,
+            "D": 3,
+            "E": 0
+          }
+        },
+        {
+          "position": 9,
+          "correctLetter": "A",
+          "originalQuestionId": "ff294e0f-09a5-44fe-ab0e-a1c38174ed09",
+          "originalQuestionIndex": 9,
+          "questionText": "………………là một bào quan nơi quá trình dịch mã diễn ra",
+          "correctOptionText": "Ribosome",
+          "optionOriginalIndexByLetter": {
+            "A": 4,
+            "B": 3,
+            "C": 0,
+            "D": 2,
+            "E": 1
+          }
+        },
+        {
+          "position": 10,
+          "correctLetter": "E",
+          "originalQuestionId": "37d68a5b-40d0-45c9-ab53-5d4cb936d180",
+          "originalQuestionIndex": 19,
+          "questionText": "Sao chép DNA là quá trình:",
+          "correctOptionText": "Bán bảo toàn",
+          "optionOriginalIndexByLetter": {
+            "A": 4,
+            "B": 1,
+            "C": 0,
+            "D": 3,
+            "E": 2
+          }
+        },
+        {
+          "position": 11,
+          "correctLetter": "B",
+          "originalQuestionId": "bc4b1c92-4cde-4ffc-8e26-0db5eba9a262",
+          "originalQuestionIndex": 15,
+          "questionText": "Kiểu đột biến làm thay đổi toàn bộ trình tự acid amin từ vị trí đột biến được gọi là đột biến gì?",
+          "correctOptionText": "Dịch khung",
+          "optionOriginalIndexByLetter": {
+            "A": 3,
+            "B": 4,
+            "C": 0,
+            "D": 2,
+            "E": 1
+          }
+        },
+        {
+          "position": 12,
+          "correctLetter": "C",
+          "originalQuestionId": "6efa9f60-6abd-4ac8-a4bf-769a2cacf6c5",
+          "originalQuestionIndex": 13,
+          "questionText": "Mô tả nào dưới đây về điều hòa lactose ở E. coli là sai?",
+          "correctOptionText": "Các gen lacZ, lacY và lacI cấu thành operon lac",
+          "optionOriginalIndexByLetter": {
+            "A": 4,
+            "B": 0,
+            "C": 3,
+            "D": 1,
+            "E": 2
+          }
+        },
+        {
+          "position": 13,
+          "correctLetter": "A",
+          "originalQuestionId": "14cc6bec-de06-4603-8ee6-044a04a0524c",
+          "originalQuestionIndex": 12,
+          "questionText": "Câu hỏi ĐÚNG hoặc SAI: tRNA bắt cặp bổ sung với mã mở đầu nằm ở vị trí A của ribosome",
+          "correctOptionText": "Sai",
+          "optionOriginalIndexByLetter": {
+            "A": 1,
+            "B": 0
+          }
+        },
+        {
+          "position": 14,
+          "correctLetter": "D",
+          "originalQuestionId": "a3e45a52-10ba-4430-9397-791926725239",
+          "originalQuestionIndex": 5,
+          "questionText": "Mô tả nào dưới đây mô tả chính xác nhất về sự đọc sửa?",
+          "correctOptionText": "Các nucleotides bị loại đi khỏi đầu của một sợi DNA mới tổng hợp theo hướng 3' tới 5'",
+          "optionOriginalIndexByLetter": {
+            "A": 3,
+            "B": 4,
+            "C": 0,
+            "D": 2,
+            "E": 1
+          }
+        },
+        {
+          "position": 15,
+          "correctLetter": "D",
+          "originalQuestionId": "949077b7-3d5c-462c-b578-11b17ab8f894",
+          "originalQuestionIndex": 1,
+          "questionText": "Sắp xếp các thuật ngữ di truyền dưới đây theo thứ tự phức tạp tăng dần: i. Nhiễm sắc thể    ii. Nucleotide    iii. Hệ gen    iv. Chuỗi xoắn kép",
+          "correctOptionText": "ii, iv, i, iii",
+          "optionOriginalIndexByLetter": {
+            "A": 0,
+            "B": 4,
+            "C": 2,
+            "D": 1,
+            "E": 3
+          }
+        },
+        {
+          "position": 16,
+          "correctLetter": "E",
+          "originalQuestionId": "d4a1de06-7262-43e8-935e-71a13b42e614",
+          "originalQuestionIndex": 4,
+          "questionText": "Vùng đầu mút của mỗi cánh nhiễm sắc thể được gọi là gì?",
+          "correctOptionText": "Telomeres",
+          "optionOriginalIndexByLetter": {
+            "A": 0,
+            "B": 4,
+            "C": 2,
+            "D": 3,
+            "E": 1
+          }
+        },
+        {
+          "position": 17,
+          "correctLetter": "A",
+          "originalQuestionId": "a1417a89-79c1-420b-adde-d709af8df301",
+          "originalQuestionIndex": 7,
+          "questionText": "Câu hỏi ĐÚNG hoặc SAI: có một phần nhỏ DNA sợi đơn được tìm thấy ở đầu mút của một nhiễm sắc thể?",
+          "correctOptionText": "Đúng",
+          "optionOriginalIndexByLetter": {
+            "A": 0,
+            "B": 1
+          }
+        },
+        {
+          "position": 18,
+          "correctLetter": "A",
+          "originalQuestionId": "5a4d96f7-4742-45ec-8fc8-37834e6990e6",
+          "originalQuestionIndex": 16,
+          "questionText": "Mô tả nào dưới đây không phải là một ví dụ về đột biến điểm?",
+          "correctOptionText": "Chèn thêm một đoạn xen vào vùng mã hóa của một gen cấu trúc",
+          "optionOriginalIndexByLetter": {
+            "A": 2,
+            "B": 3,
+            "C": 0,
+            "D": 1
+          }
+        },
+        {
+          "position": 19,
+          "correctLetter": "A",
+          "originalQuestionId": "406164ed-a0ee-4a33-b91a-048f702c119c",
+          "originalQuestionIndex": 8,
+          "questionText": "Mô tả nào dưới đây mô tả chính xác nhất về thuyết trung tâm của biểu hiện gen?",
+          "correctOptionText": "Trong quá trình phiên mã, DNA mã hóa RNA và sau đó RNA mã hóa chuỗi polypeptide trong quá trình dịch mã",
+          "optionOriginalIndexByLetter": {
+            "A": 1,
+            "B": 3,
+            "C": 0,
+            "D": 2
+          }
+        }
+      ]
+    },
+    {
+      "examCode": "102",
+      "answers": [
+        {
+          "position": 1,
+          "correctLetter": "D",
+          "originalQuestionId": "966e5cb8-9110-438c-a471-e5b99a7ea2ed",
+          "originalQuestionIndex": 3,
+          "questionText": "Khi nói về các protein khác nhau và chức năng của chúng đối với quá tình sao chép DNA, mô tả nào dưới đây là không chính xác?",
+          "correctOptionText": "DNA primase tạo ra các đoạn Okazaki của sợi muộn",
+          "optionOriginalIndexByLetter": {
+            "A": 2,
+            "B": 3,
+            "C": 0,
+            "D": 1
+          }
+        },
+        {
+          "position": 2,
+          "correctLetter": "B",
+          "originalQuestionId": "14cc6bec-de06-4603-8ee6-044a04a0524c",
+          "originalQuestionIndex": 12,
+          "questionText": "Câu hỏi ĐÚNG hoặc SAI: tRNA bắt cặp bổ sung với mã mở đầu nằm ở vị trí A của ribosome",
+          "correctOptionText": "Sai",
+          "optionOriginalIndexByLetter": {
+            "A": 0,
+            "B": 1
+          }
+        },
+        {
+          "position": 3,
+          "correctLetter": "A",
+          "originalQuestionId": "93f9baa1-0382-4e62-b78c-6fa6b1863ca8",
+          "originalQuestionIndex": 10,
+          "questionText": "Trong quá trình chế biến RNA của sinh vật nhân thực, các trình tự không dịch mã bị loại đi được gọi là",
+          "correctOptionText": "Introns",
+          "optionOriginalIndexByLetter": {
+            "A": 3,
+            "B": 4,
+            "C": 1,
+            "D": 2,
+            "E": 0
+          }
+        },
+        {
+          "position": 4,
+          "correctLetter": "E",
+          "originalQuestionId": "6efa9f60-6abd-4ac8-a4bf-769a2cacf6c5",
+          "originalQuestionIndex": 13,
+          "questionText": "Mô tả nào dưới đây về điều hòa lactose ở E. coli là sai?",
+          "correctOptionText": "Các gen lacZ, lacY và lacI cấu thành operon lac",
+          "optionOriginalIndexByLetter": {
+            "A": 1,
+            "B": 0,
+            "C": 2,
+            "D": 4,
+            "E": 3
+          }
+        },
+        {
+          "position": 5,
+          "correctLetter": "C",
+          "originalQuestionId": "ff294e0f-09a5-44fe-ab0e-a1c38174ed09",
+          "originalQuestionIndex": 9,
+          "questionText": "………………là một bào quan nơi quá trình dịch mã diễn ra",
+          "correctOptionText": "Ribosome",
+          "optionOriginalIndexByLetter": {
+            "A": 3,
+            "B": 1,
+            "C": 4,
+            "D": 2,
+            "E": 0
+          }
+        },
+        {
+          "position": 6,
+          "correctLetter": "B",
+          "originalQuestionId": "8029ed91-8ab5-4338-9e93-7c0a543fc548",
+          "originalQuestionIndex": 0,
+          "questionText": "Thành phần nào dưới đây không có trong cấu trúc của DNA?",
+          "correctOptionText": "Ribose",
+          "optionOriginalIndexByLetter": {
+            "A": 4,
+            "B": 1,
+            "C": 3,
+            "D": 2,
+            "E": 0
+          }
+        },
+        {
+          "position": 7,
+          "correctLetter": "C",
+          "originalQuestionId": "37d68a5b-40d0-45c9-ab53-5d4cb936d180",
+          "originalQuestionIndex": 19,
+          "questionText": "Sao chép DNA là quá trình:",
+          "correctOptionText": "Bán bảo toàn",
+          "optionOriginalIndexByLetter": {
+            "A": 1,
+            "B": 3,
+            "C": 2,
+            "D": 0,
+            "E": 4
+          }
+        },
+        {
+          "position": 8,
+          "correctLetter": "B",
+          "originalQuestionId": "d4a1de06-7262-43e8-935e-71a13b42e614",
+          "originalQuestionIndex": 4,
+          "questionText": "Vùng đầu mút của mỗi cánh nhiễm sắc thể được gọi là gì?",
+          "correctOptionText": "Telomeres",
+          "optionOriginalIndexByLetter": {
+            "A": 0,
+            "B": 1,
+            "C": 2,
+            "D": 4,
+            "E": 3
+          }
+        },
+        {
+          "position": 9,
+          "correctLetter": "E",
+          "originalQuestionId": "a3e45a52-10ba-4430-9397-791926725239",
+          "originalQuestionIndex": 5,
+          "questionText": "Mô tả nào dưới đây mô tả chính xác nhất về sự đọc sửa?",
+          "correctOptionText": "Các nucleotides bị loại đi khỏi đầu của một sợi DNA mới tổng hợp theo hướng 3' tới 5'",
+          "optionOriginalIndexByLetter": {
+            "A": 0,
+            "B": 4,
+            "C": 3,
+            "D": 1,
+            "E": 2
+          }
+        },
+        {
+          "position": 10,
+          "correctLetter": "C",
+          "originalQuestionId": "949077b7-3d5c-462c-b578-11b17ab8f894",
+          "originalQuestionIndex": 1,
+          "questionText": "Sắp xếp các thuật ngữ di truyền dưới đây theo thứ tự phức tạp tăng dần: i. Nhiễm sắc thể    ii. Nucleotide    iii. Hệ gen    iv. Chuỗi xoắn kép",
+          "correctOptionText": "ii, iv, i, iii",
+          "optionOriginalIndexByLetter": {
+            "A": 2,
+            "B": 3,
+            "C": 1,
+            "D": 4,
+            "E": 0
+          }
+        },
+        {
+          "position": 11,
+          "correctLetter": "A",
+          "originalQuestionId": "281250fa-b891-478c-acb9-ca9fc1d652fb",
+          "originalQuestionIndex": 6,
+          "questionText": "Enzyme DNA polymerase nào sau đây được tìm thấy chủ yếu trong eukaryote?",
+          "correctOptionText": "(B) và (E)",
+          "optionOriginalIndexByLetter": {
+            "A": 3,
+            "B": 2,
+            "C": 0,
+            "D": 4,
+            "E": 1
+          }
+        },
+        {
+          "position": 12,
+          "correctLetter": "E",
+          "originalQuestionId": "801c5de6-a21e-437d-9b1c-18742008a364",
+          "originalQuestionIndex": 11,
+          "questionText": "Trong bước khởi đầu của quá trình dịch mã, mã đầu tiên………sẽ đi vào vị trí……….và kết hợp với tRNA khởi đầu",
+          "correctOptionText": "AUG, vị trí P",
+          "optionOriginalIndexByLetter": {
+            "A": 1,
+            "B": 3,
+            "C": 0,
+            "D": 4,
+            "E": 2
+          }
+        },
+        {
+          "position": 13,
+          "correctLetter": "C",
+          "originalQuestionId": "0aae6c85-d82f-4604-acf6-f49c23ad81de",
+          "originalQuestionIndex": 18,
+          "questionText": "Enzyme….........loại bỏ cấu trúc siêu xoắn của DNA được tạo thành do quá trình ruỗi xoắn của DNA sợi đôi bởi……......",
+          "correctOptionText": "topoisomerase; helicase",
+          "optionOriginalIndexByLetter": {
+            "A": 3,
+            "B": 0,
+            "C": 2,
+            "D": 4,
+            "E": 1
+          }
+        },
+        {
+          "position": 14,
+          "correctLetter": "C",
+          "originalQuestionId": "406164ed-a0ee-4a33-b91a-048f702c119c",
+          "originalQuestionIndex": 8,
+          "questionText": "Mô tả nào dưới đây mô tả chính xác nhất về thuyết trung tâm của biểu hiện gen?",
+          "correctOptionText": "Trong quá trình phiên mã, DNA mã hóa RNA và sau đó RNA mã hóa chuỗi polypeptide trong quá trình dịch mã",
+          "optionOriginalIndexByLetter": {
+            "A": 0,
+            "B": 2,
+            "C": 1,
+            "D": 3
+          }
+        },
+        {
+          "position": 15,
+          "correctLetter": "E",
+          "originalQuestionId": "fb9af180-e272-4090-adba-ba03056cd616",
+          "originalQuestionIndex": 17,
+          "questionText": "Các quá trình nào dưới đây là quá trình điều hòa di truyền ở vi khuẩn? i. Chế biến RNA ii. Khởi đầu phiên mã        iii. Biến đổi sau dịch mã    iv. Khởi đầu dịch mã",
+          "correctOptionText": "ii, iv",
+          "optionOriginalIndexByLetter": {
+            "A": 0,
+            "B": 1,
+            "C": 3,
+            "D": 2,
+            "E": 4
+          }
+        },
+        {
+          "position": 16,
+          "correctLetter": "C",
+          "originalQuestionId": "5a4d96f7-4742-45ec-8fc8-37834e6990e6",
+          "originalQuestionIndex": 16,
+          "questionText": "Mô tả nào dưới đây không phải là một ví dụ về đột biến điểm?",
+          "correctOptionText": "Chèn thêm một đoạn xen vào vùng mã hóa của một gen cấu trúc",
+          "optionOriginalIndexByLetter": {
+            "A": 3,
+            "B": 1,
+            "C": 2,
+            "D": 0
+          }
+        },
+        {
+          "position": 17,
+          "correctLetter": "A",
+          "originalQuestionId": "a1417a89-79c1-420b-adde-d709af8df301",
+          "originalQuestionIndex": 7,
+          "questionText": "Câu hỏi ĐÚNG hoặc SAI: có một phần nhỏ DNA sợi đơn được tìm thấy ở đầu mút của một nhiễm sắc thể?",
+          "correctOptionText": "Đúng",
+          "optionOriginalIndexByLetter": {
+            "A": 0,
+            "B": 1
+          }
+        },
+        {
+          "position": 18,
+          "correctLetter": "C",
+          "originalQuestionId": "bc4b1c92-4cde-4ffc-8e26-0db5eba9a262",
+          "originalQuestionIndex": 15,
+          "questionText": "Kiểu đột biến làm thay đổi toàn bộ trình tự acid amin từ vị trí đột biến được gọi là đột biến gì?",
+          "correctOptionText": "Dịch khung",
+          "optionOriginalIndexByLetter": {
+            "A": 3,
+            "B": 0,
+            "C": 4,
+            "D": 1,
+            "E": 2
+          }
+        },
+        {
+          "position": 19,
+          "correctLetter": "D",
+          "originalQuestionId": "138b3a4d-15e0-4d50-81a8-dbae13f16f20",
+          "originalQuestionIndex": 2,
+          "questionText": "Mô tả nào sau đây là không đúng?",
+          "correctOptionText": "Số lượng Adenine bằng Guanine trong DNA sợi đôi",
+          "optionOriginalIndexByLetter": {
+            "A": 2,
+            "B": 1,
+            "C": 3,
+            "D": 0
+          }
+        }
+      ]
+    },
+    {
+      "examCode": "103",
+      "answers": [
+        {
+          "position": 1,
+          "correctLetter": "A",
+          "originalQuestionId": "281250fa-b891-478c-acb9-ca9fc1d652fb",
+          "originalQuestionIndex": 6,
+          "questionText": "Enzyme DNA polymerase nào sau đây được tìm thấy chủ yếu trong eukaryote?",
+          "correctOptionText": "(B) và (D)",
+          "optionOriginalIndexByLetter": {
+            "A": 3,
+            "B": 2,
+            "C": 0,
+            "D": 1,
+            "E": 4
+          }
+        },
+        {
+          "position": 2,
+          "correctLetter": "C",
+          "originalQuestionId": "138b3a4d-15e0-4d50-81a8-dbae13f16f20",
+          "originalQuestionIndex": 2,
+          "questionText": "Mô tả nào sau đây là không đúng?",
+          "correctOptionText": "Số lượng Adenine bằng Guanine trong DNA sợi đôi",
+          "optionOriginalIndexByLetter": {
+            "A": 1,
+            "B": 3,
+            "C": 0,
+            "D": 2
+          }
+        },
+        {
+          "position": 3,
+          "correctLetter": "D",
+          "originalQuestionId": "bc4b1c92-4cde-4ffc-8e26-0db5eba9a262",
+          "originalQuestionIndex": 15,
+          "questionText": "Kiểu đột biến làm thay đổi toàn bộ trình tự acid amin từ vị trí đột biến được gọi là đột biến gì?",
+          "correctOptionText": "Dịch khung",
+          "optionOriginalIndexByLetter": {
+            "A": 2,
+            "B": 1,
+            "C": 3,
+            "D": 4,
+            "E": 0
+          }
+        },
+        {
+          "position": 4,
+          "correctLetter": "D",
+          "originalQuestionId": "0aae6c85-d82f-4604-acf6-f49c23ad81de",
+          "originalQuestionIndex": 18,
+          "questionText": "Enzyme….........loại bỏ cấu trúc siêu xoắn của DNA được tạo thành do quá trình ruỗi xoắn của DNA sợi đôi bởi……......",
+          "correctOptionText": "topoisomerase; helicase",
+          "optionOriginalIndexByLetter": {
+            "A": 4,
+            "B": 1,
+            "C": 0,
+            "D": 2,
+            "E": 3
+          }
+        },
+        {
+          "position": 5,
+          "correctLetter": "A",
+          "originalQuestionId": "8029ed91-8ab5-4338-9e93-7c0a543fc548",
+          "originalQuestionIndex": 0,
+          "questionText": "Thành phần nào dưới đây không có trong cấu trúc của DNA?",
+          "correctOptionText": "Ribose",
+          "optionOriginalIndexByLetter": {
+            "A": 1,
+            "B": 4,
+            "C": 0,
+            "D": 2,
+            "E": 3
+          }
+        },
+        {
+          "position": 6,
+          "correctLetter": "C",
+          "originalQuestionId": "d4a1de06-7262-43e8-935e-71a13b42e614",
+          "originalQuestionIndex": 4,
+          "questionText": "Vùng đầu mút của mỗi cánh nhiễm sắc thể được gọi là gì?",
+          "correctOptionText": "Telomeres",
+          "optionOriginalIndexByLetter": {
+            "A": 4,
+            "B": 2,
+            "C": 1,
+            "D": 0,
+            "E": 3
+          }
+        },
+        {
+          "position": 7,
+          "correctLetter": "C",
+          "originalQuestionId": "5a4d96f7-4742-45ec-8fc8-37834e6990e6",
+          "originalQuestionIndex": 16,
+          "questionText": "Mô tả nào dưới đây không phải là một ví dụ về đột biến điểm?",
+          "correctOptionText": "Chèn thêm một đoạn xen vào vùng mã hóa của một gen cấu trúc",
+          "optionOriginalIndexByLetter": {
+            "A": 0,
+            "B": 3,
+            "C": 2,
+            "D": 1
+          }
+        },
+        {
+          "position": 8,
+          "correctLetter": "E",
+          "originalQuestionId": "37d68a5b-40d0-45c9-ab53-5d4cb936d180",
+          "originalQuestionIndex": 19,
+          "questionText": "Sao chép DNA là quá trình:",
+          "correctOptionText": "Bán bảo toàn",
+          "optionOriginalIndexByLetter": {
+            "A": 0,
+            "B": 1,
+            "C": 4,
+            "D": 3,
+            "E": 2
+          }
+        },
+        {
+          "position": 9,
+          "correctLetter": "D",
+          "originalQuestionId": "801c5de6-a21e-437d-9b1c-18742008a364",
+          "originalQuestionIndex": 11,
+          "questionText": "Trong bước khởi đầu của quá trình dịch mã, mã đầu tiên………sẽ đi vào vị trí……….và kết hợp với tRNA khởi đầu",
+          "correctOptionText": "AUG, vị trí P",
+          "optionOriginalIndexByLetter": {
+            "A": 0,
+            "B": 1,
+            "C": 3,
+            "D": 2,
+            "E": 4
+          }
+        },
+        {
+          "position": 10,
+          "correctLetter": "D",
+          "originalQuestionId": "ff294e0f-09a5-44fe-ab0e-a1c38174ed09",
+          "originalQuestionIndex": 9,
+          "questionText": "………………là một bào quan nơi quá trình dịch mã diễn ra",
+          "correctOptionText": "Ribosome",
+          "optionOriginalIndexByLetter": {
+            "A": 3,
+            "B": 1,
+            "C": 0,
+            "D": 4,
+            "E": 2
+          }
+        },
+        {
+          "position": 11,
+          "correctLetter": "A",
+          "originalQuestionId": "14cc6bec-de06-4603-8ee6-044a04a0524c",
+          "originalQuestionIndex": 12,
+          "questionText": "Câu hỏi ĐÚNG hoặc SAI: tRNA bắt cặp bổ sung với mã mở đầu nằm ở vị trí A của ribosome",
+          "correctOptionText": "Sai",
+          "optionOriginalIndexByLetter": {
+            "A": 1,
+            "B": 0
+          }
+        },
+        {
+          "position": 12,
+          "correctLetter": "D",
+          "originalQuestionId": "93f9baa1-0382-4e62-b78c-6fa6b1863ca8",
+          "originalQuestionIndex": 10,
+          "questionText": "Trong quá trình chế biến RNA của sinh vật nhân thực, các trình tự không dịch mã bị loại đi được gọi là",
+          "correctOptionText": "Introns",
+          "optionOriginalIndexByLetter": {
+            "A": 2,
+            "B": 4,
+            "C": 0,
+            "D": 3,
+            "E": 1
+          }
+        },
+        {
+          "position": 13,
+          "correctLetter": "C",
+          "originalQuestionId": "966e5cb8-9110-438c-a471-e5b99a7ea2ed",
+          "originalQuestionIndex": 3,
+          "questionText": "Khi nói về các protein khác nhau và chức năng của chúng đối với quá tình sao chép DNA, mô tả nào dưới đây là không chính xác?",
+          "correctOptionText": "DNA primase tạo ra các đoạn Okazaki của sợi muộn",
+          "optionOriginalIndexByLetter": {
+            "A": 3,
+            "B": 2,
+            "C": 1,
+            "D": 0
+          }
+        },
+        {
+          "position": 14,
+          "correctLetter": "D",
+          "originalQuestionId": "406164ed-a0ee-4a33-b91a-048f702c119c",
+          "originalQuestionIndex": 8,
+          "questionText": "Mô tả nào dưới đây mô tả chính xác nhất về thuyết trung tâm của biểu hiện gen?",
+          "correctOptionText": "Trong quá trình phiên mã, DNA mã hóa RNA và sau đó RNA mã hóa chuỗi polypeptide trong quá trình dịch mã",
+          "optionOriginalIndexByLetter": {
+            "A": 0,
+            "B": 3,
+            "C": 2,
+            "D": 1
+          }
+        },
+        {
+          "position": 15,
+          "correctLetter": "A",
+          "originalQuestionId": "a1417a89-79c1-420b-adde-d709af8df301",
+          "originalQuestionIndex": 7,
+          "questionText": "Câu hỏi ĐÚNG hoặc SAI: có một phần nhỏ DNA sợi đơn được tìm thấy ở đầu mút của một nhiễm sắc thể?",
+          "correctOptionText": "Đúng",
+          "optionOriginalIndexByLetter": {
+            "A": 0,
+            "B": 1
+          }
+        },
+        {
+          "position": 16,
+          "correctLetter": "D",
+          "originalQuestionId": "949077b7-3d5c-462c-b578-11b17ab8f894",
+          "originalQuestionIndex": 1,
+          "questionText": "Sắp xếp các thuật ngữ di truyền dưới đây theo thứ tự phức tạp tăng dần: i. Nhiễm sắc thể    ii. Nucleotide    iii. Hệ gen    iv. Chuỗi xoắn kép",
+          "correctOptionText": "ii, iv, i, iii",
+          "optionOriginalIndexByLetter": {
+            "A": 0,
+            "B": 4,
+            "C": 2,
+            "D": 1,
+            "E": 3
+          }
+        },
+        {
+          "position": 17,
+          "correctLetter": "A",
+          "originalQuestionId": "a3e45a52-10ba-4430-9397-791926725239",
+          "originalQuestionIndex": 5,
+          "questionText": "Mô tả nào dưới đây mô tả chính xác nhất về sự đọc sửa?",
+          "correctOptionText": "Các nucleotides bị loại đi khỏi đầu của một sợi DNA mới tổng hợp theo hướng 3' tới 5'",
+          "optionOriginalIndexByLetter": {
+            "A": 2,
+            "B": 4,
+            "C": 3,
+            "D": 1,
+            "E": 0
+          }
+        },
+        {
+          "position": 18,
+          "correctLetter": "A",
+          "originalQuestionId": "fb9af180-e272-4090-adba-ba03056cd616",
+          "originalQuestionIndex": 17,
+          "questionText": "Các quá trình nào dưới đây là quá trình điều hòa di truyền ở vi khuẩn? i. Chế biến RNA ii. Khởi đầu phiên mã        iii. Biến đổi sau dịch mã    iv. Khởi đầu dịch mã",
+          "correctOptionText": "ii, iv",
+          "optionOriginalIndexByLetter": {
+            "A": 4,
+            "B": 2,
+            "C": 3,
+            "D": 0,
+            "E": 1
+          }
+        },
+        {
+          "position": 19,
+          "correctLetter": "D",
+          "originalQuestionId": "6efa9f60-6abd-4ac8-a4bf-769a2cacf6c5",
+          "originalQuestionIndex": 13,
+          "questionText": "Mô tả nào dưới đây về điều hòa lactose ở E. coli là sai?",
+          "correctOptionText": "Các gen lacZ, lacY và lacI cấu thành operon lac",
+          "optionOriginalIndexByLetter": {
+            "A": 1,
+            "B": 0,
+            "C": 2,
+            "D": 3,
+            "E": 4
+          }
+        }
+      ]
+    },
+    {
+      "examCode": "104",
+      "answers": [
+        {
+          "position": 1,
+          "correctLetter": "B",
+          "originalQuestionId": "949077b7-3d5c-462c-b578-11b17ab8f894",
+          "originalQuestionIndex": 1,
+          "questionText": "Sắp xếp các thuật ngữ di truyền dưới đây theo thứ tự phức tạp tăng dần: i. Nhiễm sắc thể    ii. Nucleotide    iii. Hệ gen    iv. Chuỗi xoắn kép",
+          "correctOptionText": "ii, iv, i, iii",
+          "optionOriginalIndexByLetter": {
+            "A": 3,
+            "B": 1,
+            "C": 4,
+            "D": 2,
+            "E": 0
+          }
+        },
+        {
+          "position": 2,
+          "correctLetter": "C",
+          "originalQuestionId": "406164ed-a0ee-4a33-b91a-048f702c119c",
+          "originalQuestionIndex": 8,
+          "questionText": "Mô tả nào dưới đây mô tả chính xác nhất về thuyết trung tâm của biểu hiện gen?",
+          "correctOptionText": "Trong quá trình phiên mã, DNA mã hóa RNA và sau đó RNA mã hóa chuỗi polypeptide trong quá trình dịch mã",
+          "optionOriginalIndexByLetter": {
+            "A": 0,
+            "B": 2,
+            "C": 1,
+            "D": 3
+          }
+        },
+        {
+          "position": 3,
+          "correctLetter": "A",
+          "originalQuestionId": "fb9af180-e272-4090-adba-ba03056cd616",
+          "originalQuestionIndex": 17,
+          "questionText": "Các quá trình nào dưới đây là quá trình điều hòa di truyền ở vi khuẩn? i. Chế biến RNA ii. Khởi đầu phiên mã        iii. Biến đổi sau dịch mã    iv. Khởi đầu dịch mã",
+          "correctOptionText": "ii, iv",
+          "optionOriginalIndexByLetter": {
+            "A": 4,
+            "B": 1,
+            "C": 3,
+            "D": 2,
+            "E": 0
+          }
+        },
+        {
+          "position": 4,
+          "correctLetter": "B",
+          "originalQuestionId": "ff294e0f-09a5-44fe-ab0e-a1c38174ed09",
+          "originalQuestionIndex": 9,
+          "questionText": "………………là một bào quan nơi quá trình dịch mã diễn ra",
+          "correctOptionText": "Ribosome",
+          "optionOriginalIndexByLetter": {
+            "A": 1,
+            "B": 4,
+            "C": 2,
+            "D": 0,
+            "E": 3
+          }
+        },
+        {
+          "position": 5,
+          "correctLetter": "B",
+          "originalQuestionId": "281250fa-b891-478c-acb9-ca9fc1d652fb",
+          "originalQuestionIndex": 6,
+          "questionText": "Enzyme DNA polymerase nào sau đây được tìm thấy chủ yếu trong eukaryote?",
+          "correctOptionText": "(C) và (E)",
+          "optionOriginalIndexByLetter": {
+            "A": 0,
+            "B": 3,
+            "C": 2,
+            "D": 4,
+            "E": 1
+          }
+        },
+        {
+          "position": 6,
+          "correctLetter": "D",
+          "originalQuestionId": "138b3a4d-15e0-4d50-81a8-dbae13f16f20",
+          "originalQuestionIndex": 2,
+          "questionText": "Mô tả nào sau đây là không đúng?",
+          "correctOptionText": "Số lượng Adenine bằng Guanine trong DNA sợi đôi",
+          "optionOriginalIndexByLetter": {
+            "A": 2,
+            "B": 1,
+            "C": 3,
+            "D": 0
+          }
+        },
+        {
+          "position": 7,
+          "correctLetter": "C",
+          "originalQuestionId": "5a4d96f7-4742-45ec-8fc8-37834e6990e6",
+          "originalQuestionIndex": 16,
+          "questionText": "Mô tả nào dưới đây không phải là một ví dụ về đột biến điểm?",
+          "correctOptionText": "Chèn thêm một đoạn xen vào vùng mã hóa của một gen cấu trúc",
+          "optionOriginalIndexByLetter": {
+            "A": 1,
+            "B": 0,
+            "C": 2,
+            "D": 3
+          }
+        },
+        {
+          "position": 8,
+          "correctLetter": "E",
+          "originalQuestionId": "37d68a5b-40d0-45c9-ab53-5d4cb936d180",
+          "originalQuestionIndex": 19,
+          "questionText": "Sao chép DNA là quá trình:",
+          "correctOptionText": "Bán bảo toàn",
+          "optionOriginalIndexByLetter": {
+            "A": 4,
+            "B": 3,
+            "C": 1,
+            "D": 0,
+            "E": 2
+          }
+        },
+        {
+          "position": 9,
+          "correctLetter": "A",
+          "originalQuestionId": "966e5cb8-9110-438c-a471-e5b99a7ea2ed",
+          "originalQuestionIndex": 3,
+          "questionText": "Khi nói về các protein khác nhau và chức năng của chúng đối với quá tình sao chép DNA, mô tả nào dưới đây là không chính xác?",
+          "correctOptionText": "DNA primase tạo ra các đoạn Okazaki của sợi muộn",
+          "optionOriginalIndexByLetter": {
+            "A": 1,
+            "B": 3,
+            "C": 0,
+            "D": 2
+          }
+        },
+        {
+          "position": 10,
+          "correctLetter": "E",
+          "originalQuestionId": "6efa9f60-6abd-4ac8-a4bf-769a2cacf6c5",
+          "originalQuestionIndex": 13,
+          "questionText": "Mô tả nào dưới đây về điều hòa lactose ở E. coli là sai?",
+          "correctOptionText": "Các gen lacZ, lacY và lacI cấu thành operon lac",
+          "optionOriginalIndexByLetter": {
+            "A": 1,
+            "B": 4,
+            "C": 2,
+            "D": 0,
+            "E": 3
+          }
+        },
+        {
+          "position": 11,
+          "correctLetter": "B",
+          "originalQuestionId": "a1417a89-79c1-420b-adde-d709af8df301",
+          "originalQuestionIndex": 7,
+          "questionText": "Câu hỏi ĐÚNG hoặc SAI: có một phần nhỏ DNA sợi đơn được tìm thấy ở đầu mút của một nhiễm sắc thể?",
+          "correctOptionText": "Đúng",
+          "optionOriginalIndexByLetter": {
+            "A": 1,
+            "B": 0
+          }
+        },
+        {
+          "position": 12,
+          "correctLetter": "B",
+          "originalQuestionId": "801c5de6-a21e-437d-9b1c-18742008a364",
+          "originalQuestionIndex": 11,
+          "questionText": "Trong bước khởi đầu của quá trình dịch mã, mã đầu tiên………sẽ đi vào vị trí……….và kết hợp với tRNA khởi đầu",
+          "correctOptionText": "AUG, vị trí P",
+          "optionOriginalIndexByLetter": {
+            "A": 0,
+            "B": 2,
+            "C": 1,
+            "D": 4,
+            "E": 3
+          }
+        },
+        {
+          "position": 13,
+          "correctLetter": "B",
+          "originalQuestionId": "0aae6c85-d82f-4604-acf6-f49c23ad81de",
+          "originalQuestionIndex": 18,
+          "questionText": "Enzyme….........loại bỏ cấu trúc siêu xoắn của DNA được tạo thành do quá trình ruỗi xoắn của DNA sợi đôi bởi……......",
+          "correctOptionText": "topoisomerase; helicase",
+          "optionOriginalIndexByLetter": {
+            "A": 4,
+            "B": 2,
+            "C": 1,
+            "D": 0,
+            "E": 3
+          }
+        },
+        {
+          "position": 14,
+          "correctLetter": "A",
+          "originalQuestionId": "14cc6bec-de06-4603-8ee6-044a04a0524c",
+          "originalQuestionIndex": 12,
+          "questionText": "Câu hỏi ĐÚNG hoặc SAI: tRNA bắt cặp bổ sung với mã mở đầu nằm ở vị trí A của ribosome",
+          "correctOptionText": "Sai",
+          "optionOriginalIndexByLetter": {
+            "A": 1,
+            "B": 0
+          }
+        },
+        {
+          "position": 15,
+          "correctLetter": "B",
+          "originalQuestionId": "93f9baa1-0382-4e62-b78c-6fa6b1863ca8",
+          "originalQuestionIndex": 10,
+          "questionText": "Trong quá trình chế biến RNA của sinh vật nhân thực, các trình tự không dịch mã bị loại đi được gọi là",
+          "correctOptionText": "Introns",
+          "optionOriginalIndexByLetter": {
+            "A": 2,
+            "B": 3,
+            "C": 4,
+            "D": 1,
+            "E": 0
+          }
+        },
+        {
+          "position": 16,
+          "correctLetter": "D",
+          "originalQuestionId": "d4a1de06-7262-43e8-935e-71a13b42e614",
+          "originalQuestionIndex": 4,
+          "questionText": "Vùng đầu mút của mỗi cánh nhiễm sắc thể được gọi là gì?",
+          "correctOptionText": "Telomeres",
+          "optionOriginalIndexByLetter": {
+            "A": 4,
+            "B": 3,
+            "C": 2,
+            "D": 1,
+            "E": 0
+          }
+        },
+        {
+          "position": 17,
+          "correctLetter": "C",
+          "originalQuestionId": "a3e45a52-10ba-4430-9397-791926725239",
+          "originalQuestionIndex": 5,
+          "questionText": "Mô tả nào dưới đây mô tả chính xác nhất về sự đọc sửa?",
+          "correctOptionText": "Các nucleotides bị loại đi khỏi đầu của một sợi DNA mới tổng hợp theo hướng 3' tới 5'",
+          "optionOriginalIndexByLetter": {
+            "A": 0,
+            "B": 3,
+            "C": 2,
+            "D": 1,
+            "E": 4
+          }
+        },
+        {
+          "position": 18,
+          "correctLetter": "A",
+          "originalQuestionId": "8029ed91-8ab5-4338-9e93-7c0a543fc548",
+          "originalQuestionIndex": 0,
+          "questionText": "Thành phần nào dưới đây không có trong cấu trúc của DNA?",
+          "correctOptionText": "Ribose",
+          "optionOriginalIndexByLetter": {
+            "A": 1,
+            "B": 4,
+            "C": 2,
+            "D": 3,
+            "E": 0
+          }
+        },
+        {
+          "position": 19,
+          "correctLetter": "B",
+          "originalQuestionId": "bc4b1c92-4cde-4ffc-8e26-0db5eba9a262",
+          "originalQuestionIndex": 15,
+          "questionText": "Kiểu đột biến làm thay đổi toàn bộ trình tự acid amin từ vị trí đột biến được gọi là đột biến gì?",
+          "correctOptionText": "Dịch khung",
+          "optionOriginalIndexByLetter": {
+            "A": 2,
+            "B": 4,
+            "C": 0,
+            "D": 1,
+            "E": 3
+          }
+        }
+      ]
+    }
+  ]
+}

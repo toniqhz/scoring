@@ -6,6 +6,7 @@ import { questionHasOptionCrossReference } from '../../modules/shuffle/optionCro
 import { letterAt } from '../../lib/optionLetters';
 import { MIN_OPTIONS } from '../../modules/docx-parser/patterns';
 import { buildExportBundle } from './buildExportBundle';
+import { validateExport } from './validateExport';
 import { downloadBlob } from '../../lib/downloadFile';
 import { QuestionReviewList } from './components/QuestionReviewList';
 import type { Question } from '../../types/question';
@@ -35,6 +36,8 @@ export function ExamCreationPage() {
     () => questions.filter((q) => questionHasOptionCrossReference(q.options)).length,
     [questions],
   );
+  const exportValidation = useMemo(() => validateExport(questions), [questions]);
+  const exportWarnings = exportValidation.messages;
 
   async function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
@@ -141,6 +144,11 @@ export function ExamCreationPage() {
   async function handleGenerate() {
     setGenerateError(null);
     setGenerateSuccess(false);
+    if (exportWarnings.length > 0) {
+      // Chặn hẳn — không xuất file khi còn lỗi nghiêm trọng (xem validateExport.ts). Banner đỏ ở
+      // trên đã liệt kê chi tiết, không cần lặp lại thông báo ở đây.
+      return;
+    }
     if (count < 1) {
       setGenerateError('Số đề cần trộn phải lớn hơn 0');
       return;
@@ -240,6 +248,7 @@ export function ExamCreationPage() {
           <QuestionReviewList
             questions={questions}
             crossReferenceStrategy={crossReferenceStrategy}
+            errorPositions={exportValidation.errorPositions}
             onFixCorrectOption={handleFixCorrectOption}
             onEditQuestionText={handleEditQuestionText}
             onEditOptionText={handleEditOptionText}
@@ -248,6 +257,18 @@ export function ExamCreationPage() {
           />
 
           <h2>Bước 3: Trộn đề & xuất file</h2>
+          {exportWarnings.length > 0 && (
+            <section className="export-blocking-warnings">
+              <p className="export-blocking-title">
+                ✕ Không thể xuất đề — còn {exportWarnings.length} lỗi cần sửa trước:
+              </p>
+              <ul>
+                {exportWarnings.map((w) => (
+                  <li key={w}>{w}</li>
+                ))}
+              </ul>
+            </section>
+          )}
           <section className="generate-section">
             <label>
               Tên đề thi
@@ -271,7 +292,7 @@ export function ExamCreationPage() {
                 onChange={(e) => setStartCode(Number(e.target.value))}
               />
             </label>
-            <button onClick={handleGenerate} disabled={isGenerating || validCount === 0}>
+            <button onClick={handleGenerate} disabled={isGenerating || validCount === 0 || exportWarnings.length > 0}>
               {isGenerating ? 'Đang tạo...' : `Tạo ${count} bộ đề + phiếu trả lời + đáp án (.zip)`}
             </button>
             {generateError && <p className="error-text">{generateError}</p>}
