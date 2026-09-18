@@ -52,7 +52,7 @@
   font-size: 0.8rem;
 }
 
-.google-form-export {
+.export-card {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -61,6 +61,42 @@
   border: 1px solid var(--border);
   border-radius: 8px;
   background: var(--surface);
+}
+
+.form-export-tab-bar {
+  display: flex;
+  gap: 8px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 12px;
+}
+
+.form-export-tab-bar button {
+  padding: 8px 16px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 0.95rem;
+  border-bottom: 2px solid transparent;
+  color: var(--text-secondary);
+}
+
+.form-export-tab-bar button.active {
+  border-bottom-color: var(--accent);
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.form-mode-choice {
+  display: flex;
+  gap: 16px;
+  font-size: 0.9rem;
+}
+
+.form-mode-choice label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
 }
 
 .link-button {
@@ -353,7 +389,7 @@
 }
 
 .generate-section button,
-.google-form-export > button:not(.link-button) {
+.export-card > button:not(.link-button) {
   align-self: flex-start;
   margin-top: 6px;
   padding: 8px 18px;
@@ -366,12 +402,12 @@
 }
 
 .generate-section button:hover:not(:disabled),
-.google-form-export > button:not(.link-button):hover:not(:disabled) {
+.export-card > button:not(.link-button):hover:not(:disabled) {
   background: var(--accent-hover);
 }
 
 .generate-section button:disabled,
-.google-form-export > button:not(.link-button):disabled {
+.export-card > button:not(.link-button):disabled {
   background: var(--border);
   color: var(--text-muted);
   cursor: not-allowed;

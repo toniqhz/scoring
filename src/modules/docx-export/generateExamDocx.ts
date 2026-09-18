@@ -298,3 +298,115 @@ export async function generateExamVariantDocx(input: GenerateExamVariantDocxInpu
   zip.file('word/document.xml', newXml);
   return zip.generateAsync({ type: 'uint8array' });
 }
+
+/** Ép in đậm MỌI run trong 1 chunk (dùng để đánh dấu đáp án đúng ở file "thô" cho Microsoft Forms
+ * — LUÔN đúng theo `correctOptionId` bất kể định dạng gốc còn giữ hay không, thay vì trông chờ vào
+ * việc dò lại đúng run nào từng in đậm trong file gốc, vốn không đáng tin khi đáp án đã bị sửa tay
+ * hoặc là đáp án mới thêm trên web — xem generateRawExamDocxForImport). */
+function boldenChunk(chunk: ParagraphXmlChunk): ParagraphXmlChunk {
+  return { ...chunk, runs: chunk.runs.map((r) => ({ ...r, rPrXml: addBoldToRPrXml(r.rPrXml) })) };
+}
+
+export type RawExamDocxMode = 'quiz' | 'form';
+
+export interface GenerateRawExamDocxInput {
+  originalDocxBuffer: ArrayBuffer;
+  structure: ExtractedExamXml;
+  questions: Question[];
+  /** 'quiz' (mặc định) = có dòng "ANSWER: X" để Microsoft Forms tự nhận đáp án đúng khi tạo Quiz.
+   * 'form' = KHÔNG có dòng "ANSWER:" (Form khảo sát thường không có khái niệm đáp án đúng). */
+  mode?: RawExamDocxMode;
+}
+
+/**
+ * Dựng 1 file .docx "thô" theo ĐÚNG định dạng Microsoft Forms Quick Import khuyến nghị, để giáo
+ * viên tự import vào Microsoft Forms (tính năng "Import from Word"):
+ *   - Tiêu đề câu hỏi: 1 đoạn văn riêng, đánh số "N. " (không dùng "Câu N:").
+ *   - Đáp án: mỗi đáp án 1 dòng riêng, bắt đầu bằng "A.", "B.", "C."... ngay dưới câu hỏi.
+ *   - Đáp án đúng: in đậm (để giáo viên nhìn nhanh) + ở chế độ 'quiz' còn kèm dòng "ANSWER: X" —
+ *     dòng này CHƯA được Microsoft xác nhận chính thức là được Quick Import đọc, nhưng không hại gì
+ *     nếu không được nhận diện (chỉ là text thừa) — giáo viên vẫn cần tự kiểm tra/đánh dấu lại đáp
+ *     án đúng trong Microsoft Forms sau khi import cho chắc chắn.
+ *   - Để trống 1 dòng giữa các câu hỏi để tránh hệ thống đọc dính chữ.
+ * Xem GoogleFormExport.tsx cho phần Google Form — ở đó tạo thẳng được quiz tự chấm điểm qua API
+ * nên không cần định dạng đặc biệt này.
+ *
+ * CHỈ giữ lại đúng câu hỏi + đáp án — KHÔNG chèn tiêu đề đề thi, KHÔNG giữ phần đầu file gốc
+ * (`preserveBeforeXml` — vd bảng tiêu đề trường/môn thi) — để tránh Quick Import của Microsoft Forms
+ * đọc nhầm các dòng đó thành câu hỏi/đáp án. `preserveAfterXml` (chỉ có `<w:sectPr>` khổ giấy/lề,
+ * không phải nội dung hiển thị) vẫn giữ vì bắt buộc để file .docx hợp lệ.
+ */
+export async function generateRawExamDocxForImport(input: GenerateRawExamDocxInput): Promise<Uint8Array> {
+  const { originalDocxBuffer, structure, questions, mode = 'quiz' } = input;
+  const zip = await JSZip.loadAsync(originalDocxBuffer);
+  const documentXmlFile = zip.file('word/document.xml');
+  if (!documentXmlFile) throw new Error('File .docx gốc không hợp lệ: thiếu word/document.xml');
+  const xmlText = await documentXmlFile.async('text');
+  const doc = new DOMParser().parseFromString(xmlText, 'application/xml');
+  if (doc.getElementsByTagName('parsererror').length > 0) {
+    throw new Error('Không thể đọc lại nội dung XML của file .docx gốc');
+  }
+  const body = doc.getElementsByTagNameNS(WORD_NS, 'body')[0];
+  if (!body) throw new Error('Không tìm thấy nội dung (body) trong file .docx gốc');
+
+  while (body.firstChild) body.removeChild(body.firstChild);
+
+  const validQuestions = questions.filter((q) => q.parseIssues.length === 0 && q.correctOptionId !== null);
+  const blockByOriginalIndex = new Map(structure.questionBlocks.map((b) => [b.originalIndex, b]));
+
+  validQuestions.forEach((question, idx) => {
+    const block = blockByOriginalIndex.get(question.originalIndex);
+    if (!block) return;
+    const displayPosition = idx + 1;
+
+    if (question.stemEdited) {
+      body.appendChild(
+        buildParagraphFromChunk(doc, makeSyntheticChunk(question.text, block.stemChunks[0]), {
+          labelText: `${displayPosition}. `,
+          boldLabel: true,
+        }),
+      );
+    } else if (block.stemChunks.length === 0) {
+      body.appendChild(buildPlainParagraph(doc, `${displayPosition}.`, true));
+    } else {
+      block.stemChunks.forEach((chunk, i) => {
+        body.appendChild(
+          buildParagraphFromChunk(doc, chunk, {
+            labelText: i === 0 ? `${displayPosition}. ` : undefined,
+            boldLabel: i === 0,
+          }),
+        );
+      });
+    }
+
+    question.options.forEach((option, optIdx) => {
+      const isCorrect = option.id === question.correctOptionId;
+      const optionBlock = option.sourceLetter ? block.options.find((o) => o.letter === option.sourceLetter) : undefined;
+      const baseChunk =
+        option.edited || !optionBlock
+          ? makeSyntheticChunk(option.text, optionBlock?.chunk ?? block.options[0]?.chunk)
+          : optionBlock.chunk;
+      const chunk = isCorrect ? boldenChunk(baseChunk) : baseChunk;
+      const optionPEl = buildParagraphFromChunk(doc, chunk, {
+        labelText: `${letterAt(optIdx)}. `,
+        boldLabel: isCorrect,
+      });
+      body.appendChild(optionPEl);
+    });
+
+    if (mode === 'quiz') {
+      const correctIndex = question.options.findIndex((o) => o.id === question.correctOptionId);
+      body.appendChild(buildPlainParagraph(doc, `ANSWER: ${letterAt(correctIndex)}`, false));
+    }
+    body.appendChild(buildPlainParagraph(doc, '', false)); // dòng trống ngăn cách câu tiếp theo
+  });
+
+  for (const xml of structure.preserveAfterXml) {
+    const el = parseFragment(doc, xml);
+    if (el) body.appendChild(el);
+  }
+
+  const newXml = serializer.serializeToString(doc);
+  zip.file('word/document.xml', newXml);
+  return zip.generateAsync({ type: 'uint8array' });
+}

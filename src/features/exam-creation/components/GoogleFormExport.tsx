@@ -4,7 +4,9 @@ import { createGoogleFormFromQuestions, type CreatedGoogleForm } from '../../../
 import type { Question } from '../../../types/question';
 
 interface Props {
-  examTitle: string;
+  /** Tên đặt cho Google Form được tạo — dùng tên file đề gốc (giống tên file zip/docx xuất ra),
+   * không dùng ô "Tên đề thi" tự do trên trang, để nhất quán với các file xuất khác. */
+  formTitle: string;
   questions: Question[];
   /** true nếu chưa đủ điều kiện xuất (còn lỗi ở validateExport.ts, hoặc chưa có câu hợp lệ nào). */
   disabled: boolean;
@@ -26,7 +28,7 @@ const CLIENT_ID_STORAGE_KEY = 'google-forms-oauth-client-id';
  */
 const DEFAULT_CLIENT_ID = '53472298241-pkpdjh465iam3and1om5r07n4buhdi4j.apps.googleusercontent.com';
 
-export function GoogleFormExport({ examTitle, questions, disabled }: Props) {
+export function GoogleFormExport({ formTitle, questions, disabled }: Props) {
   const [clientId, setClientId] = useState(() => localStorage.getItem(CLIENT_ID_STORAGE_KEY) ?? DEFAULT_CLIENT_ID);
   const [showConfig, setShowConfig] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
@@ -53,7 +55,7 @@ export function GoogleFormExport({ examTitle, questions, disabled }: Props) {
     setIsCreating(true);
     try {
       const token = await requestGoogleAccessToken(trimmedClientId);
-      const form = await createGoogleFormFromQuestions(examTitle, questions, token);
+      const form = await createGoogleFormFromQuestions(formTitle, questions, token);
       setResult(form);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Lỗi không xác định khi tạo Google Form.');
@@ -63,7 +65,7 @@ export function GoogleFormExport({ examTitle, questions, disabled }: Props) {
   }
 
   return (
-    <section className="google-form-export">
+    <section className="export-card">
       <p className="field-hint">
         Tạo 1 Google Form dạng quiz (tự chấm điểm) từ các câu hỏi hợp lệ — giữ NGUYÊN thứ tự câu hỏi
         và đáp án như file gốc (không xáo, vì Form chỉ có 1 link duy nhất cho mọi người cùng làm).

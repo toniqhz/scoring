@@ -9,7 +9,7 @@ import { buildExportBundle } from './buildExportBundle';
 import { validateExport } from './validateExport';
 import { downloadBlob } from '../../lib/downloadFile';
 import { QuestionReviewList } from './components/QuestionReviewList';
-import { GoogleFormExport } from './components/GoogleFormExport';
+import { FormExportTabs } from './components/FormExportTabs';
 import type { Question } from '../../types/question';
 import './ExamCreationPage.css';
 
@@ -38,6 +38,12 @@ export function ExamCreationPage() {
     [questions],
   );
   const exportValidation = useMemo(() => validateExport(questions), [questions]);
+  // Tên dùng chung cho mọi file xuất ra (zip đề in giấy, docx thô cho Microsoft Forms, tên Google
+  // Form) — ưu tiên tên file đề gốc đã tải lên (giống bản in), rơi về "Tên đề thi" nếu không có.
+  const exportBaseName = useMemo(
+    () => (fileName ? fileName.replace(/\.docx$/i, '') : examTitle.replace(/\s+/g, '_')),
+    [fileName, examTitle],
+  );
   const exportWarnings = exportValidation.messages;
 
   async function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -173,7 +179,7 @@ export function ExamCreationPage() {
         answerKeyBundle,
         originalDocxBuffer,
       });
-      const baseName = fileName ? fileName.replace(/\.docx$/i, '') : examTitle.replace(/\s+/g, '_');
+      const baseName = exportBaseName;
       downloadBlob(zipBlob, `${baseName}.zip`);
       setGenerateSuccess(true);
       setGeneratedCrossReferenceCount(crossReferenceStrategy !== 'lock' ? crossReferenceCount : 0);
@@ -311,9 +317,10 @@ export function ExamCreationPage() {
             )}
           </section>
 
-          <h2>Bước 4: Xuất Google Form</h2>
-          <GoogleFormExport
-            examTitle={examTitle}
+          <h2>Bước 4: Xuất Form</h2>
+          <FormExportTabs
+            fileBaseName={exportBaseName}
+            originalDocxBuffer={originalDocxBuffer}
             questions={questions}
             disabled={exportWarnings.length > 0 || validCount === 0}
           />
