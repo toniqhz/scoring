@@ -5,8 +5,11 @@ import { applyTheme, getStoredTheme, getSystemTheme, type ThemeMode } from './li
 import './App.css';
 
 const GradingPage = lazy(() => import('./features/grading/GradingPage').then((m) => ({ default: m.GradingPage })));
+const ScoreMergePage = lazy(() =>
+  import('./features/score-merge/ScoreMergePage').then((m) => ({ default: m.ScoreMergePage })),
+);
 
-type Tab = 'create' | 'grade';
+type Tab = 'create' | 'grade' | 'merge';
 
 function App() {
   const [tab, setTab] = useState<Tab>('create');
@@ -30,6 +33,9 @@ function App() {
           <button className={tab === 'grade' ? 'active' : ''} onClick={() => setTab('grade')}>
             2. Chấm bài
           </button>
+          <button className={tab === 'merge' ? 'active' : ''} onClick={() => setTab('merge')}>
+            3. Merge điểm
+          </button>
         </nav>
       </header>
       <main>
@@ -37,6 +43,11 @@ function App() {
         {tab === 'grade' && (
           <Suspense fallback={<p style={{ padding: 24 }}>Đang tải...</p>}>
             <GradingPage />
+          </Suspense>
+        )}
+        {tab === 'merge' && (
+          <Suspense fallback={<p style={{ padding: 24 }}>Đang tải...</p>}>
+            <ScoreMergePage />
           </Suspense>
         )}
       </main>

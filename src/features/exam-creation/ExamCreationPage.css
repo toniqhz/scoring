@@ -46,6 +46,60 @@
   color: var(--warning-text);
 }
 
+.field-hint {
+  margin: 2px 0 0;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+}
+
+.google-form-export {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+}
+
+.link-button {
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--accent);
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.google-form-config {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px 12px;
+  border: 1px solid var(--border-hairline);
+  border-radius: 6px;
+  background: var(--surface-raised);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.google-form-config label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.9rem;
+  color: var(--text-primary);
+}
+
+.google-form-config input[type='text'] {
+  padding: 6px 8px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--text-primary);
+}
+
 .cross-reference-section {
   display: flex;
   flex-direction: column;
@@ -298,7 +352,8 @@
   color: var(--text-primary);
 }
 
-.generate-section button {
+.generate-section button,
+.google-form-export > button:not(.link-button) {
   align-self: flex-start;
   margin-top: 6px;
   padding: 8px 18px;
@@ -310,11 +365,13 @@
   font-size: 0.95rem;
 }
 
-.generate-section button:hover:not(:disabled) {
+.generate-section button:hover:not(:disabled),
+.google-form-export > button:not(.link-button):hover:not(:disabled) {
   background: var(--accent-hover);
 }
 
-.generate-section button:disabled {
+.generate-section button:disabled,
+.google-form-export > button:not(.link-button):disabled {
   background: var(--border);
   color: var(--text-muted);
   cursor: not-allowed;

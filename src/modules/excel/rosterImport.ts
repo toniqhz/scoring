@@ -3,6 +3,9 @@ import type { RosterEntry } from '../../types/roster';
 
 function normalizeHeader(h: string): string {
   return h
+    // "\u0110/\u0111" KH\u00d4NG t\u00e1ch \u0111\u01b0\u1ee3c qua NFD nh\u01b0 c\u00e1c d\u1ea5u kh\u00e1c (l\u00e0 1 ch\u1eef c\u00e1i ri\u00eang, kh\u00f4ng ph\u1ea3i "D" + d\u1ea5u k\u1ebft
+    // h\u1ee3p) \u2014 n\u1ebfu kh\u00f4ng thay tay tr\u01b0\u1edbc, 1 ti\u00eau \u0111\u1ec1 b\u1eaft \u0111\u1ea7u b\u1eb1ng "\u0110" s\u1ebd b\u1ecb r\u1edbt h\u1eb3n ch\u1eef \u0111\u00f3 khi chu\u1ea9n h\u00f3a.
+    .replace(/\u0111/gi, 'd')
     .normalize('NFD')
     .replace(/[\u0300-\u036f]/g, '')
     .toLowerCase()

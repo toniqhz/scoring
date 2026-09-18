@@ -28,7 +28,7 @@ function serialize(doc: Document): string {
 
 const XML_HEADER = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n';
 
-export type CellFillKind = 'wrong' | 'blank' | 'manual' | 'marked';
+export type CellFillKind = 'wrong' | 'blank' | 'manual' | 'marked' | 'missingScore';
 
 export interface CellFillInstruction {
   /** Tham chiếu ô kiểu Excel, vd "I2". */
@@ -127,7 +127,9 @@ async function applyCellFills(
   const styleIdFor = (kind: CellFillKind) => {
     if (kind === 'manual') return styleIds.manual;
     if (kind === 'marked') return styleIds.marked;
-    if (kind === 'wrong') return styleIds.wrong;
+    // "missingScore" (bảng điểm tổng hợp — ô thiếu điểm 1 kỳ thi) dùng chung màu đỏ/hồng nhạt với
+    // "wrong" — cùng ý nghĩa trực quan "cần chú ý", không cần thêm 1 fill riêng.
+    if (kind === 'wrong' || kind === 'missingScore') return styleIds.wrong;
     return styleIds.blank;
   };
   for (const fill of fills) {
@@ -214,5 +216,26 @@ export async function postprocessResultsWorkbook(baseBytes: Uint8Array, options:
     if (zip.files[path].dir) delete zip.files[path];
   }
 
+  return zip.generateAsync({ type: 'uint8array' });
+}
+
+export interface MergedScoresPostprocessOptions {
+  sheetPath: string;
+  fills: CellFillInstruction[];
+}
+
+/** Hậu xử lý file .xlsx SheetJS đã ghi: chỉ tô màu ô (không gắn biểu đồ) — dùng cho tab "Merge
+ * điểm" (ô thiếu điểm 1 kỳ thi tô đỏ/hồng nhạt), tái dùng đúng cơ chế addFillStyles/applyCellFills
+ * đã dùng cho bảng điểm chấm bài thay vì viết lại từ đầu. */
+export async function postprocessMergedScoresWorkbook(
+  baseBytes: Uint8Array,
+  options: MergedScoresPostprocessOptions,
+): Promise<Uint8Array> {
+  const zip = await JSZip.loadAsync(baseBytes);
+  const styleIds = await addFillStyles(zip);
+  await applyCellFills(zip, options.sheetPath, options.fills, styleIds);
+  for (const path of Object.keys(zip.files)) {
+    if (zip.files[path].dir) delete zip.files[path];
+  }
   return zip.generateAsync({ type: 'uint8array' });
 }

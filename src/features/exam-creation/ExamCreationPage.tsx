@@ -9,6 +9,7 @@ import { buildExportBundle } from './buildExportBundle';
 import { validateExport } from './validateExport';
 import { downloadBlob } from '../../lib/downloadFile';
 import { QuestionReviewList } from './components/QuestionReviewList';
+import { GoogleFormExport } from './components/GoogleFormExport';
 import type { Question } from '../../types/question';
 import './ExamCreationPage.css';
 
@@ -309,6 +310,13 @@ export function ExamCreationPage() {
               </>
             )}
           </section>
+
+          <h2>Bước 4: Xuất Google Form</h2>
+          <GoogleFormExport
+            examTitle={examTitle}
+            questions={questions}
+            disabled={exportWarnings.length > 0 || validCount === 0}
+          />
         </>
       )}
     </div>
