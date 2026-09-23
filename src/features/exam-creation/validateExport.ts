@@ -17,8 +17,10 @@ export interface ExportValidationResult {
   errorPositions: Set<number>;
 }
 
+/** CÓ phân biệt chữ hoa/thường khi so trùng nội dung — vd "Hà Nội" và "hà nội" KHÔNG bị coi là
+ * trùng, chỉ gộp khoảng trắng thừa/đầu-cuối để tránh báo trùng giả do lỗi gõ dấu cách. */
 function normalize(text: string): string {
-  return text.trim().toLowerCase().replace(/\s+/g, ' ');
+  return text.trim().replace(/\s+/g, ' ');
 }
 
 export function validateExport(questions: Question[]): ExportValidationResult {
